@@ -1,7 +1,7 @@
 import { promisify } from 'util';
 import { exists, readFile, unlink, writeFile } from 'fs';
 import { createGame, loadGame } from './api';
-import { homedir } from "os";
+import { homedir } from 'os';
 
 const gameIdFile = `${homedir()}/.patience-cli`;
 
