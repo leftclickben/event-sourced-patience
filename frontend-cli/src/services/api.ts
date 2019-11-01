@@ -1,11 +1,5 @@
 import * as rp from 'request-promise';
-import { GameplayCommandName, GameId, TableState } from './types';
-
-export interface Game {
-  gameId: string;
-  table: TableState;
-  score: number;
-}
+import { Game, GameId, GameplayCommandName } from '../types';
 
 const json = true;
 

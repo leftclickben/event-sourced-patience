@@ -13,7 +13,7 @@ export const claimVictory: CommandProcessor<ClaimVictoryCommand, VictoryClaimedE
     validateGameNotFinished(events);
 
     const { foundation } = buildTableState(events);
-    foundation.forEach((pile, index) => validateLength(pile, 13, `Foundation ${index}`));
+    foundation.forEach((pile, index) => validateLength(pile, 13, `Foundation ${index + 1}`));
 
     return await saveEvent<GameEventType.victoryClaimed, VictoryClaimedEvent>(
       GameEventType.victoryClaimed,

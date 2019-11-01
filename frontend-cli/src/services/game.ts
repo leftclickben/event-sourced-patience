@@ -1,18 +1,18 @@
 import { promisify } from 'util';
 import { exists, readFile, unlink, writeFile } from 'fs';
 import { createGame, loadGame } from './api';
-import { homedir } from "os";
+import { homedir } from 'os';
 
 const gameIdFile = `${homedir()}/.patience-cli`;
 
-export const loadCurrentGame = async (overrideGameId?: string) => {
+export const loadCurrentGame = async (overrideGameId?: string, newGame: boolean = false) => {
   if (overrideGameId) {
     return await loadGame(overrideGameId);
   }
 
   const gameIdFileExists = await promisify(exists)(gameIdFile);
 
-  if (!gameIdFileExists) {
+  if (!gameIdFileExists || newGame) {
     const game = await createGame();
     await promisify(writeFile)(gameIdFile, game.gameId);
     console.log(`Created game ${ game.gameId } and saved ID to ${ gameIdFile }`);
