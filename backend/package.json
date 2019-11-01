@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "AWS Serverless backend for event-sourced Patience demonstration",
   "author": "Ben New <ben@leftclick.com.au>",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "config": {
     "service": "event-sourced-patience",
     "default_stage": "dev"

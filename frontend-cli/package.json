@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "CLI frontend for event-sourced Patience demonstration",
   "author": "Ben New <ben@leftclick.com.au>",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "ts-node": "ts-node",
     "lint": "tslint --project tsconfig.json",
