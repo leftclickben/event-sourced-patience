@@ -10,3 +10,5 @@ export const pressEnter = async (readlineInterface: Interface) =>
     (resolve) => readlineInterface.question('Press enter to continue...', () => resolve()));
 
 export const gameOver = (status: GameStatus) => [GameStatus.forfeited, GameStatus.completed].indexOf(status) >= 0;
+
+export const repeat = (length: number, character = ' ') => Array.from({ length }, () => character).join('');

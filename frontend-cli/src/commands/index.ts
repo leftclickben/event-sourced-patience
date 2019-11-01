@@ -1,8 +1,9 @@
 import { Interface } from 'readline';
-import { Game, playGame } from '../services/api';
+import { playGame } from '../services/api';
 import { commandRouteMap } from './routes';
 import { GameplayCommandRouteMapEntry } from './types';
 import { pressEnter } from '../util';
+import { Game } from '../types';
 
 export const handleCommand = async (
   readlineInterface: Interface,

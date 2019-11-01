@@ -52,3 +52,9 @@ export type GameplayCommandName =
   'playTableauToFoundation' |
   'playTableauToTableau' |
   'claimVictory';
+
+export interface Game {
+  gameId: string;
+  table: TableState;
+  score: number;
+}
