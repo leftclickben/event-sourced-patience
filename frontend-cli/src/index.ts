@@ -7,11 +7,11 @@ import { prompt } from './strings';
 import { loadCurrentGame } from './services/game';
 import { gameOver, pressEnter } from './util';
 
-export const main = async (gameId?: string) => {
+export const main = async (gameId?: string, newGame: boolean = false) => {
   try {
     config();
 
-    let game = await loadCurrentGame(gameId);
+    let game = await loadCurrentGame(gameId, newGame);
 
     const readlineInterface = createInterface({
       input: process.stdin,
@@ -52,12 +52,20 @@ export const main = async (gameId?: string) => {
 };
 
 if (require.main === module) {
+  // TODO Support multiple views (commented out code below)
   const argv = yargs
     .alias('g', 'game')
+    .describe('g', 'ID of the game to load, even if one is in progress')
+    .alias('n', 'new')
+    .describe('n', 'Start a new game, even if one is in progress')
+    .boolean('n')
+    // .alias('v', 'view')
+    // .describe('v', 'Select the view to use')
     .alias('h', 'help')
-    .describe('g', 'ID of the game to load; if omitted, continue a previous game or create a new game as required')
     .help('help')
+    // .choices({ v: ['default'] })
+    .conflicts({ n: ['g'], g: ['n'] })
     .version(false)
     .argv;
-  main(argv.game as string | undefined).then();
+  main(argv.game as string | undefined, argv.new as boolean | undefined).then();
 }
