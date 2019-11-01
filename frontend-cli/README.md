@@ -22,7 +22,10 @@ There are no tests at this time.
 
 ## Running the frontend
 
-To play the game, you need to configure a file named `.env` with the API base URL returned by the backend.  The file `.template.env` can be copied as a starting point.  You could also just set this as an actual environment variable.
+To play the game, you need to configure the environment.  Either:
+
+* Create a file named `.env` with the API base URL returned by the backend.  The file `.template.env` can be copied as a starting point.
+* Or, set actual environment variables with the names in the `.template.env` file.
 
 Then execute:
 
