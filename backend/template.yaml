@@ -1,0 +1,118 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Serverless, event-sourced "Patience" solitaire card game
+
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+    Description: Name of the stage
+
+Globals:
+  Function:
+    Runtime: nodejs10.x
+    Tracing: Active
+  Api:
+    Cors:
+      AllowOrigin: "'*'"
+      AllowHeaders: "'Accept,Content-Type'"
+    TracingEnabled: true
+    MethodSettings:
+      - LoggingLevel: INFO
+        DataTraceEnabled: true
+        ResourcePath: '/*'
+        HttpMethod: '*'
+
+Resources:
+  GetGameFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./build/handlers/http/game
+      Handler: get.getGameHandler
+      Environment:
+        Variables:
+          DB_TABLE_EVENTS: !Ref EventsTable
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref EventsTable
+      Events:
+        GetGame:
+          Type: Api
+          Properties:
+            Path: /game/{gameId}
+            Method: get
+
+  PostGameFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./build/handlers/http/game
+      Handler: post.postGameHandler
+      Environment:
+        Variables:
+          DB_TABLE_EVENTS: !Ref EventsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref EventsTable
+      Events:
+        GetGame:
+          Type: Api
+          Properties:
+            Path: /game
+            Method: post
+
+  PatchGameFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./build/handlers/http/game
+      Handler: patch.patchGameHandler
+      Environment:
+        Variables:
+          DB_TABLE_EVENTS: !Ref EventsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref EventsTable
+      Events:
+        GetGame:
+          Type: Api
+          Properties:
+            Path: /game/{gameId}/{moveType}
+            Method: patch
+
+  DeleteGameFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./build/handlers/http/game
+      Handler: delete.deleteGameHandler
+      Environment:
+        Variables:
+          DB_TABLE_EVENTS: !Ref EventsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref EventsTable
+      Events:
+        GetGame:
+          Type: Api
+          Properties:
+            Path: /game/{gameId}
+            Method: delete
+
+  EventsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "patience_events_${Stage}"
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        - AttributeName: gameId
+          KeyType: HASH
+        - AttributeName: eventTimestamp
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: gameId
+          AttributeType: S
+        - AttributeName: eventTimestamp
+          AttributeType: N
+
+Outputs:
+  ApiBaseUrl:
+    Description: "API Gateway endpoint base URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"

@@ -1,0 +1,41 @@
+{
+  "name": "event-sourced-patience-frontend-cli",
+  "version": "1.0.0",
+  "description": "CLI frontend for event-sourced Patience demonstration",
+  "author": "Ben New <ben@leftclick.com.au>",
+  "license": "UNLICENSED",
+  "scripts": {
+    "ts-node": "ts-node",
+    "lint": "tslint --project tsconfig.json",
+    "test": "mocha -r ts-node/register tests/unit/**/*.spec.ts",
+    "build": "webpack",
+    "game": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "dotenv": "^8.2.0",
+    "promisify": "0.0.3",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "yargs": "^14.2.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.4",
+    "@types/chalk": "^2.2.0",
+    "@types/dotenv": "^8.2.0",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.11.7",
+    "@types/request-promise": "^4.1.44",
+    "@types/sinon": "^7.5.0",
+    "@types/yargs": "^13.0.3",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
+    "sinon": "^7.5.0",
+    "ts-loader": "^6.2.1",
+    "ts-node": "^8.4.1",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.4",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.9"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "outDir": "build",
+    "sourceMap": true,
+    "strict": true,
+    "allowSyntheticDefaultImports": true
+  }
+}
