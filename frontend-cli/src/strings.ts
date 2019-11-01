@@ -38,7 +38,9 @@ For example:
 * w3 = move the top card from the waste to the third column of the tableau
 * 2a = move the top card from the second tableau to the first foundation
 
-There is one exception, which is that when moving cards between tableau 
+As a shortcut, dealing from the stock to the waste can be written as "s".
+
+There is one other exception, which is that when moving cards between tableau
 columns, any number of face-up cards can be moved (as long as the move is
 otherwise legal, i.e. only face-up cards are moved and the result follows
 the red-black alternating descending pattern).  
