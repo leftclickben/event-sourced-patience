@@ -1,7 +1,7 @@
 import { CommandProcessor, ForfeitGameCommand } from '../types';
 import { GameEventType, GameForfeitedEvent } from '../../events/types';
 import { loadEvents, saveEvent } from '../../events/store';
-import { validateParameters, validateGameExists, validateGameNotForfeited } from '../validation';
+import { validateParameters, validateGameExists, validateGameNotFinished } from '../validation';
 
 export const forfeitGame: CommandProcessor<ForfeitGameCommand, GameForfeitedEvent> =
   async ({ gameId }) => {
@@ -9,7 +9,7 @@ export const forfeitGame: CommandProcessor<ForfeitGameCommand, GameForfeitedEven
 
     const events = await loadEvents(gameId);
     validateGameExists(events);
-    validateGameNotForfeited(events);
+    validateGameNotFinished(events);
 
     return await saveEvent<GameEventType.gameForfeited, GameForfeitedEvent>(
       GameEventType.gameForfeited,

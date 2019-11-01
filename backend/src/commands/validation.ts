@@ -3,8 +3,6 @@ import { BadRequest, NotFound } from 'http-errors';
 import { Card, Value } from '../game/types';
 import { nextLowestValue, suitColour } from '../game';
 
-// Validation functions
-
 export const validateParameters = (parameters: Record<string, any>) => {
   if (Object.keys(parameters).some((key) => [undefined, null, ''].indexOf(parameters[key]) >= 0)) {
     throw new BadRequest(`Required parameters missing`);
@@ -17,8 +15,8 @@ export const validateGameExists = (events: GameEvent[]) => {
   }
 };
 
-export const validateGameNotForfeited = (events: GameEvent[]) => {
-  if (events.some(({ eventType }) => eventType === GameEventType.gameForfeited)) {
+export const validateGameNotFinished = (events: GameEvent[]) => {
+  if (events.some(({ eventType }) => [GameEventType.gameForfeited, GameEventType.victoryClaimed].indexOf(eventType) >= 0)) {
     throw new BadRequest('Command validation failed: Game is already forfeited');
   }
 };

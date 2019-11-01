@@ -3,6 +3,7 @@ import { Card, GameId } from '../game/types';
 export enum GameEventType {
   gameCreated = 'gameCreated',
   gameForfeited = 'gameForfeited',
+  victoryClaimed = 'victoryClaimed',
   stockDealtToWaste = 'stockDealtToWaste',
   wasteResetToStock = 'wasteResetToStock',
   wastePlayedToTableau = 'wastePlayedToTableau',
@@ -28,6 +29,8 @@ export interface GameCreatedEvent extends GameEvent<GameEventType.gameCreated> {
 }
 
 export type GameForfeitedEvent = GameEvent<GameEventType.gameForfeited>;
+
+export type VictoryClaimedEvent = GameEvent<GameEventType.victoryClaimed>;
 
 export type StockDealtToWasteEvent = GameEvent<GameEventType.stockDealtToWaste>;
 

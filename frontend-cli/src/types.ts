@@ -50,4 +50,5 @@ export type GameplayCommandName =
   'playWasteToTableau' |
   'playWasteToFoundation' |
   'playTableauToFoundation' |
-  'playTableauToTableau';
+  'playTableauToTableau' |
+  'claimVictory';

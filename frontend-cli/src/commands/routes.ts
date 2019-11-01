@@ -1,8 +1,9 @@
 import { CommandRouteMapEntry, GameplayCommandRouteMapEntry, SpecialCommandRouteMapEntry } from './types';
-import { forfeitGame, Game } from '../api';
+import { forfeitGame, Game, playGame } from '../api';
 import { clearScreen, helpText } from '../strings';
 import { removeGameFile } from '../game';
 import { pressEnter } from '../util';
+import { GameplayCommandName } from '../types';
 
 const parseTableauIndex = (input: string) => Number(input) - 1;
 const parseFoundationIndex = (input: string) => input.toLowerCase().charCodeAt(0) - 'a'.charCodeAt(0);
@@ -34,6 +35,17 @@ export const commandRouteMap: CommandRouteMapEntry[] = [
     match: /^q(?:uit)?$/,
     handler: async (readlineInterface, game) => {
       readlineInterface.close();
+      return game;
+    }
+  },
+  {
+    type: 'special',
+    match: /^v(?:ictory)?$/,
+    handler: async (readlineInterface, game) => {
+      await playGame(game.gameId, 'claimVictory');
+      await removeGameFile();
+      readlineInterface.close();
+      console.info('You won!!!');
       return game;
     }
   },

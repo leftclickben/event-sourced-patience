@@ -4,7 +4,7 @@ import { loadEvents, saveEvent } from '../../events/store';
 import {
   validateParameters,
   validateGameExists,
-  validateGameNotForfeited,
+  validateGameNotFinished,
   validateCompatibleWithFoundation
 } from '../validation';
 import { buildTableState } from '../../state/table';
@@ -15,7 +15,7 @@ export const playWasteToFoundation: CommandProcessor<PlayWasteToFoundationComman
 
     const events = await loadEvents(gameId);
     validateGameExists(events);
-    validateGameNotForfeited(events);
+    validateGameNotFinished(events);
 
     const { waste, foundation } = buildTableState(events);
     const foundationSlot = foundation[foundationIndex];

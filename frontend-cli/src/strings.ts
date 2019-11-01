@@ -52,7 +52,8 @@ omit the count, in which case 1 card is moved by default.
 
 You can also do:
 
-* q = quit the CLI, but don't forfeit the game; resume by restarting the CLI
+* q = quit the CLI, but don't finish the game; resume by restarting the CLI
+* v = claim victory and quit the CLI; restart the CLI to begin a new game
 * f = forfeit the game and quit the CLI; restart the CLI to begin a new game
 * h = help, to display this help text
 `;

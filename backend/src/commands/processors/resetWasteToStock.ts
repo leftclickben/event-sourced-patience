@@ -1,7 +1,7 @@
 import { CommandProcessor, ResetWasteToStockCommand } from '../types';
 import { GameEventType, WasteResetToStockEvent } from '../../events/types';
 import { loadEvents, saveEvent } from '../../events/store';
-import { validateGameExists, validateGameNotForfeited, validateNonEmpty, validateParameters } from '../validation';
+import { validateGameExists, validateGameNotFinished, validateNonEmpty, validateParameters } from '../validation';
 import { buildTableState } from '../../state/table';
 
 export const resetWasteToStock: CommandProcessor<ResetWasteToStockCommand, WasteResetToStockEvent> =
@@ -10,7 +10,7 @@ export const resetWasteToStock: CommandProcessor<ResetWasteToStockCommand, Waste
 
     const events = await loadEvents(gameId);
     validateGameExists(events);
-    validateGameNotForfeited(events);
+    validateGameNotFinished(events);
 
     const { waste } = buildTableState(events);
     validateNonEmpty(waste, 'Waste');

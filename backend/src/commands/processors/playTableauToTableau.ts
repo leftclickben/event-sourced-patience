@@ -4,7 +4,7 @@ import { loadEvents, saveEvent } from '../../events/store';
 import {
   validateCompatibleWithTableau,
   validateGameExists,
-  validateGameNotForfeited,
+  validateGameNotFinished,
   validateLength,
   validateParameters
 } from '../validation';
@@ -16,7 +16,7 @@ export const playTableauToTableau: CommandProcessor<PlayTableauToTableauCommand,
 
     const events = await loadEvents(gameId);
     validateGameExists(events);
-    validateGameNotForfeited(events);
+    validateGameNotFinished(events);
 
     const { tableau } = buildTableState(events);
     validateLength(tableau[fromIndex].filter(({ faceUp }) => faceUp), count, `Tableau ${fromIndex + 1}`);

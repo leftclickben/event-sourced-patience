@@ -11,6 +11,7 @@ import { playTableauToFoundation } from '../../../commands/processors/playTablea
 import { playWasteToFoundation } from '../../../commands/processors/playWasteToFoundation';
 import { dealStockToWaste } from '../../../commands/processors/dealStockToWaste';
 import { resetWasteToStock } from '../../../commands/processors/resetWasteToStock';
+import { claimVictory } from '../../../commands/processors/claimVictory';
 
 const delegations: Record<GameplayCommandName, CommandProcessor<any, GameEvent>> = {
   dealStockToWaste,
@@ -18,7 +19,8 @@ const delegations: Record<GameplayCommandName, CommandProcessor<any, GameEvent>>
   playWasteToTableau,
   playWasteToFoundation,
   playTableauToFoundation,
-  playTableauToTableau
+  playTableauToTableau,
+  claimVictory
 };
 
 export const patchGameHandler: APIGatewayProxyHandler = httpHandler(async ({ body, pathParameters }) => {

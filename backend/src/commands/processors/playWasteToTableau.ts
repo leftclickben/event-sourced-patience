@@ -4,7 +4,7 @@ import { loadEvents, saveEvent } from '../../events/store';
 import {
   validateParameters,
   validateGameExists,
-  validateGameNotForfeited,
+  validateGameNotFinished,
   validateCompatibleWithTableau
 } from '../validation';
 import { buildTableState } from '../../state/table';
@@ -15,7 +15,7 @@ export const playWasteToTableau: CommandProcessor<PlayWasteToTableauCommand, Was
 
     const events = await loadEvents(gameId);
     validateGameExists(events);
-    validateGameNotForfeited(events);
+    validateGameNotFinished(events);
 
     const { waste, tableau } = buildTableState(events);
     const tableauColumn = tableau[tableauIndex];

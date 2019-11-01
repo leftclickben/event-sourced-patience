@@ -4,7 +4,7 @@ import { loadEvents, saveEvent } from '../../events/store';
 import {
   validateCompatibleWithFoundation,
   validateGameExists,
-  validateGameNotForfeited,
+  validateGameNotFinished,
   validateNonEmpty,
   validateParameters
 } from '../validation';
@@ -16,7 +16,7 @@ export const playTableauToFoundation: CommandProcessor<PlayTableauToFoundationCo
 
     const events = await loadEvents(gameId);
     validateGameExists(events);
-    validateGameNotForfeited(events);
+    validateGameNotFinished(events);
 
     const { tableau, foundation } = buildTableState(events);
     const tableauColumn = tableau[tableauIndex];

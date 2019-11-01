@@ -4,6 +4,10 @@ export type CommandProcessor<TCommand, TEvent> = (command: TCommand) => Promise<
 
 export type CreateGameCommand = void;
 
+export interface ClaimVictoryCommand {
+  gameId: GameId;
+}
+
 export interface ForfeitGameCommand {
   gameId: GameId;
 }
@@ -41,4 +45,5 @@ export type GameplayCommandName =
   'playWasteToTableau' |
   'playWasteToFoundation' |
   'playTableauToFoundation' |
-  'playTableauToTableau';
+  'playTableauToTableau' |
+  'claimVictory';
