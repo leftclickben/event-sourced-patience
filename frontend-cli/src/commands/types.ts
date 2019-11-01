@@ -2,9 +2,11 @@ import { GameplayCommandName } from '../types';
 import { Game } from '../api';
 import { Interface } from 'readline';
 
+export type CommandRouteParameterParser<TParsed> = (input: string) => TParsed;
+
 export interface CommandRouteParameter<TParsed> {
   name: string;
-  parse: (input: string) => TParsed;
+  parse: CommandRouteParameterParser<TParsed>;
 }
 
 export interface BaseCommandRouteMapEntry {

@@ -1,13 +1,17 @@
-import { CommandRouteMapEntry, GameplayCommandRouteMapEntry, SpecialCommandRouteMapEntry } from './types';
+import { CommandRouteMapEntry, CommandRouteParameterParser } from './types';
 import { forfeitGame, Game, playGame } from '../api';
 import { clearScreen, helpText } from '../strings';
 import { removeGameFile } from '../game';
 import { pressEnter } from '../util';
-import { GameplayCommandName } from '../types';
 
-const parseTableauIndex = (input: string) => Number(input) - 1;
-const parseFoundationIndex = (input: string) => input.toLowerCase().charCodeAt(0) - 'a'.charCodeAt(0);
-const parseCount = (input: string) => input ? Number(input) : 1;
+const parseTableauIndex: CommandRouteParameterParser<number> =
+  (input: string) => Number(input) - 1;
+
+const parseFoundationIndex: CommandRouteParameterParser<number> =
+  (input: string) => input.toLowerCase().charCodeAt(0) - 'a'.charCodeAt(0);
+
+const parseCount: CommandRouteParameterParser<number> =
+  (input: string) => input ? Number(input) : 1;
 
 export const commandRouteMap: CommandRouteMapEntry[] = [
   {
