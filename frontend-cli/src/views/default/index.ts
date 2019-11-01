@@ -25,14 +25,14 @@ const margin = '  ';
 
 const baseSlot = '   ';
 
+const emptySlot = chalk.gray('\u2592\u2592\u2592');
+
 const getDisplayWidth = (tableau: Card[][], foundation: Card[][]) => {
   const columns = Math.max(tableau.length, foundation.length);
   return columns * baseSlot.length + (columns - 1) * margin.length;
 };
 
-const emptySlot = '___';
-
-const faceDownCardSlot = '\u2592\u2592\u2592';
+const faceDownCardSlot = '\u2591\u2591\u2591';
 
 const suitDisplay: Record<Suit, string> = {
   [Suit.clubs]: '\u2663',
