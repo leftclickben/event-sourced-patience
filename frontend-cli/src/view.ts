@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import { Card, Suit, Value } from './types';
 import { Game } from './api';
 import { maxChildLength, top } from './util';
-import { clearScreen } from './strings';
+import { banner, clearScreen } from './strings';
 
 const asColour: Record<Suit | 'faceDown', (text: string) => string> = {
   clubs: (text) => chalk.black(chalk.bgWhite(text)),
@@ -56,6 +56,8 @@ export const generateCardView = (card: Card | undefined, displayBlanks: boolean 
 
 export const generateGameView = ({ table: { tableau, foundation, stock, waste }, score }: Game): string => [
   clearScreen,
+  banner,
+  '',
   `Score: ${score}`,
   [
     ...Array.from({ length: tableau.length - foundation.length }, () => generateCardView(undefined, false)),
