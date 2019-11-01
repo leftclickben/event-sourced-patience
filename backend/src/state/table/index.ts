@@ -6,6 +6,7 @@ import {
   StockDealtToWasteEvent,
   TableauPlayedToFoundationEvent,
   TableauPlayedToTableauEvent,
+  VictoryClaimedEvent,
   WastePlayedToFoundationEvent,
   WastePlayedToTableauEvent,
   WasteResetToStockEvent
@@ -27,6 +28,7 @@ export const buildTableState = (events: GameEvent[]) =>
     {
       gameCreated,
       gameForfeited,
+      victoryClaimed,
       stockDealtToWaste,
       wasteResetToStock,
       wastePlayedToTableau,
@@ -48,9 +50,15 @@ const gameCreated: StateBuilder<TableState, GameCreatedEvent> =
   });
 
 const gameForfeited: StateBuilder<TableState, GameForfeitedEvent> =
-  (state): TableState => ({
+  (state) => ({
     ...state,
     status: GameStatus.forfeited
+  });
+
+const victoryClaimed: StateBuilder<TableState, VictoryClaimedEvent> =
+  (state) => ({
+    ...state,
+    status: GameStatus.completed
   });
 
 const stockDealtToWaste: StateBuilder<TableState, StockDealtToWasteEvent> =
