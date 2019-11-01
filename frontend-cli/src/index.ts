@@ -1,16 +1,15 @@
 import { config } from 'dotenv';
-import { generateGameView } from './view';
+import * as yargs from 'yargs';
+import { generateGameView } from './views/default';
 import { createInterface } from 'readline';
 import { handleCommand } from './commands';
-import { banner, prompt } from './strings';
+import { prompt } from './strings';
 import { loadCurrentGame } from './game';
-import * as yargs from 'yargs';
-import { pressEnter } from './util';
+import { gameOver, pressEnter } from './util';
 
 export const cli = async (gameId?: string) => {
   try {
     config();
-    console.info(banner);
 
     let game = await loadCurrentGame(gameId);
 
@@ -31,11 +30,18 @@ export const cli = async (gameId?: string) => {
         await pressEnter(readlineInterface);
       } finally {
         console.info(generateGameView(game));
-        readlineInterface.prompt();
+        if (gameOver(game.table.status)) {
+          readlineInterface.close();
+        } else {
+          readlineInterface.prompt();
+        }
       }
     });
 
     readlineInterface.on('close', () => {
+      if (gameOver(game.table.status)) {
+        console.info(generateGameView(game));
+      }
       console.info('Thanks for playing!');
       process.exit(0);
     });

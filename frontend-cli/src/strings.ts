@@ -1,22 +1,6 @@
-import chalk from 'chalk';
-
-const [club, diamond, spade, heart] = [
-  chalk.black('\u2663'),
-  chalk.red('\u2666'),
-  chalk.black('\u2660'),
-  chalk.red('\u2665')
-];
-
 export const clearScreen = '\x1b[2J';
 
-export const gameTitle = 'Patience';
-
-export const banner =
-  chalk.underline(
-    chalk.bgWhite(
-      `${club} ${diamond} ${spade} ${heart} ${gameTitle} ${heart} ${spade} ${diamond} ${club}`
-    )
-  );
+export const gameTitle = 'Patience!';
 
 export const prompt = 'Enter a command (h for help): ';
 
