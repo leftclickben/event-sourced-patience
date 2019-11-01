@@ -7,7 +7,7 @@ import { prompt } from './strings';
 import { loadCurrentGame } from './services/game';
 import { gameOver, pressEnter } from './util';
 
-export const cli = async (gameId?: string) => {
+export const main = async (gameId?: string) => {
   try {
     config();
 
@@ -59,5 +59,5 @@ if (require.main === module) {
     .help('help')
     .version(false)
     .argv;
-  cli(argv.game as string | undefined).then();
+  main(argv.game as string | undefined).then();
 }
