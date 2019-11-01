@@ -1,5 +1,5 @@
 import { Interface } from 'readline';
-import { Game, playGame } from '../api';
+import { Game, playGame } from '../services/api';
 import { commandRouteMap } from './routes';
 import { GameplayCommandRouteMapEntry } from './types';
 import { pressEnter } from '../util';

@@ -1,5 +1,5 @@
 import { GameplayCommandName } from '../types';
-import { Game } from '../api';
+import { Game } from '../services/api';
 import { Interface } from 'readline';
 
 export type CommandRouteParameterParser<TParsed> = (input: string) => TParsed;

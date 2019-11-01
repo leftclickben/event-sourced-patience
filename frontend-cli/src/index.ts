@@ -4,7 +4,7 @@ import { generateGameView } from './views/default';
 import { createInterface } from 'readline';
 import { handleCommand } from './commands';
 import { prompt } from './strings';
-import { loadCurrentGame } from './game';
+import { loadCurrentGame } from './services/game';
 import { gameOver, pressEnter } from './util';
 
 export const cli = async (gameId?: string) => {

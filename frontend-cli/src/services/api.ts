@@ -1,5 +1,5 @@
 import * as rp from 'request-promise';
-import { GameplayCommandName, GameId, TableState } from './types';
+import { GameId, GameplayCommandName, TableState } from '../types';
 
 export interface Game {
   gameId: string;

@@ -1,7 +1,7 @@
 import { CommandRouteMapEntry, CommandRouteParameterParser } from './types';
-import { forfeitGame, playGame } from '../api';
+import { forfeitGame, playGame } from '../services/api';
 import { clearScreen, helpText } from '../strings';
-import { removeGameFile } from '../game';
+import { removeGameFile } from '../services/game';
 import { pressEnter } from '../util';
 import { GameStatus } from '../types';
 

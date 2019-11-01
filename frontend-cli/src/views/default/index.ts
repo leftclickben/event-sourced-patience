@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { Card, GameStatus, Suit, Value } from '../../types';
-import { Game } from '../../api';
+import { Game } from '../../services/api';
 import { maxChildLength, top } from '../../util';
 import { clearScreen, gameTitle } from '../../strings';
 
