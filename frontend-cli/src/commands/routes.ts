@@ -3,6 +3,7 @@ import { forfeitGame, playGame } from '../api';
 import { clearScreen, helpText } from '../strings';
 import { removeGameFile } from '../game';
 import { pressEnter } from '../util';
+import { GameStatus } from '../types';
 
 const parseTableauIndex: CommandRouteParameterParser<number> =
   (input: string) => Number(input) - 1;
@@ -30,8 +31,8 @@ export const commandRouteMap: CommandRouteMapEntry[] = [
     handler: async (readlineInterface, game) => {
       await forfeitGame(game.gameId);
       await removeGameFile();
-      readlineInterface.close();
-      return game;
+      // The DELETE doesn't return a response, so we just update the status client-side for display purposes.
+      return { ...game, table: { ...game.table, status: GameStatus.forfeited } };
     }
   },
   {
