@@ -1,10 +1,11 @@
 import { config } from 'dotenv';
 import { generateGameView } from './view';
 import { createInterface } from 'readline';
-import { handleCommand } from './command';
+import { handleCommand } from './commands';
 import { banner, prompt } from './strings';
 import { loadCurrentGame } from './game';
 import * as yargs from 'yargs';
+import { pressEnter } from './util';
 
 export const cli = async (gameId?: string) => {
   try {
@@ -27,6 +28,7 @@ export const cli = async (gameId?: string) => {
         game = await handleCommand(readlineInterface, game, command);
       } catch (e) {
         console.error(e.message || String(e));
+        await pressEnter(readlineInterface);
       } finally {
         console.info(generateGameView(game));
         readlineInterface.prompt();

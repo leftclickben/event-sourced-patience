@@ -26,8 +26,8 @@ export const helpText = `
 Write a move by specifying where a card is moving from and where it is moving
 to, using the following abbreviations:
 
-* f = foundation, followed by a number 1-4 representing which pile to use
-* t = tableau, followed by a number 1-7 representing which column to use
+* a..d = foundation (4 positions)
+* 1..7 = tableau (7 columns)
 * s = stock
 * w = waste 
 
@@ -35,23 +35,20 @@ For example:
 
 * sw = deal a card from the stock to the waste
 * ws = reset the waste to form a new stock
-* wt3 = move the top card from the waste to the third column of the tableau
-* t2f1 = move the top card from the second column of the tableau
-
-You may include a space between the two board locations, so the last example
-above could also be written "t2 f1".
+* w3 = move the top card from the waste to the third column of the tableau
+* 2a = move the top card from the second tableau to the first foundation
 
 There is one exception, which is that when moving cards between tableau 
 columns, any number of face-up cards can be moved (as long as the move is
 otherwise legal, i.e. only face-up cards are moved and the result follows
 the red-black alternating descending pattern).  
 
-Specify the number of cards you want to move after the locations, separated by
-a space (again, you may optionally also include a space between the source and
-destination):
+Specify the number of cards you want to move after the locations.  You can
+omit the count, in which case 1 card is moved by default.
 
-* t3t7 1 = move a single card from column 3 to column 7
-* t2 t1 5 = move 5 cards from column 2 to column 1
+* 371 = move a single card from column 3 to column 7
+* 37 = identical to the first example (371)
+* 2111 = move 11 cards from column 2 to column 1
 
 You can also do:
 
