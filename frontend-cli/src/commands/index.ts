@@ -35,7 +35,7 @@ const handleGameplayCommand = async (
     (result, { name, parse }, index) => {
       return {
         ...result,
-        [name]: parse(parameterValues[index])
+        [name]: parse(parameterValues[index], game, result)
       };
     },
     {}
