@@ -1,7 +1,11 @@
 import { Game, GameplayCommandName } from '../types';
 import { Interface } from 'readline';
 
-export type CommandRouteParameterParser<TParsed> = (input: string) => TParsed;
+export type CommandRouteParameterParser<TParsed> = (
+  input: string,
+  game: Game,
+  allParameters: Record<string, any>
+) => TParsed;
 
 export interface CommandRouteParameter<TParsed> {
   name: string;

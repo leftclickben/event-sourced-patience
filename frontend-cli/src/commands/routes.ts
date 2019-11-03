@@ -6,13 +6,15 @@ import { pressEnter } from '../util';
 import { GameStatus } from '../types';
 
 const parseTableauIndex: CommandRouteParameterParser<number> =
-  (input: string) => Number(input) - 1;
+  (input) => Number(input) - 1;
 
 const parseFoundationIndex: CommandRouteParameterParser<number> =
-  (input: string) => input.toLowerCase().charCodeAt(0) - 'a'.charCodeAt(0);
+  (input) => input.toLowerCase().charCodeAt(0) - 'a'.charCodeAt(0);
 
 const parseCount: CommandRouteParameterParser<number> =
-  (input: string) => input ? Number(input) : 1;
+  (input, game, allParameters) => input
+    ? Number(input)
+    : game.table.tableau[allParameters.fromIndex].filter(({ faceUp }) => faceUp).length;
 
 export const commandRouteMap: CommandRouteMapEntry[] = [
   {
