@@ -1,10 +1,10 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
 import { loadEvents } from '../../../events/store';
 import { buildTableState } from '../../../state/table';
-import { checkArguments, checkEnvironment, checkResultArray, httpHandler, success } from '../util';
+import { checkArguments, checkEnvironment, checkResultArray } from '../util';
 import { buildScoreState } from '../../../state/score';
+import { APIGatewayProxyHandlerWithData, wrapHttpHandler } from '../wrap';
 
-export const getGameHandler: APIGatewayProxyHandler = httpHandler(async ({ pathParameters }) => {
+export const getGameHandler: APIGatewayProxyHandlerWithData = async ({ pathParameters }) => {
   checkEnvironment(['DB_TABLE_EVENTS']);
 
   const { gameId } = pathParameters || {};
@@ -15,9 +15,13 @@ export const getGameHandler: APIGatewayProxyHandler = httpHandler(async ({ pathP
 
   checkResultArray(events, `Game ${gameId} not found`);
 
-  return success({
-    gameId,
-    table: buildTableState(events),
-    score: buildScoreState(events).score
-  });
-});
+  return {
+    data: {
+      gameId,
+      table: buildTableState(events),
+      score: buildScoreState(events).score
+    }
+  };
+};
+
+export const handler = wrapHttpHandler(getGameHandler);
