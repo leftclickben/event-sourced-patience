@@ -1,7 +1,10 @@
-import { EventId, GameCreatedEvent, GameEventType, GameForfeitedEvent } from '../../src/events/types';
+import { EventId, GameCreatedEvent, GameEvent, GameEventType, GameForfeitedEvent } from '../../src/events/types';
 import { GameId, Suit, Value } from '../../src/game/types';
 
-export const createSampleCreateGameEvent = (gameId: GameId = 'game-42', eventId: EventId = 'event-1') => ({
+export const createSampleCreateGameEvent = (
+  gameId: GameId = 'game-42',
+  eventId: EventId = 'event-1'
+) => ({
   gameId,
   eventId,
   eventTimestamp: 1571753807473,
@@ -43,9 +46,25 @@ export const createSampleCreateGameEvent = (gameId: GameId = 'game-42', eventId:
   ]
 } as GameCreatedEvent);
 
-export const createSampleForfeitGameEvent = (gameId: GameId = 'game-42', eventId: EventId = 'event-666') => ({
+export const createSampleForfeitGameEvent = (
+  gameId: GameId = 'game-42',
+  eventId: EventId = 'event-666'
+) => ({
   gameId,
   eventId,
   eventTimestamp: 1571753807473,
   eventType: GameEventType.gameForfeited
 } as GameForfeitedEvent);
+
+export const createSampleGameplayEvent = <TEventType extends GameEventType, TEvent extends GameEvent<TEventType>>(
+  eventType: TEventType,
+  gameId: GameId,
+  eventId: EventId,
+  args: Record<Exclude<keyof TEvent, keyof GameEvent>, any>
+) => ({
+  gameId,
+  eventId,
+  eventTimestamp: 1571753807474,
+  eventType,
+  ...args
+} as TEvent);
