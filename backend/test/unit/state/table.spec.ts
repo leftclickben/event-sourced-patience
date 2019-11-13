@@ -163,6 +163,9 @@ describe('The table state builder', () => {
           []
         ],
         stock: [
+          { suit: Suit.diamonds, value: Value.three, faceUp: false },
+          { suit: Suit.spades, value: Value.six, faceUp: false },
+          { suit: Suit.spades, value: Value.eight, faceUp: false },
           { suit: Suit.spades, value: Value.four, faceUp: false },
           { suit: Suit.diamonds, value: Value.four, faceUp: false },
           { suit: Suit.spades, value: Value.queen, faceUp: false },
@@ -170,14 +173,11 @@ describe('The table state builder', () => {
           { suit: Suit.spades, value: Value.three, faceUp: false },
           { suit: Suit.spades, value: Value.king, faceUp: false },
           { suit: Suit.diamonds, value: Value.jack, faceUp: false },
-          { suit: Suit.spades, value: Value.two, faceUp: false },
-          { suit: Suit.diamonds, value: Value.eight, faceUp: false },
-          { suit: Suit.spades, value: Value.seven, faceUp: true }
         ],
         waste: [
-          { suit: Suit.diamonds, value: Value.three, faceUp: true },
-          { suit: Suit.spades, value: Value.six, faceUp: true },
-          { suit: Suit.spades, value: Value.eight, faceUp: true }
+          { suit: Suit.spades, value: Value.seven, faceUp: false },
+          { suit: Suit.diamonds, value: Value.eight, faceUp: true },
+          { suit: Suit.spades, value: Value.two, faceUp: true }
         ]
       })
     });
