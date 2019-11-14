@@ -1,4 +1,4 @@
-import { loadEvents } from '../../../events/store';
+import { loadEvents } from '../../../events';
 import { buildTableState } from '../../../state/table';
 import { checkArguments, checkEnvironment, checkResultArray } from '../util';
 import { buildScoreState } from '../../../state/score';

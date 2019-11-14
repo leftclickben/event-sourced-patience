@@ -1,11 +1,11 @@
 import { CommandProcessor, PlayWasteToTableauCommand } from '../types';
 import { GameEventType, WastePlayedToTableauEvent } from '../../events/types';
-import { loadEvents, saveEvent } from '../../events/store';
+import { loadEvents, saveEvent } from '../../events';
 import {
-  validateParameters,
+  validateCompatibleWithTableau,
   validateGameExists,
   validateGameNotFinished,
-  validateCompatibleWithTableau
+  validateParameters
 } from '../validation';
 import { buildTableState } from '../../state/table';
 

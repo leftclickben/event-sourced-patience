@@ -1,7 +1,7 @@
 import { ClaimVictoryCommand, CommandProcessor } from '../types';
 import { GameEventType, VictoryClaimedEvent } from '../../events/types';
 import { validateGameExists, validateGameNotFinished, validateLength, validateParameters } from '../validation';
-import { loadEvents, saveEvent } from '../../events/store';
+import { loadEvents, saveEvent } from '../../events';
 import { buildTableState } from '../../state/table';
 
 export const claimVictory: CommandProcessor<ClaimVictoryCommand, VictoryClaimedEvent> =

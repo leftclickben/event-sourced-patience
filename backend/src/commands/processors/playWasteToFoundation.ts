@@ -1,11 +1,11 @@
 import { CommandProcessor, PlayWasteToFoundationCommand } from '../types';
 import { GameEventType, WastePlayedToFoundationEvent } from '../../events/types';
-import { loadEvents, saveEvent } from '../../events/store';
+import { loadEvents, saveEvent } from '../../events';
 import {
-  validateParameters,
+  validateCompatibleWithFoundation,
   validateGameExists,
   validateGameNotFinished,
-  validateCompatibleWithFoundation
+  validateParameters
 } from '../validation';
 import { buildTableState } from '../../state/table';
 

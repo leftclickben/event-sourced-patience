@@ -1,7 +1,7 @@
 import { DynamoDB } from 'aws-sdk';
 import { GameEvent, GameEventType, GeneratedEventProperties } from './types';
 import { GameId } from '../game/types';
-import { createEvent } from './util';
+import * as cuid from 'cuid';
 
 const createClient = () => new DynamoDB.DocumentClient();
 
@@ -12,13 +12,20 @@ export const saveEvent = async <
   eventType: TEventType,
   params: Omit<TEvent, GeneratedEventProperties>
 ) => {
-  const event = createEvent(eventType, params);
+  const event = {
+    eventId: cuid(),
+    eventTimestamp: Date.now(),
+    eventType,
+    ...params
+  } as TEvent;
+
   await createClient()
     .put({
       TableName: process.env.DB_TABLE_EVENTS as string,
       Item: event
     })
     .promise();
+
   return event;
 };
 
@@ -36,6 +43,7 @@ export const loadEvents = async (gameId: GameId, startKey?: DynamoDB.DocumentCli
       }
     })
     .promise();
+
   return [
     ...(items || []) as GameEvent[],
     ...(lastKey ? await loadEvents(gameId, lastKey) : [])

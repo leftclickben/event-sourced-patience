@@ -1,5 +1,5 @@
 import { checkArguments, checkEnvironment } from '../util';
-import { loadEvents } from '../../../events/store';
+import { loadEvents } from '../../../events';
 import { buildTableState } from '../../../state/table';
 import { buildScoreState } from '../../../state/score';
 import { GameplayCommandName } from '../../../commands/types';

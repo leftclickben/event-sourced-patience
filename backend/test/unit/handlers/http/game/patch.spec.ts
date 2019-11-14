@@ -1,7 +1,7 @@
 import mockedEnv from 'mocked-env';
 import { SinonStub, stub } from 'sinon';
 import { createSampleCreateGameEvent, createSampleGameplayEvent } from '../../../../fixtures/events';
-import * as eventStoreModule from '../../../../../src/events/store';
+import * as eventsModule from '../../../../../src/events';
 import * as tableStateModule from '../../../../../src/state/table';
 import * as scoreStateModule from '../../../../../src/state/score';
 import * as dealStockToWasteModule from '../../../../../src/commands/processors/dealStockToWaste';
@@ -52,11 +52,11 @@ describe('The HTTP PATCH /game handler', () => {
             'event-999',
             {})
         ];
-        stub(eventStoreModule, 'loadEvents').resolves(initialEvents);
+        stub(eventsModule, 'loadEvents').resolves(initialEvents);
       });
 
       afterEach(() => {
-        (eventStoreModule.loadEvents as SinonStub).restore();
+        (eventsModule.loadEvents as SinonStub).restore();
       });
 
       describe('Given the state can be built', () => {
@@ -168,8 +168,8 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Loads the events', () => {
-              expect((eventStoreModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventStoreModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
+              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
             });
 
             it('Invokes the dealStockToWaste command', () => {
@@ -205,8 +205,8 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Loads the events', () => {
-              expect((eventStoreModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventStoreModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
+              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
             });
 
             it('Invokes the resetWasteToStock command', () => {
@@ -245,8 +245,8 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Loads the events', () => {
-              expect((eventStoreModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventStoreModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
+              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
             });
 
             it('Invokes the playWasteToTableau command', () => {
@@ -286,8 +286,8 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Loads the events', () => {
-              expect((eventStoreModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventStoreModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
+              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
             });
 
             it('Invokes the playWasteToFoundation command', () => {
@@ -329,8 +329,8 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Loads the events', () => {
-              expect((eventStoreModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventStoreModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
+              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
             });
 
             it('Invokes the playTableauToTableau command', () => {
@@ -373,8 +373,8 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Loads the events', () => {
-              expect((eventStoreModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventStoreModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
+              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
             });
 
             it('Invokes the playTableauToTableau command', () => {
@@ -412,8 +412,8 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Loads the events', () => {
-              expect((eventStoreModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventStoreModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
+              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
             });
 
             it('Invokes the claimVictory command', () => {
@@ -469,8 +469,8 @@ describe('The HTTP PATCH /game handler', () => {
                 {} as any,
                 undefined as any)
               ).to.be.eventually.rejectedWith(thrownError);
-              expect((eventStoreModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventStoreModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
+              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
               expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(0);
               expect((scoreStateModule.buildScoreState as SinonStub).callCount).to.equal(0);
             });
@@ -488,8 +488,8 @@ describe('The HTTP PATCH /game handler', () => {
                 {} as any,
                 undefined as any)
               ).to.be.eventually.rejectedWith(thrownError);
-              expect((eventStoreModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventStoreModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
+              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
               expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(0);
               expect((scoreStateModule.buildScoreState as SinonStub).callCount).to.equal(0);
             });
@@ -507,8 +507,8 @@ describe('The HTTP PATCH /game handler', () => {
                 {} as any,
                 undefined as any)
               ).to.be.eventually.rejectedWith(thrownError);
-              expect((eventStoreModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventStoreModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
+              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
               expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(0);
               expect((scoreStateModule.buildScoreState as SinonStub).callCount).to.equal(0);
             });
@@ -526,8 +526,8 @@ describe('The HTTP PATCH /game handler', () => {
                 {} as any,
                 undefined as any)
               ).to.be.eventually.rejectedWith(thrownError);
-              expect((eventStoreModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventStoreModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
+              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
               expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(0);
               expect((scoreStateModule.buildScoreState as SinonStub).callCount).to.equal(0);
             });
@@ -545,8 +545,8 @@ describe('The HTTP PATCH /game handler', () => {
                 {} as any,
                 undefined as any)
               ).to.be.eventually.rejectedWith(thrownError);
-              expect((eventStoreModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventStoreModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
+              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
               expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(0);
               expect((scoreStateModule.buildScoreState as SinonStub).callCount).to.equal(0);
             });
@@ -564,8 +564,8 @@ describe('The HTTP PATCH /game handler', () => {
                 {} as any,
                 undefined as any)
               ).to.be.eventually.rejectedWith(thrownError);
-              expect((eventStoreModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventStoreModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
+              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
               expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(0);
               expect((scoreStateModule.buildScoreState as SinonStub).callCount).to.equal(0);
             });
@@ -583,8 +583,8 @@ describe('The HTTP PATCH /game handler', () => {
                 {} as any,
                 undefined as any)
               ).to.be.eventually.rejectedWith(thrownError);
-              expect((eventStoreModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventStoreModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
+              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
               expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(0);
               expect((scoreStateModule.buildScoreState as SinonStub).callCount).to.equal(0);
             });
@@ -597,11 +597,11 @@ describe('The HTTP PATCH /game handler', () => {
       const thrownError = Error('Error loading events');
 
       beforeEach(() => {
-        stub(eventStoreModule, 'loadEvents').rejects(thrownError);
+        stub(eventsModule, 'loadEvents').rejects(thrownError);
       });
 
       afterEach(() => {
-        (eventStoreModule.loadEvents as SinonStub).restore();
+        (eventsModule.loadEvents as SinonStub).restore();
       });
 
       describe('When invoked with a gameId path parameter', () => {
@@ -614,8 +614,8 @@ describe('The HTTP PATCH /game handler', () => {
             } as any,
             {} as any,
             undefined as any)).to.be.eventually.rejectedWith(thrownError);
-          expect((eventStoreModule.loadEvents as SinonStub).callCount).to.equal(1);
-          expect((eventStoreModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+          expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
+          expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
         });
       });
     });

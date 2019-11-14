@@ -1,6 +1,6 @@
 import { CommandProcessor, PlayTableauToTableauCommand } from '../types';
 import { GameEventType, TableauPlayedToTableauEvent } from '../../events/types';
-import { loadEvents, saveEvent } from '../../events/store';
+import { loadEvents, saveEvent } from '../../events';
 import {
   validateCompatibleWithTableau,
   validateGameExists,
