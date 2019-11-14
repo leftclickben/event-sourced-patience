@@ -19,18 +19,18 @@ export const shuffleDeck = (deck: Card[]): Card[] =>
     return deck.splice(index, 1)[0];
   });
 
-export const createTableau = (deck: Card[]) =>
-  Array.from(
-    { length: SIZE_TABLEAU },
-    (_, index) => Array.from(
-      { length: index + 1 },
-      (__, cardIndex) => {
-        const card = deck.pop() as Card;
-        if (cardIndex === index) {
-          card.faceUp = true;
-        }
-        return card;
-      }));
+export const dealTableau = (deck: Card[]) => {
+  const tableau = Array.from({ length: SIZE_TABLEAU }, () => [] as Card[]);
+
+  tableau.forEach((faceUpColumn, columnIndex) => {
+    faceUpColumn.push({ ...deck.pop() as Card, faceUp: true });
+    tableau.slice(columnIndex + 1).forEach((faceDownColumn) => {
+      faceDownColumn.push(deck.pop() as Card);
+    });
+  });
+
+  return tableau;
+};
 
 export const suitColour: Record<Suit, 'red' | 'black'> = {
   [Suit.clubs]: 'black',
