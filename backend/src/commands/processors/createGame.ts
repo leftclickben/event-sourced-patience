@@ -1,12 +1,12 @@
-import * as cuid from 'cuid';
 import { saveEvent } from '../../events/save';
 import { createDeck, dealTableau, shuffleDeck } from '../../game';
 import { GameCreatedEvent, GameEventType } from '../../events/types';
 import { CommandProcessor, CreateGameCommand } from '../types';
+import { generateId } from '../../id';
 
 export const createGame: CommandProcessor<CreateGameCommand, GameCreatedEvent> =
   async () => {
-    const gameId = cuid();
+    const gameId = generateId();
 
     const stock = shuffleDeck(createDeck());
 

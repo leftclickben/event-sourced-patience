@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk';
 import { GameEvent, GameEventType, GeneratedEventProperties } from './types';
-import * as cuid from 'cuid';
+import { generateId } from '../id';
 
 export const saveEvent = async <
   TEventType extends GameEventType,
@@ -10,7 +10,7 @@ export const saveEvent = async <
   params: Omit<TEvent, GeneratedEventProperties>
 ) => {
   const event = {
-    eventId: cuid(),
+    eventId: generateId(),
     eventTimestamp: Date.now(),
     eventType,
     ...params
