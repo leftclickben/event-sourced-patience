@@ -1,6 +1,7 @@
 import { CommandProcessor, ForfeitGameCommand } from '../types';
 import { GameEventType, GameForfeitedEvent } from '../../events/types';
-import { loadEvents, saveEvent } from '../../events';
+import { loadEvents } from '../../events/load';
+import { saveEvent } from '../../events/save';
 import { validateGameExists, validateGameNotFinished, validateParameters } from '../validation';
 
 export const forfeitGame: CommandProcessor<ForfeitGameCommand, GameForfeitedEvent> =

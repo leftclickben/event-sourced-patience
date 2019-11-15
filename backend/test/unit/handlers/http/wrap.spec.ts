@@ -1,23 +1,21 @@
 import { expect } from 'chai';
 import { SinonStub, stub } from 'sinon';
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, Context } from 'aws-lambda';
-import {
-  APIGatewayProxyHandlerWithData,
-  APIGatewayProxyResultWithData,
-  wrapHttpHandler
-} from '../../../../src/handlers/http/wrap';
+import { APIGatewayProxyResultWithData, wrapHttpHandler } from '../../../../src/handlers/http/wrap';
 
 describe('The HTTP handler wrapper utility', () => {
+  let consoleErrorStub: SinonStub;
+
   beforeEach(() => {
-    stub(console, 'error');
+    consoleErrorStub = stub(console, 'error');
   });
 
   afterEach(() => {
-    (console.error as SinonStub).restore();
+    consoleErrorStub.restore();
   });
 
   describe('Given the inner handler returns nothing', () => {
-    let innerHandler: APIGatewayProxyHandlerWithData;
+    let innerHandler: SinonStub;
     let outerHandler: APIGatewayProxyHandler;
 
     beforeEach(() => {
@@ -37,18 +35,18 @@ describe('The HTTP handler wrapper utility', () => {
       });
 
       it('Calls the inner handler with data', () => {
-        expect((innerHandler as SinonStub).callCount).to.equal(1);
-        expect((innerHandler as SinonStub).firstCall.args[0]).to.deep.equal({
+        expect(innerHandler.callCount).to.equal(1);
+        expect(innerHandler.firstCall.args[0]).to.deep.equal({
           ...event,
           data: {
             parameter: 'value'
           }
         });
-        expect((innerHandler as SinonStub).firstCall.args[1]).to.equal(context);
+        expect(innerHandler.firstCall.args[1]).to.equal(context);
       });
 
       it('Does not log any errors', () => {
-        expect((console.error as SinonStub).callCount).to.equal(0);
+        expect(consoleErrorStub.callCount).to.equal(0);
       });
 
       it('Returns the correct HTTP response', () => {
@@ -61,7 +59,7 @@ describe('The HTTP handler wrapper utility', () => {
   });
 
   describe('Given the inner handler returns data but no status code', () => {
-    let innerHandler: APIGatewayProxyHandlerWithData;
+    let innerHandler: SinonStub;
     let outerHandler: APIGatewayProxyHandler;
 
     beforeEach(() => {
@@ -83,18 +81,18 @@ describe('The HTTP handler wrapper utility', () => {
       });
 
       it('Calls the inner handler with data', () => {
-        expect((innerHandler as SinonStub).callCount).to.equal(1);
-        expect((innerHandler as SinonStub).firstCall.args[0]).to.deep.equal({
+        expect(innerHandler.callCount).to.equal(1);
+        expect(innerHandler.firstCall.args[0]).to.deep.equal({
           ...event,
           data: {
             parameter: 'value'
           }
         });
-        expect((innerHandler as SinonStub).firstCall.args[1]).to.equal(context);
+        expect(innerHandler.firstCall.args[1]).to.equal(context);
       });
 
       it('Does not log any errors', () => {
-        expect((console.error as SinonStub).callCount).to.equal(0);
+        expect(consoleErrorStub.callCount).to.equal(0);
       });
 
       it('Returns the correct HTTP response', () => {
@@ -107,7 +105,7 @@ describe('The HTTP handler wrapper utility', () => {
   });
 
   describe('Given the inner handler returns data and a status code', () => {
-    let innerHandler: APIGatewayProxyHandlerWithData;
+    let innerHandler: SinonStub;
     let outerHandler: APIGatewayProxyHandler;
 
     beforeEach(() => {
@@ -130,18 +128,18 @@ describe('The HTTP handler wrapper utility', () => {
       });
 
       it('Calls the inner handler with data', () => {
-        expect((innerHandler as SinonStub).callCount).to.equal(1);
-        expect((innerHandler as SinonStub).firstCall.args[0]).to.deep.equal({
+        expect(innerHandler.callCount).to.equal(1);
+        expect(innerHandler.firstCall.args[0]).to.deep.equal({
           ...event,
           data: {
             parameter: 'value'
           }
         });
-        expect((innerHandler as SinonStub).firstCall.args[1]).to.equal(context);
+        expect(innerHandler.firstCall.args[1]).to.equal(context);
       });
 
       it('Does not log any errors', () => {
-        expect((console.error as SinonStub).callCount).to.equal(0);
+        expect(consoleErrorStub.callCount).to.equal(0);
       });
 
       it('Returns the correct HTTP response', () => {
@@ -154,7 +152,7 @@ describe('The HTTP handler wrapper utility', () => {
   });
 
   describe('Given the inner handler throws an HTTP error', () => {
-    let innerHandler: APIGatewayProxyHandlerWithData;
+    let innerHandler: SinonStub;
     let outerHandler: APIGatewayProxyHandler;
 
     beforeEach(() => {
@@ -177,19 +175,19 @@ describe('The HTTP handler wrapper utility', () => {
       });
 
       it('Calls the inner handler with data', () => {
-        expect((innerHandler as SinonStub).callCount).to.equal(1);
-        expect((innerHandler as SinonStub).firstCall.args[0]).to.deep.equal({
+        expect(innerHandler.callCount).to.equal(1);
+        expect(innerHandler.firstCall.args[0]).to.deep.equal({
           ...event,
           data: {
             parameter: 'value'
           }
         });
-        expect((innerHandler as SinonStub).firstCall.args[1]).to.equal(context);
+        expect(innerHandler.firstCall.args[1]).to.equal(context);
       });
 
       it('Logs an error', () => {
-        expect((console.error as SinonStub).callCount).to.equal(1);
-        expect((console.error as SinonStub).firstCall.args).to.deep.equal([
+        expect(consoleErrorStub.callCount).to.equal(1);
+        expect(consoleErrorStub.firstCall.args).to.deep.equal([
           'Client request invalid'
         ]);
       });
@@ -205,7 +203,7 @@ describe('The HTTP handler wrapper utility', () => {
 
   describe('Given the inner handler throws an arbitrary error', () => {
     let thrownError: any;
-    let innerHandler: APIGatewayProxyHandlerWithData;
+    let innerHandler: SinonStub;
     let outerHandler: APIGatewayProxyHandler;
 
     beforeEach(() => {
@@ -219,16 +217,16 @@ describe('The HTTP handler wrapper utility', () => {
         const event = { body: '{"parameter":"value"}' } as APIGatewayProxyEvent;
         const context = {} as Context;
         await expect(outerHandler(event, context, () => {})).to.be.eventually.rejectedWith(thrownError);
-        expect((innerHandler as SinonStub).callCount).to.equal(1);
-        expect((innerHandler as SinonStub).firstCall.args[0]).to.deep.equal({
+        expect(innerHandler.callCount).to.equal(1);
+        expect(innerHandler.firstCall.args[0]).to.deep.equal({
           ...event,
           data: {
             parameter: 'value'
           }
         });
-        expect((innerHandler as SinonStub).firstCall.args[1]).to.equal(context);
-        expect((console.error as SinonStub).callCount).to.equal(1);
-        expect((console.error as SinonStub).firstCall.args).to.deep.equal(['Some error occurred']);
+        expect(innerHandler.firstCall.args[1]).to.equal(context);
+        expect(consoleErrorStub.callCount).to.equal(1);
+        expect(consoleErrorStub.firstCall.args).to.deep.equal(['Some error occurred']);
       });
     });
   });

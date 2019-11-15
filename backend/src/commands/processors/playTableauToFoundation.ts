@@ -1,6 +1,7 @@
 import { CommandProcessor, PlayTableauToFoundationCommand } from '../types';
 import { GameEventType, TableauPlayedToFoundationEvent } from '../../events/types';
-import { loadEvents, saveEvent } from '../../events';
+import { loadEvents } from '../../events/load';
+import { saveEvent } from '../../events/save';
 import {
   validateCompatibleWithFoundation,
   validateGameExists,

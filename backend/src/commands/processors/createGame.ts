@@ -1,5 +1,5 @@
 import * as cuid from 'cuid';
-import { saveEvent } from '../../events';
+import { saveEvent } from '../../events/save';
 import { createDeck, dealTableau, shuffleDeck } from '../../game';
 import { GameCreatedEvent, GameEventType } from '../../events/types';
 import { CommandProcessor, CreateGameCommand } from '../types';

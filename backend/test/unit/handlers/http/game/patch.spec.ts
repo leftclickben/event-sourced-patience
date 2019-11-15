@@ -1,7 +1,7 @@
 import mockedEnv from 'mocked-env';
 import { SinonStub, stub } from 'sinon';
 import { createSampleCreateGameEvent, createSampleGameplayEvent } from '../../../../fixtures/events';
-import * as eventsModule from '../../../../../src/events';
+import * as loadEventsModule from '../../../../../src/events/load';
 import * as tableStateModule from '../../../../../src/state/table';
 import * as scoreStateModule from '../../../../../src/state/score';
 import * as dealStockToWasteModule from '../../../../../src/commands/processors/dealStockToWaste';
@@ -42,6 +42,7 @@ describe('The HTTP PATCH /game handler', () => {
 
     describe('Given the game events can be loaded', () => {
       let initialEvents: GameEvent[];
+      let loadEventsStub: SinonStub;
 
       beforeEach(() => {
         initialEvents = [
@@ -52,22 +53,25 @@ describe('The HTTP PATCH /game handler', () => {
             'event-999',
             {})
         ];
-        stub(eventsModule, 'loadEvents').resolves(initialEvents);
+        loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves(initialEvents);
       });
 
       afterEach(() => {
-        (eventsModule.loadEvents as SinonStub).restore();
+        loadEventsStub.restore();
       });
 
       describe('Given the state can be built', () => {
+        let buildTableStateStub: SinonStub;
+        let buildScoreStateStub: SinonStub;
+
         beforeEach(() => {
-          stub(tableStateModule, 'buildTableState').returns('table state' as any);
-          stub(scoreStateModule, 'buildScoreState').returns({ score: 123 } as any);
+          buildTableStateStub = stub(tableStateModule, 'buildTableState').returns('table state' as any);
+          buildScoreStateStub = stub(scoreStateModule, 'buildScoreState').returns({ score: 123 } as any);
         });
 
         afterEach(() => {
-          (tableStateModule.buildTableState as SinonStub).restore();
-          (scoreStateModule.buildScoreState as SinonStub).restore();
+          buildTableStateStub.restore();
+          buildScoreStateStub.restore();
         });
 
         describe('Given gameplay commands can be successfully executed', () => {
@@ -78,6 +82,14 @@ describe('The HTTP PATCH /game handler', () => {
           let tableauPlayedToTableauEvent: TableauPlayedToTableauEvent;
           let tableauPlayedToFoundationEvent: TableauPlayedToFoundationEvent;
           let victoryClaimedEvent: VictoryClaimedEvent;
+
+          let dealStockToWasteStub: SinonStub;
+          let resetWasteToStockStub: SinonStub;
+          let playWasteToTableauStub: SinonStub;
+          let playWasteToFoundationStub: SinonStub;
+          let playTableauToTableauStub: SinonStub;
+          let playTableauToFoundationStub: SinonStub;
+          let claimVictoryStub: SinonStub;
 
           beforeEach(() => {
             stockDealtToWasteEvent = createSampleGameplayEvent<GameEventType.stockDealtToWaste, StockDealtToWasteEvent>(
@@ -133,23 +145,23 @@ describe('The HTTP PATCH /game handler', () => {
               'event-1006',
               {});
 
-            stub(dealStockToWasteModule, 'dealStockToWaste').resolves(stockDealtToWasteEvent);
-            stub(resetWasteToStockModule, 'resetWasteToStock').resolves(wasteResetToStockEvent);
-            stub(playWasteToTableauModule, 'playWasteToTableau').resolves(wastePlayedToTableauEvent);
-            stub(playWasteToFoundationModule, 'playWasteToFoundation').resolves(wastePlayedToFoundationEvent);
-            stub(playTableauToTableauModule, 'playTableauToTableau').resolves(tableauPlayedToTableauEvent);
-            stub(playTableauToFoundationModule, 'playTableauToFoundation').resolves(tableauPlayedToFoundationEvent);
-            stub(claimVictoryModule, 'claimVictory').resolves(victoryClaimedEvent);
+            dealStockToWasteStub = stub(dealStockToWasteModule, 'dealStockToWaste').resolves(stockDealtToWasteEvent);
+            resetWasteToStockStub = stub(resetWasteToStockModule, 'resetWasteToStock').resolves(wasteResetToStockEvent);
+            playWasteToTableauStub = stub(playWasteToTableauModule, 'playWasteToTableau').resolves(wastePlayedToTableauEvent);
+            playWasteToFoundationStub = stub(playWasteToFoundationModule, 'playWasteToFoundation').resolves(wastePlayedToFoundationEvent);
+            playTableauToTableauStub = stub(playTableauToTableauModule, 'playTableauToTableau').resolves(tableauPlayedToTableauEvent);
+            playTableauToFoundationStub = stub(playTableauToFoundationModule, 'playTableauToFoundation').resolves(tableauPlayedToFoundationEvent);
+            claimVictoryStub = stub(claimVictoryModule, 'claimVictory').resolves(victoryClaimedEvent);
           });
 
           afterEach(() => {
-            (dealStockToWasteModule.dealStockToWaste as SinonStub).restore();
-            (resetWasteToStockModule.resetWasteToStock as SinonStub).restore();
-            (playWasteToTableauModule.playWasteToTableau as SinonStub).restore();
-            (playWasteToFoundationModule.playWasteToFoundation as SinonStub).restore();
-            (playTableauToTableauModule.playTableauToTableau as SinonStub).restore();
-            (playTableauToFoundationModule.playTableauToFoundation as SinonStub).restore();
-            (claimVictoryModule.claimVictory as SinonStub).restore();
+            dealStockToWasteStub.restore();
+            resetWasteToStockStub.restore();
+            playWasteToTableauStub.restore();
+            playWasteToFoundationStub.restore();
+            playTableauToTableauStub.restore();
+            playTableauToFoundationStub.restore();
+            claimVictoryStub.restore();
           });
 
           describe('When invoked with a valid gameId and a moveType of "dealStockToWaste"', () => {
@@ -168,13 +180,13 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Loads the events', () => {
-              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect(loadEventsStub.callCount).to.equal(1);
+              expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
             });
 
             it('Invokes the dealStockToWaste command', () => {
-              expect((dealStockToWasteModule.dealStockToWaste as SinonStub).callCount).to.equal(1);
-              expect((dealStockToWasteModule.dealStockToWaste as SinonStub).firstCall.args).to.deep.equal([
+              expect(dealStockToWasteStub.callCount).to.equal(1);
+              expect(dealStockToWasteStub.firstCall.args).to.deep.equal([
                 {
                   gameId: 'game-42'
                 }
@@ -182,8 +194,8 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Builds the state based on the loaded events plus the created event', () => {
-              expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(1);
-              expect((tableStateModule.buildTableState as SinonStub).firstCall.args).to.deep.equal([
+              expect(buildTableStateStub.callCount).to.equal(1);
+              expect(buildTableStateStub.firstCall.args).to.deep.equal([
                 [...initialEvents, stockDealtToWasteEvent]
               ]);
             });
@@ -205,13 +217,13 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Loads the events', () => {
-              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect(loadEventsStub.callCount).to.equal(1);
+              expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
             });
 
             it('Invokes the resetWasteToStock command', () => {
-              expect((resetWasteToStockModule.resetWasteToStock as SinonStub).callCount).to.equal(1);
-              expect((resetWasteToStockModule.resetWasteToStock as SinonStub).firstCall.args).to.deep.equal([
+              expect(resetWasteToStockStub.callCount).to.equal(1);
+              expect(resetWasteToStockStub.firstCall.args).to.deep.equal([
                 {
                   gameId: 'game-42'
                 }
@@ -219,8 +231,8 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Builds the state based on the loaded events plus the created event', () => {
-              expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(1);
-              expect((tableStateModule.buildTableState as SinonStub).firstCall.args).to.deep.equal([
+              expect(buildTableStateStub.callCount).to.equal(1);
+              expect(buildTableStateStub.firstCall.args).to.deep.equal([
                 [...initialEvents, wasteResetToStockEvent]
               ]);
             });
@@ -245,13 +257,13 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Loads the events', () => {
-              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect(loadEventsStub.callCount).to.equal(1);
+              expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
             });
 
             it('Invokes the playWasteToTableau command', () => {
-              expect((playWasteToTableauModule.playWasteToTableau as SinonStub).callCount).to.equal(1);
-              expect((playWasteToTableauModule.playWasteToTableau as SinonStub).firstCall.args).to.deep.equal([
+              expect(playWasteToTableauStub.callCount).to.equal(1);
+              expect(playWasteToTableauStub.firstCall.args).to.deep.equal([
                 {
                   gameId: 'game-42',
                   tableauIndex: 1
@@ -260,8 +272,8 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Builds the state based on the loaded events plus the created event', () => {
-              expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(1);
-              expect((tableStateModule.buildTableState as SinonStub).firstCall.args).to.deep.equal([
+              expect(buildTableStateStub.callCount).to.equal(1);
+              expect(buildTableStateStub.firstCall.args).to.deep.equal([
                 [...initialEvents, wastePlayedToTableauEvent]
               ]);
             });
@@ -286,13 +298,13 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Loads the events', () => {
-              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect(loadEventsStub.callCount).to.equal(1);
+              expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
             });
 
             it('Invokes the playWasteToFoundation command', () => {
-              expect((playWasteToFoundationModule.playWasteToFoundation as SinonStub).callCount).to.equal(1);
-              expect((playWasteToFoundationModule.playWasteToFoundation as SinonStub).firstCall.args).to.deep.equal([
+              expect(playWasteToFoundationStub.callCount).to.equal(1);
+              expect(playWasteToFoundationStub.firstCall.args).to.deep.equal([
                 {
                   gameId: 'game-42',
                   foundationIndex: 2
@@ -301,8 +313,8 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Builds the state based on the loaded events plus the created event', () => {
-              expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(1);
-              expect((tableStateModule.buildTableState as SinonStub).firstCall.args).to.deep.equal([
+              expect(buildTableStateStub.callCount).to.equal(1);
+              expect(buildTableStateStub.firstCall.args).to.deep.equal([
                 [...initialEvents, wastePlayedToFoundationEvent]
               ]);
             });
@@ -329,13 +341,13 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Loads the events', () => {
-              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect(loadEventsStub.callCount).to.equal(1);
+              expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
             });
 
             it('Invokes the playTableauToTableau command', () => {
-              expect((playTableauToTableauModule.playTableauToTableau as SinonStub).callCount).to.equal(1);
-              expect((playTableauToTableauModule.playTableauToTableau as SinonStub).firstCall.args).to.deep.equal([
+              expect(playTableauToTableauStub.callCount).to.equal(1);
+              expect(playTableauToTableauStub.firstCall.args).to.deep.equal([
                 {
                   gameId: 'game-42',
                   fromIndex: 7,
@@ -346,8 +358,8 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Builds the state based on the loaded events plus the created event', () => {
-              expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(1);
-              expect((tableStateModule.buildTableState as SinonStub).firstCall.args).to.deep.equal([
+              expect(buildTableStateStub.callCount).to.equal(1);
+              expect(buildTableStateStub.firstCall.args).to.deep.equal([
                 [...initialEvents, tableauPlayedToTableauEvent]
               ]);
             });
@@ -373,13 +385,13 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Loads the events', () => {
-              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect(loadEventsStub.callCount).to.equal(1);
+              expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
             });
 
             it('Invokes the playTableauToTableau command', () => {
-              expect((playTableauToFoundationModule.playTableauToFoundation as SinonStub).callCount).to.equal(1);
-              expect((playTableauToFoundationModule.playTableauToFoundation as SinonStub).firstCall.args).to.deep.equal([
+              expect(playTableauToFoundationStub.callCount).to.equal(1);
+              expect(playTableauToFoundationStub.firstCall.args).to.deep.equal([
                 {
                   gameId: 'game-42',
                   tableauIndex: 5,
@@ -389,8 +401,8 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Builds the state based on the loaded events plus the created event', () => {
-              expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(1);
-              expect((tableStateModule.buildTableState as SinonStub).firstCall.args).to.deep.equal([
+              expect(buildTableStateStub.callCount).to.equal(1);
+              expect(buildTableStateStub.firstCall.args).to.deep.equal([
                 [...initialEvents, tableauPlayedToFoundationEvent]
               ]);
             });
@@ -412,13 +424,13 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Loads the events', () => {
-              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+              expect(loadEventsStub.callCount).to.equal(1);
+              expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
             });
 
             it('Invokes the claimVictory command', () => {
-              expect((claimVictoryModule.claimVictory as SinonStub).callCount).to.equal(1);
-              expect((claimVictoryModule.claimVictory as SinonStub).firstCall.args).to.deep.equal([
+              expect(claimVictoryStub.callCount).to.equal(1);
+              expect(claimVictoryStub.firstCall.args).to.deep.equal([
                 {
                   gameId: 'game-42'
                 }
@@ -426,8 +438,8 @@ describe('The HTTP PATCH /game handler', () => {
             });
 
             it('Builds the state based on the loaded events plus the created event', () => {
-              expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(1);
-              expect((tableStateModule.buildTableState as SinonStub).firstCall.args).to.deep.equal([
+              expect(buildTableStateStub.callCount).to.equal(1);
+              expect(buildTableStateStub.firstCall.args).to.deep.equal([
                 [...initialEvents, victoryClaimedEvent]
               ]);
             });
@@ -437,24 +449,32 @@ describe('The HTTP PATCH /game handler', () => {
         describe('Given gameplay commands throw an error', () => {
           let thrownError = Error('Command failed');
 
+          let dealStockToWasteStub: SinonStub;
+          let resetWasteToStockStub: SinonStub;
+          let playWasteToTableauStub: SinonStub;
+          let playWasteToFoundationStub: SinonStub;
+          let playTableauToTableauStub: SinonStub;
+          let playTableauToFoundationStub: SinonStub;
+          let claimVictoryStub: SinonStub;
+
           beforeEach(() => {
-            stub(dealStockToWasteModule, 'dealStockToWaste').rejects(thrownError);
-            stub(resetWasteToStockModule, 'resetWasteToStock').rejects(thrownError);
-            stub(playWasteToTableauModule, 'playWasteToTableau').rejects(thrownError);
-            stub(playWasteToFoundationModule, 'playWasteToFoundation').rejects(thrownError);
-            stub(playTableauToTableauModule, 'playTableauToTableau').rejects(thrownError);
-            stub(playTableauToFoundationModule, 'playTableauToFoundation').rejects(thrownError);
-            stub(claimVictoryModule, 'claimVictory').rejects(thrownError);
+            dealStockToWasteStub = stub(dealStockToWasteModule, 'dealStockToWaste').rejects(thrownError);
+            resetWasteToStockStub = stub(resetWasteToStockModule, 'resetWasteToStock').rejects(thrownError);
+            playWasteToTableauStub = stub(playWasteToTableauModule, 'playWasteToTableau').rejects(thrownError);
+            playWasteToFoundationStub = stub(playWasteToFoundationModule, 'playWasteToFoundation').rejects(thrownError);
+            playTableauToTableauStub = stub(playTableauToTableauModule, 'playTableauToTableau').rejects(thrownError);
+            playTableauToFoundationStub = stub(playTableauToFoundationModule, 'playTableauToFoundation').rejects(thrownError);
+            claimVictoryStub = stub(claimVictoryModule, 'claimVictory').rejects(thrownError);
           });
 
           afterEach(() => {
-            (dealStockToWasteModule.dealStockToWaste as SinonStub).restore();
-            (resetWasteToStockModule.resetWasteToStock as SinonStub).restore();
-            (playWasteToTableauModule.playWasteToTableau as SinonStub).restore();
-            (playWasteToFoundationModule.playWasteToFoundation as SinonStub).restore();
-            (playTableauToTableauModule.playTableauToTableau as SinonStub).restore();
-            (playTableauToFoundationModule.playTableauToFoundation as SinonStub).restore();
-            (claimVictoryModule.claimVictory as SinonStub).restore();
+            dealStockToWasteStub.restore();
+            resetWasteToStockStub.restore();
+            playWasteToTableauStub.restore();
+            playWasteToFoundationStub.restore();
+            playTableauToTableauStub.restore();
+            playTableauToFoundationStub.restore();
+            claimVictoryStub.restore();
           });
 
           describe('When invoked with a valid gameId and a moveType of "dealStockToWaste"', () => {
@@ -469,10 +489,10 @@ describe('The HTTP PATCH /game handler', () => {
                 {} as any,
                 undefined as any)
               ).to.be.eventually.rejectedWith(thrownError);
-              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
-              expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(0);
-              expect((scoreStateModule.buildScoreState as SinonStub).callCount).to.equal(0);
+              expect(loadEventsStub.callCount).to.equal(1);
+              expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
+              expect(buildTableStateStub.callCount).to.equal(0);
+              expect(buildScoreStateStub.callCount).to.equal(0);
             });
           });
 
@@ -488,10 +508,10 @@ describe('The HTTP PATCH /game handler', () => {
                 {} as any,
                 undefined as any)
               ).to.be.eventually.rejectedWith(thrownError);
-              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
-              expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(0);
-              expect((scoreStateModule.buildScoreState as SinonStub).callCount).to.equal(0);
+              expect(loadEventsStub.callCount).to.equal(1);
+              expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
+              expect(buildTableStateStub.callCount).to.equal(0);
+              expect(buildScoreStateStub.callCount).to.equal(0);
             });
           });
 
@@ -507,10 +527,10 @@ describe('The HTTP PATCH /game handler', () => {
                 {} as any,
                 undefined as any)
               ).to.be.eventually.rejectedWith(thrownError);
-              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
-              expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(0);
-              expect((scoreStateModule.buildScoreState as SinonStub).callCount).to.equal(0);
+              expect(loadEventsStub.callCount).to.equal(1);
+              expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
+              expect(buildTableStateStub.callCount).to.equal(0);
+              expect(buildScoreStateStub.callCount).to.equal(0);
             });
           });
 
@@ -526,10 +546,10 @@ describe('The HTTP PATCH /game handler', () => {
                 {} as any,
                 undefined as any)
               ).to.be.eventually.rejectedWith(thrownError);
-              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
-              expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(0);
-              expect((scoreStateModule.buildScoreState as SinonStub).callCount).to.equal(0);
+              expect(loadEventsStub.callCount).to.equal(1);
+              expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
+              expect(buildTableStateStub.callCount).to.equal(0);
+              expect(buildScoreStateStub.callCount).to.equal(0);
             });
           });
 
@@ -545,10 +565,10 @@ describe('The HTTP PATCH /game handler', () => {
                 {} as any,
                 undefined as any)
               ).to.be.eventually.rejectedWith(thrownError);
-              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
-              expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(0);
-              expect((scoreStateModule.buildScoreState as SinonStub).callCount).to.equal(0);
+              expect(loadEventsStub.callCount).to.equal(1);
+              expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
+              expect(buildTableStateStub.callCount).to.equal(0);
+              expect(buildScoreStateStub.callCount).to.equal(0);
             });
           });
 
@@ -564,10 +584,10 @@ describe('The HTTP PATCH /game handler', () => {
                 {} as any,
                 undefined as any)
               ).to.be.eventually.rejectedWith(thrownError);
-              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
-              expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(0);
-              expect((scoreStateModule.buildScoreState as SinonStub).callCount).to.equal(0);
+              expect(loadEventsStub.callCount).to.equal(1);
+              expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
+              expect(buildTableStateStub.callCount).to.equal(0);
+              expect(buildScoreStateStub.callCount).to.equal(0);
             });
           });
 
@@ -583,10 +603,10 @@ describe('The HTTP PATCH /game handler', () => {
                 {} as any,
                 undefined as any)
               ).to.be.eventually.rejectedWith(thrownError);
-              expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-              expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
-              expect((tableStateModule.buildTableState as SinonStub).callCount).to.equal(0);
-              expect((scoreStateModule.buildScoreState as SinonStub).callCount).to.equal(0);
+              expect(loadEventsStub.callCount).to.equal(1);
+              expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
+              expect(buildTableStateStub.callCount).to.equal(0);
+              expect(buildScoreStateStub.callCount).to.equal(0);
             });
           });
         });
@@ -595,13 +615,14 @@ describe('The HTTP PATCH /game handler', () => {
 
     describe('Given the game events fail to load with an error', () => {
       const thrownError = Error('Error loading events');
+      let loadEventsStub: SinonStub;
 
       beforeEach(() => {
-        stub(eventsModule, 'loadEvents').rejects(thrownError);
+        loadEventsStub = stub(loadEventsModule, 'loadEvents').rejects(thrownError);
       });
 
       afterEach(() => {
-        (eventsModule.loadEvents as SinonStub).restore();
+        loadEventsStub.restore();
       });
 
       describe('When invoked with a gameId path parameter', () => {
@@ -614,8 +635,8 @@ describe('The HTTP PATCH /game handler', () => {
             } as any,
             {} as any,
             undefined as any)).to.be.eventually.rejectedWith(thrownError);
-          expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-          expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+          expect(loadEventsStub.callCount).to.equal(1);
+          expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
         });
       });
     });

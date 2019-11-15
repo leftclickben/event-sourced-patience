@@ -21,12 +21,14 @@ describe('The HTTP POST /game handler', () => {
     });
 
     describe('Given the createGame command is successful', () => {
+      let createGameStub: SinonStub;
+
       beforeEach(() => {
-        stub(createGameModule, 'createGame').resolves(createSampleCreateGameEvent());
+        createGameStub = stub(createGameModule, 'createGame').resolves(createSampleCreateGameEvent());
       });
 
       afterEach(() => {
-        (createGameModule.createGame as SinonStub).restore();
+        createGameStub.restore();
       });
 
       describe('When invoked', () => {
@@ -37,8 +39,8 @@ describe('The HTTP POST /game handler', () => {
         });
 
         it('Invokes the createGame command', () => {
-          expect((createGameModule.createGame as SinonStub).callCount).to.equal(1);
-          expect((createGameModule.createGame as SinonStub).firstCall.args).to.deep.equal([]);
+          expect(createGameStub.callCount).to.equal(1);
+          expect(createGameStub.firstCall.args).to.deep.equal([]);
         });
 
         it('Returns a successful HTTP response', () => {
@@ -67,20 +69,21 @@ describe('The HTTP POST /game handler', () => {
 
     describe('Given the createGame command fails', () => {
       const thrownError = Error('Error executing createGame command');
+      let createGameStub: SinonStub;
 
       beforeEach(() => {
-        stub(createGameModule, 'createGame').rejects(thrownError);
+        createGameStub = stub(createGameModule, 'createGame').rejects(thrownError);
       });
 
       afterEach(() => {
-        (createGameModule.createGame as SinonStub).restore();
+        createGameStub.restore();
       });
 
       describe('When invoked', () => {
         it('Throws the error from the createGame command', async () => {
           await expect(postGameHandler({} as any, {} as any, () => {}))
             .to.be.eventually.rejectedWith(thrownError);
-          expect((createGameModule.createGame as SinonStub).callCount).to.equal(1);
+          expect(createGameStub.callCount).to.equal(1);
         });
       });
     });

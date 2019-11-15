@@ -2,7 +2,7 @@ import mockedEnv from 'mocked-env';
 import { SinonStub, stub } from 'sinon';
 import { expect } from 'chai';
 import { getGameHandler } from '../../../../../src/handlers/http/game/get';
-import * as eventsModule from '../../../../../src/events';
+import * as loadEventsModule from '../../../../../src/events/load';
 import * as tableStateModule from '../../../../../src/state/table';
 import * as scoreStateModule from '../../../../../src/state/score';
 import { createSampleCreateGameEvent } from '../../../../fixtures/events';
@@ -23,23 +23,28 @@ describe('The HTTP GET /game handler', () => {
     });
 
     describe('Given the game events can be loaded', () => {
+      let loadEventsStub: SinonStub;
+
       beforeEach(() => {
-        stub(eventsModule, 'loadEvents').resolves([ createSampleCreateGameEvent() ]);
+        loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves([ createSampleCreateGameEvent() ]);
       });
 
       afterEach(() => {
-        (eventsModule.loadEvents as SinonStub).restore();
+        loadEventsStub.restore();
       });
 
       describe('Given the state can be built', () => {
+        let buildTableStateStub: SinonStub;
+        let buildScoreStateStub: SinonStub;
+
         beforeEach(() => {
-          stub(tableStateModule, 'buildTableState').returns('table state' as any);
-          stub(scoreStateModule, 'buildScoreState').returns({ score: 123 } as any);
+          buildTableStateStub = stub(tableStateModule, 'buildTableState').returns('table state' as any);
+          buildScoreStateStub = stub(scoreStateModule, 'buildScoreState').returns({ score: 123 } as any);
         });
 
         afterEach(() => {
-          (tableStateModule.buildTableState as SinonStub).restore();
-          (scoreStateModule.buildScoreState as SinonStub).restore();
+          buildTableStateStub.restore();
+          buildScoreStateStub.restore();
         });
 
         describe('When invoked with a gameId path parameter', () => {
@@ -50,8 +55,8 @@ describe('The HTTP GET /game handler', () => {
           });
 
           it('Loads the events', () => {
-            expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-            expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+            expect(loadEventsStub.callCount).to.equal(1);
+            expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
           });
 
           it('Returns a successful HTTP response with the correct state', () => {
@@ -69,29 +74,30 @@ describe('The HTTP GET /game handler', () => {
           it('Throws an error without loading the events', async () => {
             await expect(getGameHandler({ pathParameters: {} } as any, {} as any, () => {}))
               .to.be.eventually.rejectedWith('Required parameter "gameId" missing');
-            expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(0);
+            expect(loadEventsStub.callCount).to.equal(0);
           });
         });
       });
     });
 
     describe('Given the game events fail to load with an error', () => {
+      let loadEventsStub: SinonStub;
       const thrownError = Error('Error loading events');
 
       beforeEach(() => {
-        stub(eventsModule, 'loadEvents').rejects(thrownError);
+        loadEventsStub = stub(loadEventsModule, 'loadEvents').rejects(thrownError);
       });
 
       afterEach(() => {
-        (eventsModule.loadEvents as SinonStub).restore();
+        loadEventsStub.restore();
       });
 
       describe('When invoked with a gameId path parameter', () => {
         it('Throws the error from loading the events', async () => {
           await expect(getGameHandler({ pathParameters: { gameId: 'game-42' } } as any, {} as any, undefined as any))
             .to.be.eventually.rejectedWith(thrownError);
-          expect((eventsModule.loadEvents as SinonStub).callCount).to.equal(1);
-          expect((eventsModule.loadEvents as SinonStub).firstCall.args).to.deep.equal(['game-42']);
+          expect(loadEventsStub.callCount).to.equal(1);
+          expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
         });
       });
     });

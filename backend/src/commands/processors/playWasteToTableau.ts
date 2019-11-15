@@ -1,6 +1,7 @@
 import { CommandProcessor, PlayWasteToTableauCommand } from '../types';
 import { GameEventType, WastePlayedToTableauEvent } from '../../events/types';
-import { loadEvents, saveEvent } from '../../events';
+import { loadEvents } from '../../events/load';
+import { saveEvent } from '../../events/save';
 import {
   validateCompatibleWithTableau,
   validateGameExists,
