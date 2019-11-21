@@ -58,9 +58,9 @@ export const createSampleForfeitGameEvent = (
 
 export const createSampleGameplayEvent = <TEventType extends GameEventType, TEvent extends GameEvent<TEventType>>(
   eventType: TEventType,
-  gameId: GameId,
-  eventId: EventId,
-  args: Record<Exclude<keyof TEvent, keyof GameEvent>, any>
+  gameId: GameId = 'game-42',
+  eventId: EventId = 'event-666',
+  args: Record<Exclude<keyof TEvent, keyof GameEvent>, any> = {} as any // args must be supplied where applicable
 ) => ({
   gameId,
   eventId,

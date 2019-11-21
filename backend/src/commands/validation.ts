@@ -4,14 +4,15 @@ import { Card, Value } from '../game/types';
 import { nextLowestValue, suitColour } from '../game';
 
 export const validateParameters = (parameters: Record<string, any>) => {
-  if (Object.keys(parameters).some((key) => [undefined, null, ''].indexOf(parameters[key]) >= 0)) {
-    throw new BadRequest(`Required parameters missing`);
+  const missingKeys = Object.keys(parameters).filter((key) => [undefined, null, ''].indexOf(parameters[key]) >= 0);
+  if (missingKeys.length > 0) {
+    throw new BadRequest(`Required parameters missing: "${missingKeys.join('", "')}"`);
   }
 };
 
 export const validateGameExists = (events: GameEvent[]) => {
   if (!events || !events.length) {
-    throw new NotFound(`Command validation failed: Game does not exist`);
+    throw new NotFound('Command validation failed: Game does not exist');
   }
 };
 
@@ -23,7 +24,7 @@ export const validateGameNotFinished = (events: GameEvent[]) => {
 
 export const validateNonEmpty = <T>(array: T[], label: string) => {
   if (array.length === 0) {
-    throw new BadRequest(`Command validation failed: ${label} is empty`);
+    throw new BadRequest(`Command validation failed: "${label}" is empty`);
   }
 };
 
@@ -36,20 +37,20 @@ export const validateCompatibleWithFoundation = (movingCard: Card, destinationCa
       throw new BadRequest('Command validation failed: Value must ascend when playing to a non-empty foundation');
     }
   } else if (movingCard.value !== Value.ace) {
-    throw new BadRequest(`Command validation failed: Only Aces can be played to an empty foundation`);
+    throw new BadRequest('Command validation failed: Only Aces can be played to an empty foundation');
   }
 };
 
 export const validateCompatibleWithTableau = (movingCard: Card, destinationCard: Card | undefined) => {
   if (destinationCard) {
     if (suitColour[movingCard.suit] === suitColour[destinationCard.suit]) {
-      throw new BadRequest(`Command validation failed: Card colour must alternate when building tableau columns`);
+      throw new BadRequest('Command validation failed: Card colour must alternate when building tableau columns');
     }
     if (nextLowestValue[destinationCard.value] !== movingCard.value) {
-      throw new BadRequest(`Command validation failed: Cards must decrease in value when building tableau columns`);
+      throw new BadRequest('Command validation failed: Cards must decrease in value when building tableau columns');
     }
   } else if (movingCard.value !== Value.king) {
-    throw new BadRequest(`Command validation failed: Only Kings can be moved to an empty tableau slot`);
+    throw new BadRequest('Command validation failed: Only Kings can be moved to an empty tableau slot');
   }
 };
 
