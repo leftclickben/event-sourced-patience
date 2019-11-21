@@ -6,6 +6,7 @@ import {
   validateCompatibleWithFoundation,
   validateGameExists,
   validateGameNotFinished,
+  validateNonEmpty,
   validateParameters
 } from '../validation';
 import { buildTableState } from '../../state/table';
@@ -19,6 +20,7 @@ export const playWasteToFoundation: CommandProcessor<PlayWasteToFoundationComman
     validateGameNotFinished(events);
 
     const { waste, foundation } = buildTableState(events);
+    validateNonEmpty(waste, 'Waste');
     const foundationSlot = foundation[foundationIndex];
     validateCompatibleWithFoundation(waste[waste.length - 1], foundationSlot[foundationSlot.length - 1]);
 

@@ -6,6 +6,7 @@ import {
   validateCompatibleWithTableau,
   validateGameExists,
   validateGameNotFinished,
+  validateNonEmpty,
   validateParameters
 } from '../validation';
 import { buildTableState } from '../../state/table';
@@ -19,6 +20,7 @@ export const playWasteToTableau: CommandProcessor<PlayWasteToTableauCommand, Was
     validateGameNotFinished(events);
 
     const { waste, tableau } = buildTableState(events);
+    validateNonEmpty(waste, 'Waste');
     const tableauColumn = tableau[tableauIndex];
     validateCompatibleWithTableau(waste[waste.length - 1], tableauColumn[tableauColumn.length - 1]);
 
