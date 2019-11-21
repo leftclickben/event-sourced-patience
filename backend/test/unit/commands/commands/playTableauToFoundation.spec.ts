@@ -13,7 +13,7 @@ import { playTableauToFoundation } from '../../../../src/commands/processors/pla
 describe('The "play tableau to foundation" command', () => {
   const savedEvent: GameEvent = createSampleGameplayEvent(GameEventType.tableauPlayedToFoundation);
   const nonEmptyValidationError = Error('Tableau column 0 empty');
-  const compatibleWithFoundationValidationError = Error('You can\'t play that there');
+  const compatibleWithFoundationValidationError = Error('You cannot play that there');
   const gameExistsValidationError = Error('Game does not exist');
   const gameNotFinishedValidationError = Error('Game is already finished');
   const loadEventsError = Error('Database error: Failed to load events');
