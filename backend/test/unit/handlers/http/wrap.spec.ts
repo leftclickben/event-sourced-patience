@@ -31,7 +31,7 @@ describe('The HTTP handler wrapper utility', () => {
       beforeEach(async () => {
         event = { body: '{"parameter":"value"}' } as APIGatewayProxyEvent;
         context = {} as Context;
-        result = await outerHandler(event, context, () => {});
+        result = await outerHandler(event, context, undefined as any);
       });
 
       it('Calls the inner handler with data', () => {
@@ -77,7 +77,7 @@ describe('The HTTP handler wrapper utility', () => {
       beforeEach(async () => {
         event = { body: '{"parameter":"value"}' } as APIGatewayProxyEvent;
         context = {} as Context;
-        result = await outerHandler(event, context, () => {});
+        result = await outerHandler(event, context, undefined as any);
       });
 
       it('Calls the inner handler with data', () => {
@@ -124,7 +124,7 @@ describe('The HTTP handler wrapper utility', () => {
       beforeEach(async () => {
         event = { body: '{"parameter":"value"}' } as APIGatewayProxyEvent;
         context = {} as Context;
-        result = await outerHandler(event, context, () => {});
+        result = await outerHandler(event, context, undefined as any);
       });
 
       it('Calls the inner handler with data', () => {
@@ -171,7 +171,7 @@ describe('The HTTP handler wrapper utility', () => {
       beforeEach(async () => {
         event = { body: '{"parameter":"value"}' } as APIGatewayProxyEvent;
         context = {} as Context;
-        result = await outerHandler(event, context, () => {});
+        result = await outerHandler(event, context, undefined as any);
       });
 
       it('Calls the inner handler with data', () => {
@@ -216,7 +216,7 @@ describe('The HTTP handler wrapper utility', () => {
       it('Throws the error from the inner handler with data', async () => {
         const event = { body: '{"parameter":"value"}' } as APIGatewayProxyEvent;
         const context = {} as Context;
-        await expect(outerHandler(event, context, () => {})).to.be.eventually.rejectedWith(thrownError);
+        await expect(outerHandler(event, context, undefined as any)).to.be.eventually.rejectedWith(thrownError);
         expect(innerHandler.callCount).to.equal(1);
         expect(innerHandler.firstCall.args[0]).to.deep.equal({
           ...event,

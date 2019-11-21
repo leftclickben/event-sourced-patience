@@ -79,7 +79,7 @@ describe('Game utilities', () => {
       expect(shuffled.some((({ suit, value }) => suit === Suit.diamonds && value === Value.three))).to.equal(true);
       expect(shuffled.some((({ suit, value }) => suit === Suit.spades && value === Value.four))).to.equal(true);
       expect(shuffled.some((({ suit, value }) => suit === Suit.hearts && value === Value.five))).to.equal(true);
-    })
+    });
   });
 
   describe('Dealing the tableau', () => {

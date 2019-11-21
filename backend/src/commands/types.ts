@@ -16,9 +16,9 @@ export interface GameplayCommand {
   gameId: GameId;
 }
 
-export interface DealStockToWasteCommand extends GameplayCommand {}
+export type DealStockToWasteCommand = GameplayCommand;
 
-export interface ResetWasteToStockCommand extends GameplayCommand {}
+export type ResetWasteToStockCommand = GameplayCommand;
 
 export interface PlayWasteToTableauCommand extends GameplayCommand {
   tableauIndex: number;

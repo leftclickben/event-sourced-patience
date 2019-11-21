@@ -16,8 +16,10 @@ export const validateGameExists = (events: GameEvent[]) => {
   }
 };
 
+const gameFinishedEventTypes = [GameEventType.gameForfeited, GameEventType.victoryClaimed];
+
 export const validateGameNotFinished = (events: GameEvent[]) => {
-  if (events.some(({ eventType }) => [GameEventType.gameForfeited, GameEventType.victoryClaimed].indexOf(eventType) >= 0)) {
+  if (events.some(({ eventType }) => gameFinishedEventTypes.indexOf(eventType) >= 0)) {
     throw new BadRequest('Command validation failed: Game is already forfeited');
   }
 };

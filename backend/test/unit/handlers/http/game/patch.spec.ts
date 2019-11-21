@@ -92,19 +92,28 @@ describe('The HTTP PATCH /game handler', () => {
           let claimVictoryStub: SinonStub;
 
           beforeEach(() => {
-            stockDealtToWasteEvent = createSampleGameplayEvent<GameEventType.stockDealtToWaste, StockDealtToWasteEvent>(
+            stockDealtToWasteEvent = createSampleGameplayEvent<
+              GameEventType.stockDealtToWaste,
+              StockDealtToWasteEvent
+            >(
               GameEventType.stockDealtToWaste,
               'game-42',
               'event-1000',
               {});
 
-            wasteResetToStockEvent = createSampleGameplayEvent<GameEventType.wasteResetToStock, WasteResetToStockEvent>(
+            wasteResetToStockEvent = createSampleGameplayEvent<
+              GameEventType.wasteResetToStock,
+              WasteResetToStockEvent
+            >(
               GameEventType.wasteResetToStock,
               'game-42',
               'event-1001',
               {});
 
-            wastePlayedToTableauEvent = createSampleGameplayEvent<GameEventType.wastePlayedToTableau, WastePlayedToTableauEvent>(
+            wastePlayedToTableauEvent = createSampleGameplayEvent<
+              GameEventType.wastePlayedToTableau,
+              WastePlayedToTableauEvent
+            >(
               GameEventType.wastePlayedToTableau,
               'game-42',
               'event-1002',
@@ -112,7 +121,10 @@ describe('The HTTP PATCH /game handler', () => {
                 tableauIndex: 1
               });
 
-            wastePlayedToFoundationEvent = createSampleGameplayEvent<GameEventType.wastePlayedToFoundation, WastePlayedToFoundationEvent>(
+            wastePlayedToFoundationEvent = createSampleGameplayEvent<
+              GameEventType.wastePlayedToFoundation,
+              WastePlayedToFoundationEvent
+            >(
               GameEventType.wastePlayedToFoundation,
               'game-42',
               'event-1003',
@@ -120,7 +132,10 @@ describe('The HTTP PATCH /game handler', () => {
                 foundationIndex: 2
               });
 
-            tableauPlayedToTableauEvent = createSampleGameplayEvent<GameEventType.tableauPlayedToTableau, TableauPlayedToTableauEvent>(
+            tableauPlayedToTableauEvent = createSampleGameplayEvent<
+              GameEventType.tableauPlayedToTableau,
+              TableauPlayedToTableauEvent
+            >(
               GameEventType.tableauPlayedToTableau,
               'game-42',
               'event-1004',
@@ -130,7 +145,10 @@ describe('The HTTP PATCH /game handler', () => {
                 toIndex: 0
               });
 
-            tableauPlayedToFoundationEvent = createSampleGameplayEvent<GameEventType.tableauPlayedToFoundation, TableauPlayedToFoundationEvent>(
+            tableauPlayedToFoundationEvent = createSampleGameplayEvent<
+              GameEventType.tableauPlayedToFoundation,
+              TableauPlayedToFoundationEvent
+            >(
               GameEventType.tableauPlayedToFoundation,
               'game-42',
               'event-1005',
@@ -139,19 +157,29 @@ describe('The HTTP PATCH /game handler', () => {
                 foundationIndex: 1
               });
 
-            victoryClaimedEvent = createSampleGameplayEvent<GameEventType.victoryClaimed, VictoryClaimedEvent>(
+            victoryClaimedEvent = createSampleGameplayEvent<
+              GameEventType.victoryClaimed,
+              VictoryClaimedEvent
+            >(
               GameEventType.victoryClaimed,
               'game-42',
               'event-1006',
               {});
 
-            dealStockToWasteStub = stub(dealStockToWasteModule, 'dealStockToWaste').resolves(stockDealtToWasteEvent);
-            resetWasteToStockStub = stub(resetWasteToStockModule, 'resetWasteToStock').resolves(wasteResetToStockEvent);
-            playWasteToTableauStub = stub(playWasteToTableauModule, 'playWasteToTableau').resolves(wastePlayedToTableauEvent);
-            playWasteToFoundationStub = stub(playWasteToFoundationModule, 'playWasteToFoundation').resolves(wastePlayedToFoundationEvent);
-            playTableauToTableauStub = stub(playTableauToTableauModule, 'playTableauToTableau').resolves(tableauPlayedToTableauEvent);
-            playTableauToFoundationStub = stub(playTableauToFoundationModule, 'playTableauToFoundation').resolves(tableauPlayedToFoundationEvent);
-            claimVictoryStub = stub(claimVictoryModule, 'claimVictory').resolves(victoryClaimedEvent);
+            dealStockToWasteStub = stub(dealStockToWasteModule, 'dealStockToWaste')
+              .resolves(stockDealtToWasteEvent);
+            resetWasteToStockStub = stub(resetWasteToStockModule, 'resetWasteToStock')
+              .resolves(wasteResetToStockEvent);
+            playWasteToTableauStub = stub(playWasteToTableauModule, 'playWasteToTableau')
+              .resolves(wastePlayedToTableauEvent);
+            playWasteToFoundationStub = stub(playWasteToFoundationModule, 'playWasteToFoundation')
+              .resolves(wastePlayedToFoundationEvent);
+            playTableauToTableauStub = stub(playTableauToTableauModule, 'playTableauToTableau')
+              .resolves(tableauPlayedToTableauEvent);
+            playTableauToFoundationStub = stub(playTableauToFoundationModule, 'playTableauToFoundation')
+              .resolves(tableauPlayedToFoundationEvent);
+            claimVictoryStub = stub(claimVictoryModule, 'claimVictory')
+              .resolves(victoryClaimedEvent);
           });
 
           afterEach(() => {
@@ -447,7 +475,7 @@ describe('The HTTP PATCH /game handler', () => {
         });
 
         describe('Given gameplay commands throw an error', () => {
-          let thrownError = Error('Command failed');
+          const commandError = Error('Command failed');
 
           let dealStockToWasteStub: SinonStub;
           let resetWasteToStockStub: SinonStub;
@@ -458,13 +486,20 @@ describe('The HTTP PATCH /game handler', () => {
           let claimVictoryStub: SinonStub;
 
           beforeEach(() => {
-            dealStockToWasteStub = stub(dealStockToWasteModule, 'dealStockToWaste').rejects(thrownError);
-            resetWasteToStockStub = stub(resetWasteToStockModule, 'resetWasteToStock').rejects(thrownError);
-            playWasteToTableauStub = stub(playWasteToTableauModule, 'playWasteToTableau').rejects(thrownError);
-            playWasteToFoundationStub = stub(playWasteToFoundationModule, 'playWasteToFoundation').rejects(thrownError);
-            playTableauToTableauStub = stub(playTableauToTableauModule, 'playTableauToTableau').rejects(thrownError);
-            playTableauToFoundationStub = stub(playTableauToFoundationModule, 'playTableauToFoundation').rejects(thrownError);
-            claimVictoryStub = stub(claimVictoryModule, 'claimVictory').rejects(thrownError);
+            dealStockToWasteStub = stub(dealStockToWasteModule, 'dealStockToWaste')
+              .rejects(commandError);
+            resetWasteToStockStub = stub(resetWasteToStockModule, 'resetWasteToStock')
+              .rejects(commandError);
+            playWasteToTableauStub = stub(playWasteToTableauModule, 'playWasteToTableau')
+              .rejects(commandError);
+            playWasteToFoundationStub = stub(playWasteToFoundationModule, 'playWasteToFoundation')
+              .rejects(commandError);
+            playTableauToTableauStub = stub(playTableauToTableauModule, 'playTableauToTableau')
+              .rejects(commandError);
+            playTableauToFoundationStub = stub(playTableauToFoundationModule, 'playTableauToFoundation')
+              .rejects(commandError);
+            claimVictoryStub = stub(claimVictoryModule, 'claimVictory')
+              .rejects(commandError);
           });
 
           afterEach(() => {
@@ -487,8 +522,8 @@ describe('The HTTP PATCH /game handler', () => {
                   }
                 } as any,
                 {} as any,
-                undefined as any)
-              ).to.be.eventually.rejectedWith(thrownError);
+                undefined as any))
+                .to.be.eventually.rejectedWith(commandError);
               expect(loadEventsStub.callCount).to.equal(1);
               expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
               expect(buildTableStateStub.callCount).to.equal(0);
@@ -506,8 +541,8 @@ describe('The HTTP PATCH /game handler', () => {
                   }
                 } as any,
                 {} as any,
-                undefined as any)
-              ).to.be.eventually.rejectedWith(thrownError);
+                undefined as any))
+                .to.be.eventually.rejectedWith(commandError);
               expect(loadEventsStub.callCount).to.equal(1);
               expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
               expect(buildTableStateStub.callCount).to.equal(0);
@@ -525,8 +560,8 @@ describe('The HTTP PATCH /game handler', () => {
                   }
                 } as any,
                 {} as any,
-                undefined as any)
-              ).to.be.eventually.rejectedWith(thrownError);
+                undefined as any))
+                .to.be.eventually.rejectedWith(commandError);
               expect(loadEventsStub.callCount).to.equal(1);
               expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
               expect(buildTableStateStub.callCount).to.equal(0);
@@ -544,8 +579,8 @@ describe('The HTTP PATCH /game handler', () => {
                   }
                 } as any,
                 {} as any,
-                undefined as any)
-              ).to.be.eventually.rejectedWith(thrownError);
+                undefined as any))
+                .to.be.eventually.rejectedWith(commandError);
               expect(loadEventsStub.callCount).to.equal(1);
               expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
               expect(buildTableStateStub.callCount).to.equal(0);
@@ -563,8 +598,8 @@ describe('The HTTP PATCH /game handler', () => {
                   }
                 } as any,
                 {} as any,
-                undefined as any)
-              ).to.be.eventually.rejectedWith(thrownError);
+                undefined as any))
+                .to.be.eventually.rejectedWith(commandError);
               expect(loadEventsStub.callCount).to.equal(1);
               expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
               expect(buildTableStateStub.callCount).to.equal(0);
@@ -582,8 +617,8 @@ describe('The HTTP PATCH /game handler', () => {
                   }
                 } as any,
                 {} as any,
-                undefined as any)
-              ).to.be.eventually.rejectedWith(thrownError);
+                undefined as any))
+                .to.be.eventually.rejectedWith(commandError);
               expect(loadEventsStub.callCount).to.equal(1);
               expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
               expect(buildTableStateStub.callCount).to.equal(0);
@@ -601,8 +636,8 @@ describe('The HTTP PATCH /game handler', () => {
                   }
                 } as any,
                 {} as any,
-                undefined as any)
-              ).to.be.eventually.rejectedWith(thrownError);
+                undefined as any))
+                .to.be.eventually.rejectedWith(commandError);
               expect(loadEventsStub.callCount).to.equal(1);
               expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
               expect(buildTableStateStub.callCount).to.equal(0);
@@ -634,7 +669,8 @@ describe('The HTTP PATCH /game handler', () => {
               }
             } as any,
             {} as any,
-            undefined as any)).to.be.eventually.rejectedWith(thrownError);
+            undefined as any))
+            .to.be.eventually.rejectedWith(thrownError);
           expect(loadEventsStub.callCount).to.equal(1);
           expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);
         });

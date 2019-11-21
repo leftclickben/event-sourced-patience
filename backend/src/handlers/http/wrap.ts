@@ -21,7 +21,7 @@ export const wrapHttpHandler =
           data: event.body ? JSON.parse(event.body) : undefined
         };
 
-        const { data, ...result } = await handler(wrappedEvent, context, () => {}) || {};
+        const { data, ...result } = await handler(wrappedEvent, context, () => undefined) || {};
 
         result.body = data ? JSON.stringify(data) : '';
         result.statusCode = result.statusCode || (data ? constants.HTTP_STATUS_OK : constants.HTTP_STATUS_NO_CONTENT);

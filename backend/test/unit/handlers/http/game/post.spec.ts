@@ -35,7 +35,10 @@ describe('The HTTP POST /game handler', () => {
         let result: APIGatewayProxyResultWithData | void;
 
         beforeEach(async () => {
-          result = await postGameHandler({} as any, {} as any, () => {});
+          result = await postGameHandler(
+            {} as any,
+            {} as any,
+            undefined as any);
         });
 
         it('Invokes the createGame command', () => {
@@ -51,16 +54,44 @@ describe('The HTTP POST /game handler', () => {
               table: {
                 status: 'inProgress',
                 tableau: [
-                  [{suit:"diamonds",value:"ace",faceUp:true}],
-                  [{suit:"diamonds",value:"queen",faceUp:false},{suit:"diamonds",value:"seven",faceUp:true}],
-                  [{suit:"spades",value:"five",faceUp:false},{suit:"spades",value:"ten",faceUp:false},{suit:"spades",value:"jack",faceUp:true}],
-                  [{suit:"diamonds",value:"five",faceUp:false},{suit:"spades",value:"ace",faceUp:false},{suit:"diamonds",value:"ten",faceUp:false},{suit:"diamonds",value:"king",faceUp:true}]
+                  [
+                    { suit: 'diamonds', value: 'ace', faceUp: true }
+                  ],
+                  [
+                    { suit: 'diamonds', value: 'queen', faceUp: false },
+                    { suit: 'diamonds', value: 'seven', faceUp: true }
+                  ],
+                  [
+                    { suit: 'spades', value: 'five', faceUp: false },
+                    { suit: 'spades', value: 'ten', faceUp: false },
+                    { suit: 'spades', value: 'jack', faceUp: true }
+                  ],
+                  [
+                    { suit: 'diamonds', value: 'five', faceUp: false },
+                    { suit: 'spades', value: 'ace', faceUp: false },
+                    { suit: 'diamonds', value: 'ten', faceUp: false },
+                    { suit: 'diamonds', value: 'king', faceUp: true }
+                  ]
                 ],
-                "foundation":[[],[],[],[]],
-                "stock":[{suit:"diamonds",value:"three",faceUp:false},{suit:"spades",value:"six",faceUp:false},{suit:"spades",value:"eight",faceUp:false},{suit:"spades",value:"four",faceUp:false},{suit:"diamonds",value:"four",faceUp:false},{suit:"spades",value:"queen",faceUp:false},{suit:"diamonds",value:"two",faceUp:false},{suit:"spades",value:"three",faceUp:false},{suit:"spades",value:"king",faceUp:false},{suit:"diamonds",value:"jack",faceUp:false},{suit:"spades",value:"two",faceUp:false},{suit:"diamonds",value:"eight",faceUp:false},{suit:"spades",value:"seven",faceUp:true}],
-                "waste":[]
+                foundation: [[], [], [], []],
+                stock: [
+                  { suit: 'diamonds', value: 'three', faceUp: false },
+                  { suit: 'spades', value: 'six', faceUp: false },
+                  { suit: 'spades', value: 'eight', faceUp: false },
+                  { suit: 'spades', value: 'four', faceUp: false },
+                  { suit: 'diamonds', value: 'four', faceUp: false },
+                  { suit: 'spades', value: 'queen', faceUp: false },
+                  { suit: 'diamonds', value: 'two', faceUp: false },
+                  { suit: 'spades', value: 'three', faceUp: false },
+                  { suit: 'spades', value: 'king', faceUp: false },
+                  { suit: 'diamonds', value: 'jack', faceUp: false },
+                  { suit: 'spades', value: 'two', faceUp: false },
+                  { suit: 'diamonds', value: 'eight', faceUp: false },
+                  { suit: 'spades', value: 'seven', faceUp: true }
+                ],
+                waste: []
               },
-              "score":0
+              score: 0
             }
           });
         });
@@ -81,7 +112,10 @@ describe('The HTTP POST /game handler', () => {
 
       describe('When invoked', () => {
         it('Throws the error from the createGame command', async () => {
-          await expect(postGameHandler({} as any, {} as any, () => {}))
+          await expect(postGameHandler(
+            {} as any,
+            {} as any,
+            undefined as any))
             .to.be.eventually.rejectedWith(thrownError);
           expect(createGameStub.callCount).to.equal(1);
         });

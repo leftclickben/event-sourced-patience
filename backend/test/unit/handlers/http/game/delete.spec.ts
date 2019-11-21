@@ -35,7 +35,10 @@ describe('The HTTP DELETE /game handler', () => {
         let result: APIGatewayProxyResultWithData | void;
 
         beforeEach(async () => {
-          result = await deleteGameHandler({ pathParameters: { gameId: 'game-42' } } as any, {} as any, () => {});
+          result = await deleteGameHandler(
+            { pathParameters: { gameId: 'game-42' } } as any,
+            {} as any,
+            undefined as any);
         });
 
         it('Invokes the forfeitGame command', () => {
@@ -50,7 +53,10 @@ describe('The HTTP DELETE /game handler', () => {
 
       describe('When invoked with no gameId path parameter', () => {
         it('Throws an error without invoking the forfeitGame command', async () => {
-          await expect(deleteGameHandler({ pathParameters: {} } as any, {} as any, () => {}))
+          await expect(deleteGameHandler(
+            { pathParameters: {} } as any,
+            {} as any,
+            undefined as any))
             .to.be.eventually.rejectedWith('Required parameter "gameId" missing');
           expect(forfeitGameStub.callCount).to.equal(0);
         });
@@ -71,7 +77,10 @@ describe('The HTTP DELETE /game handler', () => {
 
       describe('When invoked', () => {
         it('Throws the error from the forfeitGame command', async () => {
-          await expect(deleteGameHandler({ pathParameters: { gameId: 'game-42' } } as any, {} as any, () => {}))
+          await expect(deleteGameHandler(
+            { pathParameters: { gameId: 'game-42' } } as any,
+            {} as any,
+            undefined as any))
             .to.be.eventually.rejectedWith(thrownError);
           expect(forfeitGameStub.callCount).to.equal(1);
           expect(forfeitGameStub.firstCall.args).to.deep.equal([{ gameId: 'game-42' }]);

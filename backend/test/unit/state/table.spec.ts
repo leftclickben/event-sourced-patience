@@ -78,7 +78,7 @@ describe('The table state builder', () => {
           { suit: Suit.spades, value: Value.seven, faceUp: true }
         ],
         waste: []
-      })
+      });
     });
   });
 
@@ -179,7 +179,7 @@ describe('The table state builder', () => {
           { suit: Suit.diamonds, value: Value.eight, faceUp: true },
           { suit: Suit.spades, value: Value.two, faceUp: true }
         ]
-      })
+      });
     });
   });
 });

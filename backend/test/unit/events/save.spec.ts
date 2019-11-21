@@ -26,7 +26,7 @@ describe('Saving an event to the event store', () => {
     beforeEach(() => {
       restoreEnv = mockedEnv({
         DB_TABLE_EVENTS: 'events_unit_test'
-      })
+      });
     });
 
     afterEach(() => {

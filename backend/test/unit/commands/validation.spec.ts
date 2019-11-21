@@ -4,6 +4,7 @@ import {
   validateCompatibleWithTableau,
   validateGameExists,
   validateGameNotFinished,
+  validateLength,
   validateNonEmpty,
   validateParameters
 } from '../../../src/commands/validation';
@@ -167,7 +168,7 @@ describe('Command validation utilities', () => {
   });
 
   describe('The tableau compatibility validator', () => {
-    describe('When called with a card of the same suit as the destination and value one less than the destination', () => {
+    describe('When called with a card of the same suit and value one less than the destination', () => {
       it('Throws an error', () => {
         const movingCard: Card = { suit: Suit.clubs, value: Value.two, faceUp: true };
         const destinationCard: Card = { suit: Suit.clubs, value: Value.three, faceUp: true };
@@ -176,7 +177,7 @@ describe('Command validation utilities', () => {
       });
     });
 
-    describe('When called with a card of the other suit of the same colour as the destination and value one less than the destination', () => {
+    describe('When called with a card of the other suit of the same colour and value one less than destination', () => {
       it('Throws an error', () => {
         const movingCard: Card = { suit: Suit.clubs, value: Value.two, faceUp: true };
         const destinationCard: Card = { suit: Suit.spades, value: Value.three, faceUp: true };
@@ -185,7 +186,7 @@ describe('Command validation utilities', () => {
       });
     });
 
-    describe('When called with a card of the other suit of the same colour as the destination and value one less than the destination', () => {
+    describe('When called with a card of the other suit of the same colour and value one less than destination', () => {
       it('Throws an error', () => {
         const movingCard: Card = { suit: Suit.clubs, value: Value.two, faceUp: true };
         const destinationCard: Card = { suit: Suit.spades, value: Value.three, faceUp: true };
@@ -196,6 +197,39 @@ describe('Command validation utilities', () => {
   });
 
   describe('The length validator', () => {
+    describe('When called with an array longer than the required number', () => {
+      it('Does not throw', () => {
+        expect(() => validateLength(
+          [
+            { suit: Suit.clubs, value: Value.jack, faceUp: true },
+            { suit: Suit.hearts, value: Value.three, faceUp: true}
+          ],
+          1,
+          'Test'
+        )).not.to.throw();
+      });
+    });
 
+    describe('When called with an array the same length as the required number', () => {
+      expect(() => validateLength(
+        [
+          { suit: Suit.clubs, value: Value.jack, faceUp: true },
+          { suit: Suit.hearts, value: Value.three, faceUp: true}
+        ],
+        2,
+        'Test'
+      )).not.to.throw();
+    });
+
+    describe('When called with an array shorter than the required number', () => {
+      expect(() => validateLength(
+        [
+          { suit: Suit.clubs, value: Value.jack, faceUp: true },
+          { suit: Suit.hearts, value: Value.three, faceUp: true}
+        ],
+        3,
+        'Test'
+      )).to.throw('Command validation failed: Insufficient cards in Test');
+    });
   });
 });

@@ -51,7 +51,10 @@ describe('The HTTP GET /game handler', () => {
           let result: APIGatewayProxyResultWithData | void;
 
           beforeEach(async () => {
-            result = await getGameHandler({ pathParameters: { gameId: 'game-42' } } as any, {} as any, undefined as any);
+            result = await getGameHandler(
+              { pathParameters: { gameId: 'game-42' } } as any,
+              {} as any,
+              undefined as any);
           });
 
           it('Loads the events', () => {
@@ -72,7 +75,10 @@ describe('The HTTP GET /game handler', () => {
 
         describe('When invoked with no gameId path parameter', () => {
           it('Throws an error without loading the events', async () => {
-            await expect(getGameHandler({ pathParameters: {} } as any, {} as any, () => {}))
+            await expect(getGameHandler(
+              { pathParameters: {} } as any,
+              {} as any,
+              undefined as any))
               .to.be.eventually.rejectedWith('Required parameter "gameId" missing');
             expect(loadEventsStub.callCount).to.equal(0);
           });
@@ -94,7 +100,10 @@ describe('The HTTP GET /game handler', () => {
 
       describe('When invoked with a gameId path parameter', () => {
         it('Throws the error from loading the events', async () => {
-          await expect(getGameHandler({ pathParameters: { gameId: 'game-42' } } as any, {} as any, undefined as any))
+          await expect(getGameHandler(
+            { pathParameters: { gameId: 'game-42' } } as any,
+            {} as any,
+            undefined as any))
             .to.be.eventually.rejectedWith(thrownError);
           expect(loadEventsStub.callCount).to.equal(1);
           expect(loadEventsStub.firstCall.args).to.deep.equal(['game-42']);

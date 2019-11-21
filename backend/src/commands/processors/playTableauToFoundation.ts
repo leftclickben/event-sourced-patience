@@ -23,7 +23,9 @@ export const playTableauToFoundation: CommandProcessor<PlayTableauToFoundationCo
     const tableauColumn = tableau[tableauIndex];
     const foundationSlot = foundation[foundationIndex];
     validateNonEmpty(tableauColumn, `Tableau column ${tableauIndex}`);
-    validateCompatibleWithFoundation(tableauColumn[tableauColumn.length - 1], foundationSlot[foundationSlot.length - 1]);
+    validateCompatibleWithFoundation(
+      tableauColumn[tableauColumn.length - 1],
+      foundationSlot[foundationSlot.length - 1]);
 
     return await saveEvent<GameEventType.tableauPlayedToFoundation, TableauPlayedToFoundationEvent>(
       GameEventType.tableauPlayedToFoundation,

@@ -21,7 +21,9 @@ export const playTableauToTableau: CommandProcessor<PlayTableauToTableauCommand,
 
     const { tableau } = buildTableState(events);
     validateLength(tableau[fromIndex].filter(({ faceUp }) => faceUp), count, `Tableau ${fromIndex + 1}`);
-    validateCompatibleWithTableau(tableau[fromIndex][tableau[fromIndex].length - count], tableau[toIndex][tableau[toIndex].length - 1]);
+    validateCompatibleWithTableau(
+      tableau[fromIndex][tableau[fromIndex].length - count],
+      tableau[toIndex][tableau[toIndex].length - 1]);
 
     return await saveEvent<GameEventType.tableauPlayedToTableau, TableauPlayedToTableauEvent>(
       GameEventType.tableauPlayedToTableau,

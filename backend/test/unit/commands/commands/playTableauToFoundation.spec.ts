@@ -110,7 +110,7 @@ describe('The "play tableau to foundation" command', () => {
             expect(validateCompatibleWithFoundationStub.getCall(0).args).to.deep.equal([
               { suit: Suit.clubs, value: Value.two, faceUp: true },
               { suit: Suit.clubs, value: Value.ace, faceUp: true }
-            ])
+            ]);
           });
 
           it('Saves the new event', () => {
@@ -252,7 +252,7 @@ describe('The "play tableau to foundation" command', () => {
             expect(validateCompatibleWithFoundationStub.getCall(0).args).to.deep.equal([
               { suit: Suit.diamonds, value: Value.jack, faceUp: true },
               { suit: Suit.clubs, value: Value.ace, faceUp: true }
-            ])
+            ]);
           });
 
           it('Does not save an event', () => {
@@ -507,7 +507,7 @@ describe('The "play tableau to foundation" command', () => {
         expect(validateCompatibleWithFoundationStub.getCall(0).args).to.deep.equal([
           { suit: Suit.clubs, value: Value.two, faceUp: true },
           { suit: Suit.clubs, value: Value.ace, faceUp: true }
-        ])
+        ]);
       });
 
       it('Saves an event', () => {

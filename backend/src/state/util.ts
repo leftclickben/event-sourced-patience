@@ -12,5 +12,5 @@ export const buildStateFromEvents = <TState>(
   events: GameEvent[]
 ): TState =>
   events.reduce(
-    (state, event) => (builders[event.eventType] || ((state) => state))(state, event),
+    (state, event) => (builders[event.eventType] || ((value) => value))(state, event),
     initialState);

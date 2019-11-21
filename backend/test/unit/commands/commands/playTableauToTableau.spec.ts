@@ -61,9 +61,18 @@ describe('The "play tableau to tableau" command', () => {
         beforeEach(() => {
           buildTableStateStub.returns({
             tableau: [
-              [{ suit: Suit.diamonds, value: Value.queen, faceUp: true }],
-              [{ suit: Suit.hearts, value: Value.six, faceUp: false }, { suit: Suit.clubs, value: Value.king, faceUp: true }],
-              [], [], [], [], []
+              [
+                { suit: Suit.diamonds, value: Value.queen, faceUp: true }
+              ],
+              [
+                { suit: Suit.hearts, value: Value.six, faceUp: false },
+                { suit: Suit.clubs, value: Value.king, faceUp: true }
+              ],
+              [],
+              [],
+              [],
+              [],
+              []
             ]
           });
         });
@@ -115,7 +124,7 @@ describe('The "play tableau to tableau" command', () => {
             expect(validateCompatibleWithTableauStub.getCall(0).args).to.deep.equal([
               { suit: Suit.diamonds, value: Value.queen, faceUp: true },
               { suit: Suit.clubs, value: Value.king, faceUp: true }
-            ])
+            ]);
           });
 
           it('Saves the new event', () => {
@@ -203,9 +212,18 @@ describe('The "play tableau to tableau" command', () => {
         beforeEach(() => {
           buildTableStateStub.returns({
             tableau: [
-              [{ suit: Suit.diamonds, value: Value.queen, faceUp: true }],
-              [{ suit: Suit.hearts, value: Value.six, faceUp: false }, { suit: Suit.clubs, value: Value.king, faceUp: true }],
-              [], [], [], [], []
+              [
+                { suit: Suit.diamonds, value: Value.queen, faceUp: true }
+              ],
+              [
+                { suit: Suit.hearts, value: Value.six, faceUp: false },
+                { suit: Suit.clubs, value: Value.king, faceUp: true }
+              ],
+              [],
+              [],
+              [],
+              [],
+              []
             ]
           });
           validateCompatibleWithTableauStub.throws(compatibleWithTableauValidationError);
@@ -263,7 +281,7 @@ describe('The "play tableau to tableau" command', () => {
             expect(validateCompatibleWithTableauStub.getCall(0).args).to.deep.equal([
               { suit: Suit.diamonds, value: Value.queen, faceUp: true },
               { suit: Suit.clubs, value: Value.king, faceUp: true }
-            ])
+            ]);
           });
 
           it('Does not save an event', () => {
@@ -467,9 +485,18 @@ describe('The "play tableau to tableau" command', () => {
       saveEventStub.rejects(saveEventError);
       buildTableStateStub.returns({
         tableau: [
-          [{ suit: Suit.diamonds, value: Value.queen, faceUp: true }],
-          [{ suit: Suit.hearts, value: Value.six, faceUp: false }, { suit: Suit.clubs, value: Value.king, faceUp: true }],
-          [], [], [], [], []
+          [
+            { suit: Suit.diamonds, value: Value.queen, faceUp: true }
+          ],
+          [
+            { suit: Suit.hearts, value: Value.six, faceUp: false },
+            { suit: Suit.clubs, value: Value.king, faceUp: true }
+          ],
+          [],
+          [],
+          [],
+          [],
+          []
         ]
       });
     });
@@ -526,9 +553,8 @@ describe('The "play tableau to tableau" command', () => {
         expect(validateCompatibleWithTableauStub.getCall(0).args).to.deep.equal([
           { suit: Suit.diamonds, value: Value.queen, faceUp: true },
           { suit: Suit.clubs, value: Value.king, faceUp: true }
-        ])
+        ]);
       });
-
 
       it('Saves an event', () => {
         expect(saveEventStub.calledOnce).to.equal(true);
