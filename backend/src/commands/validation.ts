@@ -22,6 +22,12 @@ export const validateGameNotFinished = (events: GameEvent[]) => {
   }
 };
 
+export const validateEmpty = <T>(array: T[], label: string) => {
+  if (array.length > 0) {
+    throw new BadRequest(`Command validation failed: "${label}" is not empty`);
+  }
+};
+
 export const validateNonEmpty = <T>(array: T[], label: string) => {
   if (array.length === 0) {
     throw new BadRequest(`Command validation failed: "${label}" is empty`);
