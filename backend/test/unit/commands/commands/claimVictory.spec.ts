@@ -10,46 +10,53 @@ import { createSampleGameplayEvent } from '../../../fixtures/events';
 import { fail } from 'assert';
 
 describe('The "claim victory" command', () => {
+  const savedEvent: GameEvent = createSampleGameplayEvent(GameEventType.victoryClaimed);
+  const foundationValidationError = Error('Foundation not complete');
+  const gameExistsValidationError = Error('Game does not exist');
+  const gameNotFinishedValidationError = Error('Game is already finished');
+  const loadEventsError = Error('Database error: Failed to load events');
+  const saveEventError = Error('Database error: Failed to save event');
+
+  let loadEventsStub: SinonStub;
+  let saveEventStub: SinonStub;
+  let validateParametersStub: SinonStub;
+  let validateGameExistsStub: SinonStub;
+  let validateGameNotFinishedStub: SinonStub;
+  let buildTableStateStub: SinonStub;
+  let validateLengthStub: SinonStub;
+
+  beforeEach(() => {
+    loadEventsStub = stub(loadEventsModule, 'loadEvents');
+    saveEventStub = stub(saveEventsModule, 'saveEvent');
+    validateParametersStub = stub(validationModule, 'validateParameters');
+    validateGameExistsStub = stub(validationModule, 'validateGameExists');
+    validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
+    buildTableStateStub = stub(tableStateModule, 'buildTableState');
+    validateLengthStub = stub(validationModule, 'validateLength');
+  });
+
+  afterEach(() => {
+    loadEventsStub.restore();
+    saveEventStub.restore();
+    validateParametersStub.restore();
+    validateGameExistsStub.restore();
+    validateGameNotFinishedStub.restore();
+    buildTableStateStub.restore();
+    validateLengthStub.restore();
+  });
+
   describe('Given the event store is loading and saving events correctly', () => {
+    beforeEach(() => {
+      loadEventsStub.resolves();
+      saveEventStub.resolves(savedEvent);
+    });
+
     describe('Given the game is in progress', () => {
-      const savedEvent: GameEvent = createSampleGameplayEvent(GameEventType.victoryClaimed);
-
-      let loadEventsStub: SinonStub;
-      let saveEventStub: SinonStub;
-      let validateParametersStub: SinonStub;
-      let validateGameExistsStub: SinonStub;
-      let validateGameNotFinishedStub: SinonStub;
-
-      beforeEach(() => {
-        loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves();
-        saveEventStub = stub(saveEventsModule, 'saveEvent').resolves(savedEvent);
-        validateParametersStub = stub(validationModule, 'validateParameters');
-        validateGameExistsStub = stub(validationModule, 'validateGameExists');
-        validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
-      });
-
-      afterEach(() => {
-        loadEventsStub.restore();
-        saveEventStub.restore();
-        validateParametersStub.restore();
-        validateGameExistsStub.restore();
-        validateGameNotFinishedStub.restore();
-      });
-
       describe('Given the foundations each contains 13 cards', () => {
-        let buildTableStateStub: SinonStub;
-        let validateLengthStub: SinonStub;
-
         beforeEach(() => {
-          buildTableStateStub = stub(tableStateModule, 'buildTableState').returns({
+          buildTableStateStub.returns({
             foundation: [[], [], [], []]
-          } as any);
-          validateLengthStub = stub(validationModule, 'validateLength');
-        });
-
-        afterEach(() => {
-          buildTableStateStub.restore();
-          validateLengthStub.restore();
+          });
         });
 
         describe('When invoked', () => {
@@ -107,21 +114,11 @@ describe('The "claim victory" command', () => {
       });
 
       describe('Given the foundations are empty', () => {
-        const validationError = Error('Foundation not complete');
-
-        let buildTableStateStub: SinonStub;
-        let validateLengthStub: SinonStub;
-
         beforeEach(() => {
-          buildTableStateStub = stub(tableStateModule, 'buildTableState').returns({
+          buildTableStateStub.returns({
             foundation: [[], [], [], []]
-          } as any);
-          validateLengthStub = stub(validationModule, 'validateLength').throws(validationError);
-        });
-
-        afterEach(() => {
-          buildTableStateStub.restore();
-          validateLengthStub.restore();
+          });
+          validateLengthStub.throws(foundationValidationError);
         });
 
         describe('When invoked', () => {
@@ -168,41 +165,15 @@ describe('The "claim victory" command', () => {
           });
 
           it('Throws the validation error', () => {
-            expect(caughtError).to.equal(validationError);
+            expect(caughtError).to.equal(foundationValidationError);
           });
         });
       });
     });
 
     describe('Given the game does not exist', () => {
-      const validationError = Error('Game does not exist');
-
-      let loadEventsStub: SinonStub;
-      let saveEventStub: SinonStub;
-      let validateParametersStub: SinonStub;
-      let validateGameExistsStub: SinonStub;
-      let validateGameNotFinishedStub: SinonStub;
-      let buildTableStateStub: SinonStub;
-      let validateLengthStub: SinonStub;
-
       beforeEach(() => {
-        loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves();
-        saveEventStub = stub(saveEventsModule, 'saveEvent').resolves();
-        validateParametersStub = stub(validationModule, 'validateParameters');
-        validateGameExistsStub = stub(validationModule, 'validateGameExists').throws(validationError);
-        validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
-        buildTableStateStub = stub(tableStateModule, 'buildTableState');
-        validateLengthStub = stub(validationModule, 'validateLength');
-      });
-
-      afterEach(() => {
-        loadEventsStub.restore();
-        saveEventStub.restore();
-        validateParametersStub.restore();
-        validateGameExistsStub.restore();
-        validateGameNotFinishedStub.restore();
-        buildTableStateStub.restore();
-        validateLengthStub.restore();
+        validateGameExistsStub.throws(gameExistsValidationError);
       });
 
       describe('When invoked', () => {
@@ -247,40 +218,14 @@ describe('The "claim victory" command', () => {
         });
 
         it('Throws the validation error', () => {
-          expect(caughtError).to.equal(validationError);
+          expect(caughtError).to.equal(gameExistsValidationError);
         });
       });
     });
 
     describe('Given the game is already finished', () => {
-      const validationError = Error('Game is already finished');
-
-      let loadEventsStub: SinonStub;
-      let saveEventStub: SinonStub;
-      let validateParametersStub: SinonStub;
-      let validateGameExistsStub: SinonStub;
-      let validateGameNotFinishedStub: SinonStub;
-      let buildTableStateStub: SinonStub;
-      let validateLengthStub: SinonStub;
-
       beforeEach(() => {
-        loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves();
-        saveEventStub = stub(saveEventsModule, 'saveEvent').resolves();
-        validateParametersStub = stub(validationModule, 'validateParameters');
-        validateGameExistsStub = stub(validationModule, 'validateGameExists');
-        validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished').throws(validationError);
-        buildTableStateStub = stub(tableStateModule, 'buildTableState');
-        validateLengthStub = stub(validationModule, 'validateLength');
-      });
-
-      afterEach(() => {
-        loadEventsStub.restore();
-        saveEventStub.restore();
-        validateParametersStub.restore();
-        validateGameExistsStub.restore();
-        validateGameNotFinishedStub.restore();
-        buildTableStateStub.restore();
-        validateLengthStub.restore();
+        validateGameNotFinishedStub.throws(gameNotFinishedValidationError);
       });
 
       describe('When invoked', () => {
@@ -325,41 +270,15 @@ describe('The "claim victory" command', () => {
         });
 
         it('Throws the validation error', () => {
-          expect(caughtError).to.equal(validationError);
+          expect(caughtError).to.equal(gameNotFinishedValidationError);
         });
       });
     });
   });
 
   describe('Given the event store throws when loading events', () => {
-    const eventStoreError = Error('Database error: Failed to load events');
-
-    let loadEventsStub: SinonStub;
-    let saveEventStub: SinonStub;
-    let validateParametersStub: SinonStub;
-    let validateGameExistsStub: SinonStub;
-    let validateGameNotFinishedStub: SinonStub;
-    let buildTableStateStub: SinonStub;
-    let validateLengthStub: SinonStub;
-
     beforeEach(() => {
-      loadEventsStub = stub(loadEventsModule, 'loadEvents').rejects(eventStoreError);
-      saveEventStub = stub(saveEventsModule, 'saveEvent').resolves();
-      validateParametersStub = stub(validationModule, 'validateParameters');
-      validateGameExistsStub = stub(validationModule, 'validateGameExists');
-      validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
-      buildTableStateStub = stub(tableStateModule, 'buildTableState');
-      validateLengthStub = stub(validationModule, 'validateLength');
-    });
-
-    afterEach(() => {
-      loadEventsStub.restore();
-      saveEventStub.restore();
-      validateParametersStub.restore();
-      validateGameExistsStub.restore();
-      validateGameNotFinishedStub.restore();
-      buildTableStateStub.restore();
-      validateLengthStub.restore();
+      loadEventsStub.rejects(loadEventsError);
     });
 
     describe('When invoked', () => {
@@ -404,42 +323,18 @@ describe('The "claim victory" command', () => {
       });
 
       it('Throws the error from the event store', () => {
-        expect(caughtError).to.equal(eventStoreError);
+        expect(caughtError).to.equal(loadEventsError);
       });
     });
   });
 
   describe('Given the event store throws when saving an event', () => {
-    const eventStoreError = Error('Database error: Failed to save event');
-
-    let loadEventsStub: SinonStub;
-    let saveEventStub: SinonStub;
-    let validateParametersStub: SinonStub;
-    let validateGameExistsStub: SinonStub;
-    let validateGameNotFinishedStub: SinonStub;
-    let buildTableStateStub: SinonStub;
-    let validateLengthStub: SinonStub;
-
     beforeEach(() => {
-      loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves();
-      saveEventStub = stub(saveEventsModule, 'saveEvent').rejects(eventStoreError);
-      validateParametersStub = stub(validationModule, 'validateParameters');
-      validateGameExistsStub = stub(validationModule, 'validateGameExists');
-      validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
-      buildTableStateStub = stub(tableStateModule, 'buildTableState').returns({
+      loadEventsStub.resolves();
+      saveEventStub.rejects(saveEventError);
+      buildTableStateStub.returns({
         foundation: [[], [], [], []]
-      } as any);
-      validateLengthStub = stub(validationModule, 'validateLength');
-    });
-
-    afterEach(() => {
-      loadEventsStub.restore();
-      saveEventStub.restore();
-      validateParametersStub.restore();
-      validateGameExistsStub.restore();
-      validateGameNotFinishedStub.restore();
-      buildTableStateStub.restore();
-      validateLengthStub.restore();
+      });
     });
 
     describe('When invoked', () => {
@@ -492,7 +387,7 @@ describe('The "claim victory" command', () => {
       });
 
       it('Throws the error from the event store', () => {
-        expect(caughtError).to.equal(eventStoreError);
+        expect(caughtError).to.equal(saveEventError);
       });
     });
   });

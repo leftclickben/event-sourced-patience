@@ -11,46 +11,53 @@ import { dealStockToWaste } from '../../../../src/commands/processors/dealStockT
 import { Suit, Value } from '../../../../src/game/types';
 
 describe('The "deal stock to waste" command', () => {
+  const savedEvent: GameEvent = createSampleGameplayEvent(GameEventType.stockDealtToWaste);
+  const stockEmptyValidationError = Error('Stock empty');
+  const gameExistsValidationError = Error('Game does not exist');
+  const gameNotFinishedValidationError = Error('Game is already finished');
+  const loadEventsError = Error('Database error: Failed to load events');
+  const saveEventError = Error('Database error: Failed to save event');
+
+  let loadEventsStub: SinonStub;
+  let saveEventStub: SinonStub;
+  let validateParametersStub: SinonStub;
+  let validateGameExistsStub: SinonStub;
+  let validateGameNotFinishedStub: SinonStub;
+  let buildTableStateStub: SinonStub;
+  let validateNonEmptyStub: SinonStub;
+
+  beforeEach(() => {
+    loadEventsStub = stub(loadEventsModule, 'loadEvents');
+    saveEventStub = stub(saveEventsModule, 'saveEvent');
+    validateParametersStub = stub(validationModule, 'validateParameters');
+    validateGameExistsStub = stub(validationModule, 'validateGameExists');
+    validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
+    buildTableStateStub = stub(tableStateModule, 'buildTableState');
+    validateNonEmptyStub = stub(validationModule, 'validateNonEmpty');
+  });
+
+  afterEach(() => {
+    loadEventsStub.restore();
+    saveEventStub.restore();
+    validateParametersStub.restore();
+    validateGameExistsStub.restore();
+    validateGameNotFinishedStub.restore();
+    buildTableStateStub.restore();
+    validateNonEmptyStub.restore();
+  });
+
   describe('Given the event store is loading and saving events correctly', () => {
+    beforeEach(() => {
+      loadEventsStub.resolves();
+      saveEventStub.resolves(savedEvent);
+    });
+
     describe('Given the game is in progress', () => {
-      const savedEvent: GameEvent = createSampleGameplayEvent(GameEventType.stockDealtToWaste);
-
-      let loadEventsStub: SinonStub;
-      let saveEventStub: SinonStub;
-      let validateParametersStub: SinonStub;
-      let validateGameExistsStub: SinonStub;
-      let validateGameNotFinishedStub: SinonStub;
-
-      beforeEach(() => {
-        loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves();
-        saveEventStub = stub(saveEventsModule, 'saveEvent').resolves(savedEvent);
-        validateParametersStub = stub(validationModule, 'validateParameters');
-        validateGameExistsStub = stub(validationModule, 'validateGameExists');
-        validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
-      });
-
-      afterEach(() => {
-        loadEventsStub.restore();
-        saveEventStub.restore();
-        validateParametersStub.restore();
-        validateGameExistsStub.restore();
-        validateGameNotFinishedStub.restore();
-      });
-
       describe('Given the stock is not empty', () => {
-        let buildTableStateStub: SinonStub;
-        let validateNonEmptyStub: SinonStub;
-
         beforeEach(() => {
-          buildTableStateStub = stub(tableStateModule, 'buildTableState').returns({
+          buildTableStateStub.returns({
             stock: [{ suit: Suit.clubs, value: Value.jack, faceUp: false }]
-          } as any);
-          validateNonEmptyStub = stub(validationModule, 'validateNonEmpty');
-        });
-
-        afterEach(() => {
-          buildTableStateStub.restore();
-          validateNonEmptyStub.restore();
+          });
         });
 
         describe('When invoked', () => {
@@ -104,19 +111,9 @@ describe('The "deal stock to waste" command', () => {
       });
 
       describe('Given the stock is empty', () => {
-        const validationError = Error('Stock empty');
-
-        let buildTableStateStub: SinonStub;
-        let validateNonEmptyStub: SinonStub;
-
         beforeEach(() => {
-          buildTableStateStub = stub(tableStateModule, 'buildTableState').returns({ stock: [] } as any);
-          validateNonEmptyStub = stub(validationModule, 'validateNonEmpty').throws(validationError);
-        });
-
-        afterEach(() => {
-          buildTableStateStub.restore();
-          validateNonEmptyStub.restore();
+          buildTableStateStub.returns({ stock: [] } as any);
+          validateNonEmptyStub.throws(stockEmptyValidationError);
         });
 
         describe('When invoked', () => {
@@ -163,41 +160,15 @@ describe('The "deal stock to waste" command', () => {
           });
 
           it('Throws the validation error', () => {
-            expect(caughtError).to.equal(validationError);
+            expect(caughtError).to.equal(stockEmptyValidationError);
           });
         });
       });
     });
 
     describe('Given the game does not exist', () => {
-      const validationError = Error('Game does not exist');
-
-      let loadEventsStub: SinonStub;
-      let saveEventStub: SinonStub;
-      let validateParametersStub: SinonStub;
-      let validateGameExistsStub: SinonStub;
-      let validateGameNotFinishedStub: SinonStub;
-      let buildTableStateStub: SinonStub;
-      let validateNonEmptyStub: SinonStub;
-
       beforeEach(() => {
-        loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves();
-        saveEventStub = stub(saveEventsModule, 'saveEvent').resolves();
-        validateParametersStub = stub(validationModule, 'validateParameters');
-        validateGameExistsStub = stub(validationModule, 'validateGameExists').throws(validationError);
-        validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
-        buildTableStateStub = stub(tableStateModule, 'buildTableState');
-        validateNonEmptyStub = stub(validationModule, 'validateNonEmpty');
-      });
-
-      afterEach(() => {
-        loadEventsStub.restore();
-        saveEventStub.restore();
-        validateParametersStub.restore();
-        validateGameExistsStub.restore();
-        validateGameNotFinishedStub.restore();
-        buildTableStateStub.restore();
-        validateNonEmptyStub.restore();
+        validateGameExistsStub.throws(gameExistsValidationError);
       });
 
       describe('When invoked', () => {
@@ -242,40 +213,14 @@ describe('The "deal stock to waste" command', () => {
         });
 
         it('Throws the validation error', () => {
-          expect(caughtError).to.equal(validationError);
+          expect(caughtError).to.equal(gameExistsValidationError);
         });
       });
     });
 
     describe('Given the game is already finished', () => {
-      const validationError = Error('Game is already finished');
-
-      let loadEventsStub: SinonStub;
-      let saveEventStub: SinonStub;
-      let validateParametersStub: SinonStub;
-      let validateGameExistsStub: SinonStub;
-      let validateGameNotFinishedStub: SinonStub;
-      let buildTableStateStub: SinonStub;
-      let validateNonEmptyStub: SinonStub;
-
       beforeEach(() => {
-        loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves();
-        saveEventStub = stub(saveEventsModule, 'saveEvent').resolves();
-        validateParametersStub = stub(validationModule, 'validateParameters');
-        validateGameExistsStub = stub(validationModule, 'validateGameExists');
-        validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished').throws(validationError);
-        buildTableStateStub = stub(tableStateModule, 'buildTableState');
-        validateNonEmptyStub = stub(validationModule, 'validateNonEmpty');
-      });
-
-      afterEach(() => {
-        loadEventsStub.restore();
-        saveEventStub.restore();
-        validateParametersStub.restore();
-        validateGameExistsStub.restore();
-        validateGameNotFinishedStub.restore();
-        buildTableStateStub.restore();
-        validateNonEmptyStub.restore();
+        validateGameNotFinishedStub.throws(gameNotFinishedValidationError);
       });
 
       describe('When invoked', () => {
@@ -320,41 +265,15 @@ describe('The "deal stock to waste" command', () => {
         });
 
         it('Throws the validation error', () => {
-          expect(caughtError).to.equal(validationError);
+          expect(caughtError).to.equal(gameNotFinishedValidationError);
         });
       });
     });
   });
 
   describe('Given the event store throws when loading events', () => {
-    const eventStoreError = Error('Database error: Failed to load events');
-
-    let loadEventsStub: SinonStub;
-    let saveEventStub: SinonStub;
-    let validateParametersStub: SinonStub;
-    let validateGameExistsStub: SinonStub;
-    let validateGameNotFinishedStub: SinonStub;
-    let buildTableStateStub: SinonStub;
-    let validateNonEmptyStub: SinonStub;
-
     beforeEach(() => {
-      loadEventsStub = stub(loadEventsModule, 'loadEvents').rejects(eventStoreError);
-      saveEventStub = stub(saveEventsModule, 'saveEvent').resolves();
-      validateParametersStub = stub(validationModule, 'validateParameters');
-      validateGameExistsStub = stub(validationModule, 'validateGameExists');
-      validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
-      buildTableStateStub = stub(tableStateModule, 'buildTableState');
-      validateNonEmptyStub = stub(validationModule, 'validateNonEmpty');
-    });
-
-    afterEach(() => {
-      loadEventsStub.restore();
-      saveEventStub.restore();
-      validateParametersStub.restore();
-      validateGameExistsStub.restore();
-      validateGameNotFinishedStub.restore();
-      buildTableStateStub.restore();
-      validateNonEmptyStub.restore();
+      loadEventsStub.rejects(loadEventsError);
     });
 
     describe('When invoked', () => {
@@ -399,42 +318,18 @@ describe('The "deal stock to waste" command', () => {
       });
 
       it('Throws the error from the event store', () => {
-        expect(caughtError).to.equal(eventStoreError);
+        expect(caughtError).to.equal(loadEventsError);
       });
     });
   });
 
   describe('Given the event store throws when saving an event', () => {
-    const eventStoreError = Error('Database error: Failed to save event');
-
-    let loadEventsStub: SinonStub;
-    let saveEventStub: SinonStub;
-    let validateParametersStub: SinonStub;
-    let validateGameExistsStub: SinonStub;
-    let validateGameNotFinishedStub: SinonStub;
-    let buildTableStateStub: SinonStub;
-    let validateNonEmptyStub: SinonStub;
-
     beforeEach(() => {
-      loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves();
-      saveEventStub = stub(saveEventsModule, 'saveEvent').rejects(eventStoreError);
-      validateParametersStub = stub(validationModule, 'validateParameters');
-      validateGameExistsStub = stub(validationModule, 'validateGameExists');
-      validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
-      buildTableStateStub = stub(tableStateModule, 'buildTableState').returns({
+      loadEventsStub.resolves();
+      saveEventStub.rejects(saveEventError);
+      buildTableStateStub.returns({
         stock: [{ suit: Suit.clubs, value: Value.jack, faceUp: false }]
-      } as any);
-      validateNonEmptyStub = stub(validationModule, 'validateNonEmpty');
-    });
-
-    afterEach(() => {
-      loadEventsStub.restore();
-      saveEventStub.restore();
-      validateParametersStub.restore();
-      validateGameExistsStub.restore();
-      validateGameNotFinishedStub.restore();
-      buildTableStateStub.restore();
-      validateNonEmptyStub.restore();
+      });
     });
 
     describe('When invoked', () => {
@@ -483,7 +378,7 @@ describe('The "deal stock to waste" command', () => {
       });
 
       it('Throws the error from the event store', () => {
-        expect(caughtError).to.equal(eventStoreError);
+        expect(caughtError).to.equal(saveEventError);
       });
     });
   });

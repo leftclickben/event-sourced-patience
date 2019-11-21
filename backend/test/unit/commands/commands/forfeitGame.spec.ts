@@ -9,32 +9,41 @@ import { fail } from 'assert';
 import { forfeitGame } from '../../../../src/commands/processors/forfeitGame';
 
 describe('The "forfeit game" command', () => {
+  const savedEvent: GameEvent = createSampleGameplayEvent(GameEventType.gameForfeited);
+  const gameExistsValidationError = Error('Game does not exist');
+  const gameNotFinishedValidationError = Error('Game is already finished');
+  const loadEventsError = Error('Database error: Failed to load events');
+  const saveEventError = Error('Database error: Failed to save event');
+
+  let loadEventsStub: SinonStub;
+  let saveEventStub: SinonStub;
+  let validateParametersStub: SinonStub;
+  let validateGameExistsStub: SinonStub;
+  let validateGameNotFinishedStub: SinonStub;
+
+  beforeEach(() => {
+    loadEventsStub = stub(loadEventsModule, 'loadEvents');
+    saveEventStub = stub(saveEventsModule, 'saveEvent');
+    validateParametersStub = stub(validationModule, 'validateParameters');
+    validateGameExistsStub = stub(validationModule, 'validateGameExists');
+    validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
+  });
+
+  afterEach(() => {
+    loadEventsStub.restore();
+    saveEventStub.restore();
+    validateParametersStub.restore();
+    validateGameExistsStub.restore();
+    validateGameNotFinishedStub.restore();
+  });
+
   describe('Given the event store is loading and saving events correctly', () => {
+    beforeEach(() => {
+      loadEventsStub.resolves();
+      saveEventStub.resolves(savedEvent);
+    });
+
     describe('Given the game is in progress', () => {
-      const savedEvent: GameEvent = createSampleGameplayEvent(GameEventType.gameForfeited);
-
-      let loadEventsStub: SinonStub;
-      let saveEventStub: SinonStub;
-      let validateParametersStub: SinonStub;
-      let validateGameExistsStub: SinonStub;
-      let validateGameNotFinishedStub: SinonStub;
-
-      beforeEach(() => {
-        loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves();
-        saveEventStub = stub(saveEventsModule, 'saveEvent').resolves(savedEvent);
-        validateParametersStub = stub(validationModule, 'validateParameters');
-        validateGameExistsStub = stub(validationModule, 'validateGameExists');
-        validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
-      });
-
-      afterEach(() => {
-        loadEventsStub.restore();
-        saveEventStub.restore();
-        validateParametersStub.restore();
-        validateGameExistsStub.restore();
-        validateGameNotFinishedStub.restore();
-      });
-
       describe('When invoked', () => {
         let result: GameEvent;
 
@@ -74,28 +83,8 @@ describe('The "forfeit game" command', () => {
     });
 
     describe('Given the game does not exist', () => {
-      const validationError = Error('Game does not exist');
-
-      let loadEventsStub: SinonStub;
-      let saveEventStub: SinonStub;
-      let validateParametersStub: SinonStub;
-      let validateGameExistsStub: SinonStub;
-      let validateGameNotFinishedStub: SinonStub;
-
       beforeEach(() => {
-        loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves();
-        saveEventStub = stub(saveEventsModule, 'saveEvent').resolves();
-        validateParametersStub = stub(validationModule, 'validateParameters');
-        validateGameExistsStub = stub(validationModule, 'validateGameExists').throws(validationError);
-        validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
-      });
-
-      afterEach(() => {
-        loadEventsStub.restore();
-        saveEventStub.restore();
-        validateParametersStub.restore();
-        validateGameExistsStub.restore();
-        validateGameNotFinishedStub.restore();
+        validateGameExistsStub.throws(gameExistsValidationError);
       });
 
       describe('When invoked', () => {
@@ -132,34 +121,14 @@ describe('The "forfeit game" command', () => {
         });
 
         it('Throws the validation error', () => {
-          expect(caughtError).to.equal(validationError);
+          expect(caughtError).to.equal(gameExistsValidationError);
         });
       });
     });
 
     describe('Given the game is already finished', () => {
-      const validationError = Error('Game is already finished');
-
-      let loadEventsStub: SinonStub;
-      let saveEventStub: SinonStub;
-      let validateParametersStub: SinonStub;
-      let validateGameExistsStub: SinonStub;
-      let validateGameNotFinishedStub: SinonStub;
-
       beforeEach(() => {
-        loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves();
-        saveEventStub = stub(saveEventsModule, 'saveEvent').resolves();
-        validateParametersStub = stub(validationModule, 'validateParameters');
-        validateGameExistsStub = stub(validationModule, 'validateGameExists');
-        validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished').throws(validationError);
-      });
-
-      afterEach(() => {
-        loadEventsStub.restore();
-        saveEventStub.restore();
-        validateParametersStub.restore();
-        validateGameExistsStub.restore();
-        validateGameNotFinishedStub.restore();
+        validateGameNotFinishedStub.throws(gameNotFinishedValidationError);
       });
 
       describe('When invoked', () => {
@@ -196,35 +165,15 @@ describe('The "forfeit game" command', () => {
         });
 
         it('Throws the validation error', () => {
-          expect(caughtError).to.equal(validationError);
+          expect(caughtError).to.equal(gameNotFinishedValidationError);
         });
       });
     });
   });
 
   describe('Given the event store throws when loading events', () => {
-    const eventStoreError = Error('Database error: Failed to load events');
-
-    let loadEventsStub: SinonStub;
-    let saveEventStub: SinonStub;
-    let validateParametersStub: SinonStub;
-    let validateGameExistsStub: SinonStub;
-    let validateGameNotFinishedStub: SinonStub;
-
     beforeEach(() => {
-      loadEventsStub = stub(loadEventsModule, 'loadEvents').rejects(eventStoreError);
-      saveEventStub = stub(saveEventsModule, 'saveEvent').resolves();
-      validateParametersStub = stub(validationModule, 'validateParameters');
-      validateGameExistsStub = stub(validationModule, 'validateGameExists');
-      validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
-    });
-
-    afterEach(() => {
-      loadEventsStub.restore();
-      saveEventStub.restore();
-      validateParametersStub.restore();
-      validateGameExistsStub.restore();
-      validateGameNotFinishedStub.restore();
+      loadEventsStub.rejects(loadEventsError);
     });
 
     describe('When invoked', () => {
@@ -261,34 +210,15 @@ describe('The "forfeit game" command', () => {
       });
 
       it('Throws the error from the event store', () => {
-        expect(caughtError).to.equal(eventStoreError);
+        expect(caughtError).to.equal(loadEventsError);
       });
     });
   });
 
   describe('Given the event store throws when saving an event', () => {
-    const eventStoreError = Error('Database error: Failed to save event');
-
-    let loadEventsStub: SinonStub;
-    let saveEventStub: SinonStub;
-    let validateParametersStub: SinonStub;
-    let validateGameExistsStub: SinonStub;
-    let validateGameNotFinishedStub: SinonStub;
-
     beforeEach(() => {
-      loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves();
-      saveEventStub = stub(saveEventsModule, 'saveEvent').rejects(eventStoreError);
-      validateParametersStub = stub(validationModule, 'validateParameters');
-      validateGameExistsStub = stub(validationModule, 'validateGameExists');
-      validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
-    });
-
-    afterEach(() => {
-      loadEventsStub.restore();
-      saveEventStub.restore();
-      validateParametersStub.restore();
-      validateGameExistsStub.restore();
-      validateGameNotFinishedStub.restore();
+      loadEventsStub.resolves();
+      saveEventStub.rejects(saveEventError);
     });
 
     describe('When invoked', () => {
@@ -325,7 +255,7 @@ describe('The "forfeit game" command', () => {
       });
 
       it('Throws the error from the event store', () => {
-        expect(caughtError).to.equal(eventStoreError);
+        expect(caughtError).to.equal(saveEventError);
       });
     });
   });
