@@ -29,7 +29,7 @@ describe('The "create game" command', () => {
     createDeckSpy = spy(gameModule, 'createDeck');
     dealTableauSpy = spy(gameModule, 'dealTableau');
 
-    saveEventStub = stub(saveEventsModule, 'saveEvent').resolves(savedEvent);
+    saveEventStub = stub(saveEventsModule, 'saveEvent');
   });
 
   afterEach(() => {

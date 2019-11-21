@@ -29,8 +29,8 @@ describe('The "play tableau to foundation" command', () => {
   let validateCompatibleWithFoundationStub: SinonStub;
 
   beforeEach(() => {
-    loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves();
-    saveEventStub = stub(saveEventsModule, 'saveEvent').resolves(savedEvent);
+    loadEventsStub = stub(loadEventsModule, 'loadEvents');
+    saveEventStub = stub(saveEventsModule, 'saveEvent');
     validateParametersStub = stub(validationModule, 'validateParameters');
     validateGameExistsStub = stub(validationModule, 'validateGameExists');
     validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
