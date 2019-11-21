@@ -10,7 +10,7 @@ import { fail } from 'assert';
 import { Suit, Value } from '../../../../src/game/types';
 import { playTableauToFoundation } from '../../../../src/commands/processors/playTableauToFoundation';
 
-describe('The "deal stock to waste" command', () => {
+describe('The "play tableau to foundation" command', () => {
   const savedEvent: GameEvent = createSampleGameplayEvent(GameEventType.tableauPlayedToFoundation);
   const nonEmptyValidationError = Error('Tableau column 0 empty');
   const compatibleWithFoundationValidationError = Error('You can\'t play that there');
