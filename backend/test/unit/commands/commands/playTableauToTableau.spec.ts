@@ -141,7 +141,7 @@ describe('The "play tableau to tableau" command', () => {
         });
       });
 
-      describe('Given the source tableau column is empty', () => {
+      describe('Given the source tableau column contains insufficient cards', () => {
         beforeEach(() => {
           buildTableStateStub.returns({
             tableau: [[], [], [], [], [], [], []]
