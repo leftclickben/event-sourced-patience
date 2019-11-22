@@ -12,7 +12,7 @@ Write a move by specifying where a card is moving from and where it is moving to
 * a..d = foundation (4 positions)
 * 1..7 = tableau (7 columns)
 * s = stock
-* w = waste 
+* w = waste
 
 For example:
 

@@ -18,13 +18,13 @@ export interface BaseCommandRouteMapEntry {
 }
 
 export interface GameplayCommandRouteMapEntry extends BaseCommandRouteMapEntry {
-  type: 'gameplay'
+  type: 'gameplay';
   command: GameplayCommandName;
   parameters: CommandRouteParameter<any>[];
 }
 
-export interface SpecialCommandRouteMapEntry extends BaseCommandRouteMapEntry{
-  type: 'special'
+export interface SpecialCommandRouteMapEntry extends BaseCommandRouteMapEntry {
+  type: 'special';
   handler: (readlineInterface: Interface, game: Game) => Promise<Game>;
 }
 

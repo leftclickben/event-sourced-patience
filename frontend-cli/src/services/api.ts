@@ -27,7 +27,11 @@ export const loadGame = async (gameId: GameId): Promise<Game> => {
   return response;
 };
 
-export const playGame = async (gameId: GameId, moveType: GameplayCommandName, body?: Record<string, string>): Promise<Game> => {
+export const playGame = async (
+  gameId: GameId,
+  moveType: GameplayCommandName,
+  body?: Record<string, string>
+): Promise<Game> => {
   const url = `${ process.env.API_BASE_URL }/game/${ gameId }/${ moveType }`;
   if (process.env.API_VERBOSE) {
     console.debug(`HTTP PATCH ${ url } ${ JSON.stringify(body) }`);
