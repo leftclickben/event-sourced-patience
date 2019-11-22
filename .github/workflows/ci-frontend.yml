@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    paths:
+      - frontend-cli
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - name: Install dependencies
+        working-directory: frontend-cli
+        run: npm install
+      - name: Run backend linter
+        working-directory: frontend-cli
+        run: npm run lint
+# TODO
+#       - name: Run backend tests
+#         working-directory: frontend-cli
+#         run: npm run test
