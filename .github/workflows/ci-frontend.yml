@@ -18,10 +18,9 @@ jobs:
       - name: Install dependencies
         working-directory: frontend-cli
         run: npm install
-      - name: Run backend linter
+      - name: Run frontend linter
         working-directory: frontend-cli
         run: npm run lint
-# TODO
-#       - name: Run backend tests
-#         working-directory: frontend-cli
-#         run: npm run test
+      - name: Run frontend tests
+        working-directory: frontend-cli
+        run: npm run test
