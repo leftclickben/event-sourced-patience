@@ -7,7 +7,7 @@
   "scripts": {
     "ts-node": "ts-node",
     "lint": "tslint --project tsconfig.json",
-    "test": "mocha -r ts-node/register tests/unit/**/*.spec.ts",
+    "test": "mocha -r ts-node/register test/unit/**/*.spec.ts",
     "build": "webpack",
     "game": "ts-node src/index.ts"
   },
