@@ -28,7 +28,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./build/handlers/http/game
-      Handler: get.getGameHandler
+      Handler: get.handler
       Environment:
         Variables:
           DB_TABLE_EVENTS: !Ref EventsTable
@@ -46,7 +46,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./build/handlers/http/game
-      Handler: post.postGameHandler
+      Handler: post.handler
       Environment:
         Variables:
           DB_TABLE_EVENTS: !Ref EventsTable
@@ -64,7 +64,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./build/handlers/http/game
-      Handler: patch.patchGameHandler
+      Handler: patch.handler
       Environment:
         Variables:
           DB_TABLE_EVENTS: !Ref EventsTable
@@ -82,7 +82,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./build/handlers/http/game
-      Handler: delete.deleteGameHandler
+      Handler: delete.handler
       Environment:
         Variables:
           DB_TABLE_EVENTS: !Ref EventsTable

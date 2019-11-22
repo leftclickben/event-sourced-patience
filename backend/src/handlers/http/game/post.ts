@@ -1,18 +1,23 @@
 import { constants } from 'http2';
-import { APIGatewayProxyHandler } from 'aws-lambda';
 import { createGame } from '../../../commands/processors/createGame';
-import { checkEnvironment, httpHandler, success } from '../util';
+import { checkEnvironment } from '../util';
 import { buildTableState } from '../../../state/table';
 import { buildScoreState } from '../../../state/score';
+import { APIGatewayProxyHandlerWithData, wrapHttpHandler } from '../wrap';
 
-export const postGameHandler: APIGatewayProxyHandler = httpHandler(async () => {
+export const postGameHandler: APIGatewayProxyHandlerWithData = async () => {
   checkEnvironment(['DB_TABLE_EVENTS']);
 
   const createGameEvent = await createGame();
 
-  return success({
-    gameId: createGameEvent.gameId,
-    table: buildTableState([createGameEvent]),
-    score: buildScoreState([createGameEvent]).score
-  }, constants.HTTP_STATUS_CREATED);
-});
+  return {
+    statusCode: constants.HTTP_STATUS_CREATED,
+    data: {
+      gameId: createGameEvent.gameId,
+      table: buildTableState([createGameEvent]),
+      score: buildScoreState([createGameEvent]).score
+    }
+  };
+};
+
+export const handler = wrapHttpHandler(postGameHandler);

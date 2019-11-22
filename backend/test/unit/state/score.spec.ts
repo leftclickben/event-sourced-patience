@@ -105,7 +105,7 @@ describe('The score state builder', () => {
           { faceDown: 2, faceUp: 2 },
           { faceDown: 0, faceUp: 1 }
         ]
-      })
+      });
     });
   });
 });

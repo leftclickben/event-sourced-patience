@@ -1,10 +1,8 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
-import { checkArguments, checkEnvironment, httpHandler, success } from '../util';
-import { loadEvents } from '../../../events/store';
+import { checkArguments, checkEnvironment } from '../util';
+import { loadEvents } from '../../../events/load';
 import { buildTableState } from '../../../state/table';
 import { buildScoreState } from '../../../state/score';
-import { GameEvent } from '../../../events/types';
-import { CommandProcessor, GameplayCommandName } from '../../../commands/types';
+import { GameplayCommandName } from '../../../commands/types';
 import { playWasteToTableau } from '../../../commands/processors/playWasteToTableau';
 import { playTableauToTableau } from '../../../commands/processors/playTableauToTableau';
 import { playTableauToFoundation } from '../../../commands/processors/playTableauToFoundation';
@@ -12,8 +10,9 @@ import { playWasteToFoundation } from '../../../commands/processors/playWasteToF
 import { dealStockToWaste } from '../../../commands/processors/dealStockToWaste';
 import { resetWasteToStock } from '../../../commands/processors/resetWasteToStock';
 import { claimVictory } from '../../../commands/processors/claimVictory';
+import { APIGatewayProxyHandlerWithData, wrapHttpHandler } from '../wrap';
 
-const delegations: Record<GameplayCommandName, CommandProcessor<any, GameEvent>> = {
+const getDelegation = (key: GameplayCommandName) => ({
   dealStockToWaste,
   resetWasteToStock,
   playWasteToTableau,
@@ -21,24 +20,28 @@ const delegations: Record<GameplayCommandName, CommandProcessor<any, GameEvent>>
   playTableauToFoundation,
   playTableauToTableau,
   claimVictory
-};
+}[key]);
 
-export const patchGameHandler: APIGatewayProxyHandler = httpHandler(async ({ body, pathParameters }) => {
+export const patchGameHandler: APIGatewayProxyHandlerWithData = async ({ data, pathParameters }) => {
   checkEnvironment(['DB_TABLE_EVENTS']);
 
   const { gameId, moveType } = pathParameters || {};
 
   checkArguments({ gameId, moveType });
 
-  const parameters = body ? JSON.parse(body) : undefined;
+  const delegation = getDelegation(moveType as GameplayCommandName);
 
   const events = await loadEvents(gameId);
 
-  const addedEvent = await delegations[moveType as GameplayCommandName]({ gameId, ...parameters });
+  const addedEvent = await delegation({ gameId, ...data as any });
 
-  return success({
-    gameId,
-    table: buildTableState([...events, addedEvent]),
-    score: buildScoreState([...events, addedEvent]).score
-  });
-});
+  return {
+    data: {
+      gameId,
+      table: buildTableState([...events, addedEvent]),
+      score: buildScoreState([...events, addedEvent]).score
+    }
+  };
+};
+
+export const handler = wrapHttpHandler(patchGameHandler);

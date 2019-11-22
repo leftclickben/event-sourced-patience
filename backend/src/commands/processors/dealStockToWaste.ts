@@ -1,6 +1,7 @@
 import { CommandProcessor, DealStockToWasteCommand } from '../types';
 import { GameEventType, StockDealtToWasteEvent } from '../../events/types';
-import { loadEvents, saveEvent } from '../../events/store';
+import { loadEvents } from '../../events/load';
+import { saveEvent } from '../../events/save';
 import { validateGameExists, validateGameNotFinished, validateNonEmpty, validateParameters } from '../validation';
 import { buildTableState } from '../../state/table';
 
