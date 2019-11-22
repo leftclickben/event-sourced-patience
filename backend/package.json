@@ -11,7 +11,7 @@
   "scripts": {
     "ts-node": "ts-node",
     "lint": "tslint --project tsconfig.json",
-    "test": "mocha -r ts-node/register test/**/*.setup.ts test/*.spec.ts",
+    "test": "mocha -r ts-node/register test/*.setup.ts test/**/*.spec.ts",
     "qa": "npm run lint && npm test",
     "local": "sam local",
     "logs": "sam logs",
