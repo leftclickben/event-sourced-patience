@@ -5,10 +5,10 @@ export const top = <T>(list: T[]) => list.length > 0 ? list[list.length - 1] : u
 
 export const maxChildLength = <T>(parent: T[][]) => parent.reduce((max, column) => Math.max(max, column.length), 0);
 
-export const pressEnter = async (readlineInterface: Interface) =>
-  await new Promise<void>(
-    (resolve) => readlineInterface.question('Press enter to continue...', () => resolve()));
-
 export const gameOver = (status: GameStatus) => [GameStatus.forfeited, GameStatus.completed].indexOf(status) >= 0;
 
 export const repeat = (length: number, character = ' ') => Array.from({ length }, () => character).join('');
+
+export const pressEnter = async (readlineInterface: Interface) =>
+  await new Promise<void>(
+    (resolve) => readlineInterface.question('Press enter to continue...', () => resolve()));
