@@ -10,12 +10,15 @@ export const postGameHandler: APIGatewayProxyHandlerWithData = async () => {
 
   const createGameEvent = await createGame();
 
+  const { score, status } = buildScoreState([createGameEvent]);
+
   return {
     statusCode: constants.HTTP_STATUS_CREATED,
     data: {
       gameId: createGameEvent.gameId,
-      table: buildTableState([createGameEvent]),
-      score: buildScoreState([createGameEvent]).score
+      score,
+      status,
+      table: buildTableState([createGameEvent])
     }
   };
 };

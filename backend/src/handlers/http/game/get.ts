@@ -15,11 +15,14 @@ export const getGameHandler: APIGatewayProxyHandlerWithData = async ({ pathParam
 
   checkResultArray(events, `Game ${gameId} not found`);
 
+  const { score, status } = buildScoreState(events);
+
   return {
     data: {
       gameId,
-      table: buildTableState(events),
-      score: buildScoreState(events).score
+      score,
+      status,
+      table: buildTableState(events)
     }
   };
 };

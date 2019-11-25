@@ -7,6 +7,7 @@ import * as tableStateModule from '../../../../../src/state/table';
 import * as scoreStateModule from '../../../../../src/state/score';
 import { createSampleCreateGameEvent } from '../../../../fixtures/events';
 import { APIGatewayProxyResultWithData } from '../../../../../src/handlers/http/wrap';
+import { GameStatus } from '../../../../../src/game/types';
 
 describe('The HTTP GET /game handler', () => {
   describe('Given the environment is correctly configured', () => {
@@ -39,7 +40,10 @@ describe('The HTTP GET /game handler', () => {
 
         beforeEach(() => {
           buildTableStateStub = stub(tableStateModule, 'buildTableState').returns('table state' as any);
-          buildScoreStateStub = stub(scoreStateModule, 'buildScoreState').returns({ score: 123 } as any);
+          buildScoreStateStub = stub(scoreStateModule, 'buildScoreState').returns({
+            score: 123,
+            status: GameStatus.inProgress
+          } as any);
         });
 
         afterEach(() => {
@@ -67,7 +71,8 @@ describe('The HTTP GET /game handler', () => {
               data: {
                 gameId: 'game-42',
                 table: 'table state',
-                score: 123
+                score: 123,
+                status: GameStatus.inProgress
               }
             });
           });

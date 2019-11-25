@@ -34,7 +34,7 @@ const commandRouteMap: CommandRouteMapEntry[] = [
       await forfeitGame(game.gameId);
       await removeGameFile();
       // The DELETE doesn't return a response, so we just update the status client-side for display purposes.
-      return { ...game, table: { ...game.table, status: GameStatus.forfeited } };
+      return { ...game, status: GameStatus.forfeited };
     }
   },
   {

@@ -51,8 +51,9 @@ describe('The HTTP POST /game handler', () => {
             statusCode: 201,
             data: {
               gameId: 'game-42',
+              status: 'inProgress',
+              score: 0,
               table: {
-                status: 'inProgress',
                 tableau: [
                   [
                     { suit: 'diamonds', value: 'ace', faceUp: true }
@@ -90,8 +91,7 @@ describe('The HTTP POST /game handler', () => {
                   { suit: 'spades', value: 'seven', faceUp: true }
                 ],
                 waste: []
-              },
-              score: 0
+              }
             }
           });
         });

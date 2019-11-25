@@ -7,7 +7,7 @@ import { generateFoundationView } from './foundation';
 import { generateFooterView } from './footer';
 import { generateTableauView } from './tableau';
 
-export const generateGameView = ({ table: { status, tableau, foundation, stock, waste }, score }: Game): string => {
+export const generateGameView = ({ table: { tableau, foundation, stock, waste }, status, score }: Game): string => {
   // Calculate the full width of the game view, taking into account there is no margin after last column.
   const viewWidth = Math.max(tableau.length, foundation.length) * (baseSlot.length + margin.length) - margin.length;
   return [

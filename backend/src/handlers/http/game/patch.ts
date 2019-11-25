@@ -35,11 +35,14 @@ export const patchGameHandler: APIGatewayProxyHandlerWithData = async ({ data, p
 
   const addedEvent = await delegation({ gameId, ...data as any });
 
+  const { score, status } = buildScoreState([...events, addedEvent]);
+
   return {
     data: {
       gameId,
-      table: buildTableState([...events, addedEvent]),
-      score: buildScoreState([...events, addedEvent]).score
+      score,
+      status,
+      table: buildTableState([...events, addedEvent])
     }
   };
 };

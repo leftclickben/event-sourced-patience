@@ -30,7 +30,7 @@ export const main = async (gameId?: string, newGame: boolean = false) => {
         await pressEnter(readlineInterface);
       } finally {
         console.info(generateGameView(game));
-        if (gameOver(game.table.status)) {
+        if (gameOver(game.status)) {
           readlineInterface.close();
         } else {
           readlineInterface.prompt();
@@ -39,7 +39,7 @@ export const main = async (gameId?: string, newGame: boolean = false) => {
     });
 
     readlineInterface.on('close', () => {
-      if (gameOver(game.table.status)) {
+      if (gameOver(game.status)) {
         console.info(generateGameView(game));
       }
       console.info('Thanks for playing!');
