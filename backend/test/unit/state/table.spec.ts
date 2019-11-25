@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { buildTableState } from '../../../src/state/table';
-import { GameStatus, Suit, Value } from '../../../src/game/types';
+import { Suit, Value } from '../../../src/game/types';
 import {
   GameEventType,
   StockDealtToWasteEvent,
@@ -20,7 +20,6 @@ describe('The table state builder', () => {
 
     it('Returns the initial state', () => {
       expect(state).to.deep.equal({
-        status: GameStatus.none,
         tableau: [],
         foundation: [],
         stock: [],
@@ -40,7 +39,6 @@ describe('The table state builder', () => {
 
     it('Returns the resulting state', () => {
       expect(state).to.deep.equal({
-        status: GameStatus.inProgress,
         tableau: [
           [
             { suit: Suit.diamonds, value: Value.ace, faceUp: true }
@@ -133,7 +131,6 @@ describe('The table state builder', () => {
 
     it('Returns the resulting state', () => {
       expect(state).to.deep.equal({
-        status: GameStatus.inProgress,
         tableau: [
           [
             { suit: Suit.diamonds, value: Value.king, faceUp: true }

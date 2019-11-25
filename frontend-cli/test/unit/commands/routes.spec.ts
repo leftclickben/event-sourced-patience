@@ -12,28 +12,28 @@ import { GameplayCommandRouteMapEntry, SpecialCommandRouteMapEntry } from '../..
 describe('Command routes', () => {
   const game: Game = {
     gameId: 'game-42',
+    status: GameStatus.inProgress,
+    score: 100,
     table: {
-      status: GameStatus.inProgress,
       tableau: 'initial tableau',
       foundation: 'initial foundation',
       stock: 'initial stock',
       waste: 'initial waste'
-    } as unknown as TableState,
-    score: 100
+    } as unknown as TableState
   };
 
   const initialGame: Game = Object.freeze({ ...game, table: { ...game.table } });
 
   const modifiedGame: Game = {
     ...game,
+    status: game.status,
+    score: 110,
     table: {
-      status: game.table.status,
       tableau: 'modified tableau',
       foundation: 'modified foundation',
       stock: 'modified stock',
       waste: 'modified waste',
-    } as unknown as TableState,
-    score: 110
+    } as unknown as TableState
   };
 
   let readlineInterfaceCloseSpy: SinonSpy;
@@ -143,12 +143,9 @@ describe('Command routes', () => {
 
       it('Returns a game with an unmodified table state and score and a status of "forfeited"', () => {
         expect(handlerResult.gameId).to.equal('game-42');
-        expect(handlerResult.table.status).to.equal(GameStatus.forfeited);
-        expect(handlerResult.table.tableau).to.deep.equal(initialGame.table.tableau);
-        expect(handlerResult.table.foundation).to.deep.equal(initialGame.table.foundation);
-        expect(handlerResult.table.stock).to.deep.equal(initialGame.table.stock);
-        expect(handlerResult.table.waste).to.deep.equal(initialGame.table.waste);
+        expect(handlerResult.status).to.equal(GameStatus.forfeited);
         expect(handlerResult.score).to.equal(initialGame.score);
+        expect(handlerResult.table).to.deep.equal(initialGame.table);
       });
     });
   });

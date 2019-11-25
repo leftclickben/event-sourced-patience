@@ -2,16 +2,14 @@ import {
   GameCreatedEvent,
   GameEvent,
   GameEventType,
-  GameForfeitedEvent,
   StockDealtToWasteEvent,
   TableauPlayedToFoundationEvent,
   TableauPlayedToTableauEvent,
-  VictoryClaimedEvent,
   WastePlayedToFoundationEvent,
   WastePlayedToTableauEvent,
   WasteResetToStockEvent
 } from '../../events/types';
-import { Card, GameStatus } from '../../game/types';
+import { Card } from '../../game/types';
 import { TableState } from './types';
 import { buildStateFromEvents } from '../util';
 import { StateBuilder } from '../types';
@@ -19,7 +17,6 @@ import { StateBuilder } from '../types';
 export const buildTableState = (events: GameEvent[]) =>
   buildStateFromEvents<TableState>(
     {
-      status: GameStatus.none,
       tableau: [],
       foundation: [],
       stock: [],
@@ -27,8 +24,6 @@ export const buildTableState = (events: GameEvent[]) =>
     },
     {
       gameCreated,
-      gameForfeited,
-      victoryClaimed,
       stockDealtToWaste,
       wasteResetToStock,
       wastePlayedToTableau,
@@ -42,23 +37,10 @@ export const buildTableState = (events: GameEvent[]) =>
 
 const gameCreated: StateBuilder<TableState, GameCreatedEvent> =
   (_ignorePreviousState, { tableau, stock }): TableState => ({
-    status: GameStatus.inProgress,
     tableau,
     foundation: [[], [], [], []],
     stock,
     waste: []
-  });
-
-const gameForfeited: StateBuilder<TableState, GameForfeitedEvent> =
-  (state) => ({
-    ...state,
-    status: GameStatus.forfeited
-  });
-
-const victoryClaimed: StateBuilder<TableState, VictoryClaimedEvent> =
-  (state) => ({
-    ...state,
-    status: GameStatus.completed
   });
 
 const stockDealtToWaste: StateBuilder<TableState, StockDealtToWasteEvent> =

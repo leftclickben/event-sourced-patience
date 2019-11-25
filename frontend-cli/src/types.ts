@@ -37,7 +37,6 @@ export enum GameStatus {
 }
 
 export interface TableState {
-  status: GameStatus;
   tableau: Card[][];
   foundation: Card[][];
   stock: Card[];
@@ -55,6 +54,7 @@ export type GameplayCommandName =
 
 export interface Game {
   gameId: string;
-  table: TableState;
+  status: GameStatus;
   score: number;
+  table: TableState;
 }
