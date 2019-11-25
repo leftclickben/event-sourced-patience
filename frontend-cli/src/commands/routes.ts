@@ -16,7 +16,7 @@ const parseCount: CommandRouteParameterParser<number> =
     ? Number(input)
     : game.table.tableau[allParameters.fromIndex].filter(({ faceUp }) => faceUp).length;
 
-export const commandRouteMap: CommandRouteMapEntry[] = [
+const commandRouteMap: CommandRouteMapEntry[] = [
   {
     type: 'special',
     match: /^h(?:elp)?$/,
@@ -124,3 +124,6 @@ export const commandRouteMap: CommandRouteMapEntry[] = [
     ]
   }
 ];
+
+export const getCommandRoute = (command: string): CommandRouteMapEntry | undefined =>
+  commandRouteMap.find(({ match }) => match.test(command));

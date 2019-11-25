@@ -1,6 +1,6 @@
 import { Interface } from 'readline';
 import { playGame } from '../services/api';
-import { commandRouteMap } from './routes';
+import { getCommandRoute } from './routes';
 import { GameplayCommandRouteMapEntry } from './types';
 import { pressEnter } from '../util';
 import { Game } from '../types';
@@ -10,7 +10,7 @@ export const handleCommand = async (
   game: Game,
   command: string
 ): Promise<Game> => {
-  const route = commandRouteMap.find(({ match }) => match.test(command));
+  const route = getCommandRoute(command);
   if (!route) {
     if (command) {
       console.error(`Unknown command "${command}"`);
@@ -18,9 +18,15 @@ export const handleCommand = async (
     }
     return game;
   }
-  return (route.type === 'gameplay')
-    ? await handleGameplayCommand(game, route, command)
-    : await route.handler(readlineInterface, game);
+  try {
+    return (route.type === 'gameplay')
+      ? await handleGameplayCommand(game, route, command)
+      : await route.handler(readlineInterface, game);
+  } catch (error) {
+    console.error(`API error occurred: ${error}`);
+    await pressEnter(readlineInterface);
+    return game;
+  }
 };
 
 const handleGameplayCommand = async (
