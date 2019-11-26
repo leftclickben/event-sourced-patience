@@ -6,18 +6,20 @@ import { handleCommand } from './commands';
 import { prompt } from './strings';
 import { loadCurrentGame } from './services/game';
 import { gameOver, pressEnter } from './util';
+import { Readable, Writable } from 'stream';
 
-export const main = async (gameId?: string, newGame: boolean = false) => {
+export const main = async (
+  gameId?: string,
+  newGame: boolean = false,
+  input: Readable = process.stdin,
+  output: Writable = process.stdout
+) => {
   try {
     config();
 
     let game = await loadCurrentGame(gameId, newGame);
 
-    const readlineInterface = createInterface({
-      input: process.stdin,
-      output: process.stdout,
-      prompt
-    });
+    const readlineInterface = createInterface({ input, output, prompt });
 
     console.info(generateGameView(game));
     readlineInterface.prompt();

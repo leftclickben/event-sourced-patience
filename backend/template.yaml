@@ -116,3 +116,6 @@ Outputs:
   ApiBaseUrl:
     Description: "API Gateway endpoint base URL"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
+  EventsTableName:
+    Description: "Name of the events table"
+    Value: !Ref EventsTable

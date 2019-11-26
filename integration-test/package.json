@@ -1,0 +1,18 @@
+{
+  "name": "event-sourced-patience-integration-test",
+  "version": "1.0.0",
+  "description": "End-to-end integration tests for event-sourced Patience demonstration",
+  "author": "Ben New <ben@leftclick.com.au>",
+  "license": "MIT",
+  "scripts": {
+    "test": "./run-tests.sh"
+  },
+  "devDependencies": {
+    "@types/aws-sdk": "^2.7.0",
+    "@types/node": "^12.12.12",
+    "aws-sdk": "^2.578.0",
+    "ts-node": "^8.5.2",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.2"
+  }
+}
