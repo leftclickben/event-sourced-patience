@@ -1,10 +1,12 @@
-import { GameEventType } from '../../backend/src/events/types';
-import { createGameEventBase, createGameEvents } from './events';
-import { saveEvents } from './database';
+import { createGameEventBase, createGameEvents } from '../events';
+import { saveEvents } from '../services/database';
+import { GameEventType } from '../types';
+import { TableName } from 'aws-sdk/clients/dynamodb';
 
-export const saveSeedData = async () => {
+export const initialiseDatabase = async (tableName: TableName) => {
   // A game that has only been created.
   await saveEvents(
+    tableName,
     'c000000000000000000000000',
     [
       createGameEventBase('c000000000000000000000000', GameEventType.gameCreated)
@@ -12,6 +14,7 @@ export const saveSeedData = async () => {
 
   // A game that has been created and forfeited.
   await saveEvents(
+    tableName,
     'c000000000000000000010000',
     [
       createGameEventBase('c000000000000000000010000', GameEventType.gameCreated),
@@ -20,17 +23,13 @@ export const saveSeedData = async () => {
 
   // A game that has been created and partially played.
   await saveEvents(
+    tableName,
     'c000000000000000000020000',
     createGameEvents('c000000000000000000020000').slice(0, 10));
 
   // A game that has been created and completed to victory.
   await saveEvents(
+    tableName,
     'c000000000000000000030000',
     createGameEvents('c000000000000000000030000'));
 };
-
-if (require.main === module) {
-  saveSeedData()
-    .then(() => console.info('Database seed data saved'))
-    .catch((error) => console.error(`Could not save database seed data: ${error}`));
-}

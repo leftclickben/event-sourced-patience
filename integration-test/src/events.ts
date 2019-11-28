@@ -1,4 +1,4 @@
-import { GameEvent, GameEventType } from '../../backend/src/events/types';
+import { GameEvent, GameEventType } from './types';
 
 const idMap: Record<string, number> = {};
 
