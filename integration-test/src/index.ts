@@ -44,7 +44,7 @@ export const main = async (
         writeHeadline(`Populating database for game "${gameId}" with seed data for stage "${stage}" with table "${tableName}"`);
         await gameData.initialise(gameId, tableName);
 
-        writeHeadline(`Playing game "${gameId}" in stage "${stage} with API base URL ${apiBaseUrl}"`);
+        writeHeadline(`Playing game "${gameId}" in stage "${stage}" with API base URL "${apiBaseUrl}"`);
         const tapes = await playGame(gameId, gameData, apiBaseUrl, verbose);
 
         writeHeadline(`Checking tapes for game "${gameId}" in stage "${stage}`);
