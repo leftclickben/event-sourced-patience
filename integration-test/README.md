@@ -41,13 +41,10 @@ To handle I/O, the frontend is provided with an input tape (an array of strings,
 
 ## Writing tests
 
-Tests can be easily added and modified in the following two modules:
- 
-* `src/initialise/index.ts`
-* `src/gameplay/gameData.ts`
+Tests can be easily added and modified in the `tests/data` module, which is an array of `TestConfiguration` objects.
 
-The `initialise` module calls the `saveEvents` function for each game, to write events directly to the database.  This provides the starting point for the game.
+The `getInitialise` function returns the `GameEvent`s passed to the `saveEvents` function for each game, to write events directly to the database.  This provides the starting point for the game.
 
-The `gameData` module contains the tapes and the expected events (with temporal / ephemeral data stripped) after the tapes have been played.  The output tape may be different depending on API verbosity; this is provided as a parameter to the `createGameData` function along with the API URL, which appears in verbose logging.
+The other keys describe the input tape, expected output and error tapes, and the expected events (with temporal / ephemeral data stripped) after the tapes have been played.  The output tape may be different depending on API verbosity as expressed in the `API_VERBOSE` environment variable.
 
 Note that the `inputTape` array **must** end with either a `quit` or a `forfeit` command, otherwise the tape will not cause the frontend application to exit.
