@@ -11,10 +11,12 @@
     "@types/aws-sdk": "^2.7.0",
     "@types/chai": "^4.2.5",
     "@types/node": "^12.12.12",
+    "@types/yargs": "^13.0.3",
     "aws-sdk": "^2.578.0",
     "chai": "^4.2.0",
     "ts-node": "^8.5.2",
     "tslint": "^5.20.1",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.2",
+    "yargs": "^15.0.2"
   }
 }
