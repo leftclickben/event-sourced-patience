@@ -1,33 +1,23 @@
 import * as yargs from 'yargs';
-import * as chalk from 'chalk';
 import { getStackOutputs } from './services/cloudformation';
 import { createGameData } from './gameplay/gameData';
-import { playGame } from './gameplay';
+import { playGame, prepareGame } from './gameplay';
 import { runNpmScript } from './services/npm';
 import { assertGameResult } from './gameplay/assert';
-
-export const writeHeadline = (message: string) => console.info(chalk.bold(message));
-
-export const writeError = (message: string, error: any) => console.error(chalk.red(chalk.bold(message)), error);
-
-export const pressEnter = async (): Promise<void> =>
-  new Promise((resolve, reject) => {
-    process.stdin.setRawMode(true);
-    process.stdin.resume();
-    process.stdin.on('data', () => resolve());
-    process.stdin.on('error', (error) => reject(error));
-  });
+import { pressEnter, writeBanner, writeError, writeHeading, writeMessage, writeSuccess } from './ui';
 
 export const main = async (
   retainStage: boolean = false,
   verbose: boolean = true,
   gamesToPlay?: string[] | undefined
 ): Promise<void> => {
-  // Generate a unique stage identifier, so we are running in a clean environment
   const stage = `integrationtests${Date.now()}`;
 
+  writeBanner(stage);
+
   try {
-    writeHeadline(`Deploying a new CloudFormation stack to run integration tests for stage "${stage}"`);
+    writeHeading('Deploying CloudFormation stack');
+
     await runNpmScript('push', stage, '../backend', verbose);
 
     const { tableName, apiBaseUrl } = await getStackOutputs(stage, {
@@ -35,36 +25,37 @@ export const main = async (
       ApiBaseUrl: 'apiBaseUrl'
     });
 
+    writeSuccess('Stack deployed successfully');
+    writeMessage(`Table name is "${tableName}"`);
+    writeMessage(`API base URL is "${apiBaseUrl}"`);
+
     const gameDataByGameId = createGameData(apiBaseUrl);
 
     await (gamesToPlay || Object.keys(gameDataByGameId)).reduce(
       async (promise, gameId) => {
         await promise;
         const gameData = gameDataByGameId[gameId];
-
-        writeHeadline(`Populating database for game "${gameId}" with seed data for stage "${stage}" with table "${tableName}"`);
-        await gameData.initialise(gameId, tableName);
-
-        writeHeadline(`Playing game "${gameId}" in stage "${stage}" with API base URL "${apiBaseUrl}"`);
+        await prepareGame(gameId, gameData, tableName, verbose);
         const tapes = await playGame(gameId, gameData, apiBaseUrl, verbose);
-
-        writeHeadline(`Checking result of game "${gameId}" in stage "${stage}`);
-        await assertGameResult(gameId, gameData, tapes, tableName);
+        await assertGameResult(gameId, gameData, tapes, tableName, verbose);
       },
       Promise.resolve());
+
+    writeSuccess('All tests completed successfully');
   } catch (error) {
-    writeError('Error occurred running E2E integration tests', error);
+    writeError('Error running E2E integration tests', error);
   } finally {
     if (!retainStage) {
       try {
         if (!process.env.CI) {
-          console.info('Press enter to continue...');
           await pressEnter();
         }
-        writeHeadline(`Removing CloudFormation stack for stage "${stage}"`);
+        writeHeading('Removing CloudFormation stack');
         await runNpmScript('pull', stage, '../backend', verbose);
       } catch (error) {
-        writeError('Error occurred cleaning up E2E integration tests', error);
+        writeError('Error cleaning up E2E integration tests', error);
+      } finally {
+        writeSuccess('Stack cleaned up successfully');
       }
     }
   }
@@ -86,5 +77,12 @@ if (require.main === module) {
     .version(false);
 
   main(!!retain, !!verbose, games as string[])
-    .then(() => console.info(chalk.green(chalk.bold('Integration tests completed'))));
+    .then(() => {
+      writeSuccess('Integration tests completed');
+      process.exit(0);
+    })
+    .catch((error) => {
+      writeError('Unexpected fatal error occurred', error);
+      process.exit(1);
+    });
 }

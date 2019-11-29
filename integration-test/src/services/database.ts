@@ -2,11 +2,13 @@ import { DynamoDB } from 'aws-sdk';
 import { GameEvent } from '../types';
 import { GameId } from '../../../backend/src/game/types';
 import { TableName } from 'aws-sdk/clients/dynamodb';
+import { writeProgress } from '../ui';
 
 export const saveEvents = async (
   tableName: TableName,
   gameId: GameId,
-  events: GameEvent[]
+  events: GameEvent[],
+  verbose: boolean
 ) => {
   new DynamoDB.DocumentClient()
     .batchWrite({
@@ -22,8 +24,10 @@ export const saveEvents = async (
     })
     .promise();
 
+  writeProgress('Batch of events saved', verbose);
+
   if (events.length > 25) {
-    await saveEvents(tableName, gameId, events.slice(25));
+    await saveEvents(tableName, gameId, events.slice(25), verbose);
   }
 };
 

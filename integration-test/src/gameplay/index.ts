@@ -1,6 +1,19 @@
 import { spawn } from 'child_process';
-import * as chalk from 'chalk';
 import { GameData, GameId, OutputTapes, Tape } from '../types';
+import { writeError, writeHeading, writeNewLine, writeProgress, writeProgressError } from '../ui';
+import { TableName } from 'aws-sdk/clients/dynamodb';
+import { saveEvents } from '../services/database';
+
+export const prepareGame = async (
+  gameId: GameId,
+  { getInitialEvents }: GameData,
+  tableName: TableName,
+  verbose: boolean
+) => {
+  writeHeading(`Preparing game "${gameId}"`);
+  await saveEvents(tableName, gameId, getInitialEvents(gameId), verbose);
+  writeNewLine();
+};
 
 export const playGame = async (
   gameId: GameId,
@@ -9,6 +22,8 @@ export const playGame = async (
   verbose: boolean
 ): Promise<OutputTapes> =>
   new Promise((resolve, reject) => {
+    writeHeading(`Playing game "${gameId}"`);
+
     const outputTape: Tape = [];
     const errorTape: Tape = [];
 
@@ -24,22 +39,14 @@ export const playGame = async (
 
     if (child.stdout) {
       child.stdout.on('data', (data) => {
-        if (verbose) {
-          console.info(data.toString());
-        } else {
-          process.stdout.write(chalk.gray('.'));
-        }
+        writeProgress(data.toString(), verbose);
         outputTape.push(data.toString());
       });
     }
 
     if (child.stderr) {
       child.stderr.on('data', (data) => {
-        if (verbose) {
-          console.info(chalk.red(chalk.bold(data.toString())));
-        } else {
-          process.stdout.write(chalk.red(chalk.bold('X')));
-        }
+        writeProgressError(data.toString(), verbose);
         errorTape.push(data.toString());
       });
     }
@@ -55,12 +62,12 @@ export const playGame = async (
     }
 
     child.on('close', () => {
-      console.info('');
+      writeNewLine();
       resolve({ outputTape, errorTape });
     });
 
     child.on('error', (error) => {
-      console.error(chalk.red(chalk.bold('Frontend process failed with error')), error);
+      writeError('Frontend process failed with error', error);
       reject(error);
       child.kill();
     });

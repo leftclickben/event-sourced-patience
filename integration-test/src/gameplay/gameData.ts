@@ -1,23 +1,17 @@
 import { ExpectedEventDetails, GameData, GameEventType, GameId } from '../types';
 import { GameCreatedEvent, GameForfeitedEvent } from '../../../backend/src/events/types';
 import { createGameEventBase, gameCreatedStock, gameCreatedTableau } from '../fixtures/events';
-import { saveEvents } from '../services/database';
 
 export const createGameData = (apiBaseUrl: string): Record<GameId, GameData> => ({
   // Load a game that has only been created, and forfeit it.
   c000000000000000000000000: {
-    initialise: async (gameId: GameId, tableName: string) => {
-      await saveEvents(
-        tableName,
-        gameId,
-        [
-          {
-            ...createGameEventBase(gameId, GameEventType.gameCreated),
-            tableau: gameCreatedTableau,
-            stock: gameCreatedStock
-          } as GameCreatedEvent
-        ]);
-    },
+    getInitialEvents: (gameId: GameId) => [
+      {
+        ...createGameEventBase(gameId, GameEventType.gameCreated),
+        tableau: gameCreatedTableau,
+        stock: gameCreatedStock
+      } as GameCreatedEvent
+    ],
     inputTape: [
       'forfeit'
     ],

@@ -10,7 +10,7 @@ export interface OutputTapes {
 }
 
 export interface GameData {
-  initialise: (gameId: GameId, tableName: string) => Promise<void>;
+  getInitialEvents: (gameId: GameId) => GameEvent[];
   inputTape: Tape;
   expectedOutputTape: Tape;
   expectedErrorTape: Tape;

@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
-import * as chalk from 'chalk';
 import { StageName } from '../types';
+import { writeNewLine, writeProgress, writeProgressError } from '../ui';
 
 export const runNpmScript = async (
   script: string,
@@ -17,7 +17,7 @@ export const runNpmScript = async (
     );
 
     child.on('close', () => {
-      console.info('');
+      writeNewLine();
       resolve();
     });
 
@@ -27,7 +27,7 @@ export const runNpmScript = async (
     });
 
     if (child.stdout && child.stderr && !verbose) {
-      child.stdout.on('data', () => process.stdout.write(chalk.grey('.')));
-      child.stderr.on('data', () => process.stdout.write(chalk.red(chalk.bold('X'))));
+      child.stdout.on('data', writeProgress);
+      child.stderr.on('data', writeProgressError);
     }
   });
