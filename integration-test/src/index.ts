@@ -34,7 +34,7 @@ export const main = async (
       ApiBaseUrl: 'apiBaseUrl'
     });
 
-    const gameDataByGameId = createGameData(apiBaseUrl, verbose);
+    const gameDataByGameId = createGameData(apiBaseUrl);
 
     await (gamesToPlay || Object.keys(gameDataByGameId)).reduce(
       async (promise, gameId) => {

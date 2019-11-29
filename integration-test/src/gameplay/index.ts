@@ -13,7 +13,6 @@ export const playGame = async (
 
     const env = {
       ...process.env,
-      ...(verbose ? { API_VERBOSE: '1' } : {}),
       API_BASE_URL: apiBaseUrl
     };
 
