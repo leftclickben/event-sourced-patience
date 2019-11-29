@@ -10,11 +10,11 @@ You just need node installed and then install the dependencies:
 npm install
 ```
 
-You will also need an AWS account to run the tests, and if you are not using the default profile, have the `AWS_PROFILE` environment variable set correctly.
+You will also need an AWS account to run the tests, and if you are not using the default profile, have the `AWS_PROFILE` environment variable set correctly.  You must also configure `AWS_REGION`.
 
 ## Running the tests
 
-The test suite is controlled by a set of node modules executed using the standard npm test script:
+The test suite is controlled by a set of node modules executed as a standard `npm` script:
 
 ```
 npm test

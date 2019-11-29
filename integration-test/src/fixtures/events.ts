@@ -1,10 +1,11 @@
-import { GameEvent, GameEventType } from './types';
+import { GameEventBase, GameEventType, GameId, Suit, Value } from '../types';
 
 const idMap: Record<string, number> = {};
 
-type GameEventBase = Pick<GameEvent, 'gameId' | 'eventType' | 'eventId' | 'eventTimestamp'>;
-
-export const createGameEventBase = (gameId: string, eventType: GameEventType): GameEventBase => {
+export const createGameEventBase = <T extends GameEventType = GameEventType>(
+  gameId: GameId,
+  eventType: T
+): GameEventBase<T> => {
   const root = gameId.slice(0, -4);
   if (!idMap.hasOwnProperty(gameId)) {
     idMap[gameId] = 0;
@@ -19,79 +20,83 @@ export const createGameEventBase = (gameId: string, eventType: GameEventType): G
   };
 };
 
-export const createGameEvents = (gameId: string) => [
+export const gameCreatedTableau = [
+  [
+    { value: Value.five, suit: Suit.diamonds, faceUp: true }
+  ],
+  [
+    { value: Value.six, suit: Suit.hearts, faceUp: false },
+    { value: Value.four, suit: Suit.hearts, faceUp: true }
+  ],
+  [
+    { value: Value.jack, suit: Suit.hearts, faceUp: false },
+    { value: Value.three, suit: Suit.hearts, faceUp: false },
+    { value: Value.six, suit: Suit.spades, faceUp: true }
+  ],
+  [
+    { value: Value.seven, suit: Suit.diamonds, faceUp: false },
+    { value: Value.ten, suit: Suit.diamonds, faceUp: false },
+    { value: Value.nine, suit: Suit.spades, faceUp: false },
+    { value: Value.king, suit: Suit.diamonds, faceUp: true }
+  ],
+  [
+    { value: Value.seven, suit: Suit.hearts, faceUp: false },
+    { value: Value.queen, suit: Suit.clubs, faceUp: false },
+    { value: Value.seven, suit: Suit.spades, faceUp: false },
+    { value: Value.eight, suit: Suit.clubs, faceUp: false },
+    { value: Value.ace, suit: Suit.diamonds, faceUp: true }
+  ],
+  [
+    { value: Value.king, suit: Suit.clubs, faceUp: false },
+    { value: Value.nine, suit: Suit.clubs, faceUp: false },
+    { value: Value.four, suit: Suit.diamonds, faceUp: false },
+    { value: Value.queen, suit: Suit.spades, faceUp: false },
+    { value: Value.four, suit: Suit.spades, faceUp: false },
+    { value: Value.five, suit: Suit.spades, faceUp: true }
+  ],
+  [
+    { value: Value.two, suit: Suit.hearts, faceUp: false },
+    { value: Value.king, suit: Suit.spades, faceUp: false },
+    { value: Value.two, suit: Suit.spades, faceUp: false },
+    { value: Value.ace, suit: Suit.spades, faceUp: false },
+    { value: Value.ace, suit: Suit.hearts, faceUp: false },
+    { value: Value.jack, suit: Suit.clubs, faceUp: false },
+    { value: Value.three, suit: Suit.diamonds, faceUp: true }
+  ]
+];
+
+export const gameCreatedStock = [
+  { value: Value.ten, suit: Suit.hearts, faceUp: false },
+  { value: Value.ten, suit: Suit.spades, faceUp: false },
+  { value: Value.two, suit: Suit.diamonds, faceUp: false },
+  { value: Value.three, suit: Suit.clubs, faceUp: false },
+  { value: Value.six, suit: Suit.diamonds, faceUp: false },
+  { value: Value.ten, suit: Suit.clubs, faceUp: false },
+  { value: Value.four, suit: Suit.clubs, faceUp: false },
+  { value: Value.queen, suit: Suit.diamonds, faceUp: false},
+  { value: Value.five, suit: Suit.clubs, faceUp: false },
+  { value: Value.queen, suit: Suit.hearts, faceUp: false },
+  { value: Value.eight, suit: Suit.spades, faceUp: false },
+  { value: Value.king, suit: Suit.hearts, faceUp: false },
+  { value: Value.jack, suit: Suit.spades, faceUp: false },
+  { value: Value.two, suit: Suit.clubs, faceUp: false },
+  { value: Value.nine, suit: Suit.hearts, faceUp: false },
+  { value: Value.eight, suit: Suit.hearts, faceUp: false },
+  { value: Value.seven, suit: Suit.clubs, faceUp: false },
+  { value: Value.ace, suit: Suit.clubs, faceUp: false },
+  { value: Value.eight, suit: Suit.diamonds, faceUp: false },
+  { value: Value.three, suit: Suit.spades, faceUp: false },
+  { value: Value.five, suit: Suit.hearts, faceUp: false },
+  { value: Value.jack, suit: Suit.diamonds, faceUp: false },
+  { value: Value.nine, suit: Suit.diamonds, faceUp: false },
+  { value: Value.six, suit: Suit.clubs, faceUp: false }
+];
+
+export const createGameEvents = (gameId: GameId) => [
   {
     ...createGameEventBase(gameId, GameEventType.gameCreated),
-    tableau: [
-      [
-        { value: 'five', suit: 'diamonds', faceUp: true }
-      ],
-      [
-        { value: 'six', suit: 'hearts', faceUp: false },
-        { value: 'four', suit: 'hearts', faceUp: true }
-      ],
-      [
-        { value: 'jack', suit: 'hearts', faceUp: false },
-        { value: 'three', suit: 'hearts', faceUp: false },
-        { value: 'six', suit: 'spades', faceUp: true }
-      ],
-      [
-        { value: 'seven', suit: 'diamonds', faceUp: false },
-        { value: 'ten', suit: 'diamonds', faceUp: false },
-        { value: 'nine', suit: 'spades', faceUp: false },
-        { value: 'king', suit: 'diamonds', faceUp: true }
-      ],
-      [
-        { value: 'seven', suit: 'hearts', faceUp: false },
-        { value: 'queen', suit: 'clubs', faceUp: false },
-        { value: 'seven', suit: 'spades', faceUp: false },
-        { value: 'eight', suit: 'clubs', faceUp: false },
-        { value: 'ace', suit: 'diamonds', faceUp: true }
-      ],
-      [
-        { value: 'king', suit: 'clubs', faceUp: false },
-        { value: 'nine', suit: 'clubs', faceUp: false },
-        { value: 'four', suit: 'diamonds', faceUp: false },
-        { value: 'queen', suit: 'spades', faceUp: false },
-        { value: 'four', suit: 'spades', faceUp: false },
-        { value: 'five', suit: 'spades', faceUp: true }
-      ],
-      [
-        { value: 'two', suit: 'hearts', faceUp: false },
-        { value: 'king', suit: 'spades', faceUp: false },
-        { value: 'two', suit: 'spades', faceUp: false },
-        { value: 'ace', suit: 'spades', faceUp: false },
-        { value: 'ace', suit: 'hearts', faceUp: false },
-        { value: 'jack', suit: 'clubs', faceUp: false },
-        { value: 'three', suit: 'diamonds', faceUp: true }
-      ]
-    ],
-    stock: [
-      { value: 'ten', suit: 'hearts', faceUp: false },
-      { value: 'ten', suit: 'spades', faceUp: false },
-      { value: 'two', suit: 'diamonds', faceUp: false },
-      { value: 'three', suit: 'clubs', faceUp: false },
-      { value: 'six', suit: 'diamonds', faceUp: false },
-      { value: 'ten', suit: 'clubs', faceUp: false },
-      { value: 'four', suit: 'clubs', faceUp: false },
-      { value: 'queen', suit: 'diamonds', faceUp: false},
-      { value: 'five', suit: 'clubs', faceUp: false },
-      { value: 'queen', suit: 'hearts', faceUp: false },
-      { value: 'eight', suit: 'spades', faceUp: false },
-      { value: 'king', suit: 'hearts', faceUp: false },
-      { value: 'jack', suit: 'spades', faceUp: false },
-      { value: 'two', suit: 'clubs', faceUp: false },
-      { value: 'nine', suit: 'hearts', faceUp: false },
-      { value: 'eight', suit: 'hearts', faceUp: false },
-      { value: 'seven', suit: 'clubs', faceUp: false },
-      { value: 'ace', suit: 'clubs', faceUp: false },
-      { value: 'eight', suit: 'diamonds', faceUp: false },
-      { value: 'three', suit: 'spades', faceUp: false },
-      { value: 'five', suit: 'hearts', faceUp: false },
-      { value: 'jack', suit: 'diamonds', faceUp: false },
-      { value: 'nine', suit: 'diamonds', faceUp: false },
-      { value: 'six', suit: 'clubs', faceUp: false }
-    ]
+    tableau: gameCreatedTableau,
+    stock: gameCreatedStock
   },
   {
     ...createGameEventBase(gameId, GameEventType.tableauPlayedToTableau),
