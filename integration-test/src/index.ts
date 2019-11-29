@@ -4,7 +4,7 @@ import { createGameData } from './gameplay/gameData';
 import { playGame, prepareGame } from './gameplay';
 import { runNpmScript } from './services/npm';
 import { assertGameResult } from './gameplay/assert';
-import { pressEnter, writeBanner, writeError, writeHeading, writeMessage, writeSuccess } from './ui';
+import { pressEnter, writeBanner, writeError, writeHeading, writeMessage, writeNewLine, writeSuccess } from './ui';
 
 export const main = async (
   retainStage: boolean = false,
@@ -79,6 +79,7 @@ if (require.main === module) {
   main(!!retain, !!verbose, games as string[])
     .then(() => {
       writeSuccess('Integration tests completed');
+      writeNewLine();
       process.exit(0);
     })
     .catch((error) => {
