@@ -1,12 +1,12 @@
 import { spawn } from 'child_process';
-import { GameData, GameId, OutputTapes, Tape } from '../types';
+import { GameId, OutputTapes, Tape, TestConfiguration } from '../types';
 import { writeError, writeHeading, writeNewLine, writeProgress, writeProgressError } from '../ui';
 import { TableName } from 'aws-sdk/clients/dynamodb';
 import { saveEvents } from '../services/database';
 
 export const prepareGame = async (
   gameId: GameId,
-  { getInitialEvents }: GameData,
+  { getInitialEvents }: TestConfiguration,
   tableName: TableName,
   verbose: boolean
 ) => {
@@ -17,7 +17,7 @@ export const prepareGame = async (
 
 export const playGame = async (
   gameId: GameId,
-  { inputTape }: GameData,
+  { inputTape }: TestConfiguration,
   apiBaseUrl: string,
   verbose: boolean
 ): Promise<OutputTapes> =>

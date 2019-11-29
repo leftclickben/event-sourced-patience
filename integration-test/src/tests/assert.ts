@@ -1,4 +1,4 @@
-import { GameData, GameId, OutputTapes } from '../types';
+import { GameId, OutputTapes, TestConfiguration } from '../types';
 import { TableName } from 'aws-sdk/clients/dynamodb';
 import { loadEvents } from '../services/database';
 import { assert } from 'chai';
@@ -6,7 +6,7 @@ import { writeHeading, writeNewLine, writeProgress, writeSuccess } from '../ui';
 
 export const assertGameResult = async (
   gameId: GameId,
-  { expectedOutputTape, expectedErrorTape, expectedEvents }: GameData,
+  { expectedOutputTape, expectedErrorTape, expectedEvents }: TestConfiguration,
   { outputTape, errorTape }: OutputTapes,
   tableName: TableName,
   verbose: boolean

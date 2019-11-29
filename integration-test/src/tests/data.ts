@@ -1,8 +1,8 @@
-import { ExpectedEventDetails, GameData, GameEventType, GameId } from '../types';
+import { ExpectedEventDetails, GameEventType, GameId, TestConfiguration } from '../types';
 import { GameCreatedEvent, GameForfeitedEvent } from '../../../backend/src/events/types';
 import { createGameEventBase, gameCreatedStock, gameCreatedTableau } from '../fixtures/events';
 
-export const createGameData = (apiBaseUrl: string): Record<GameId, GameData> => ({
+export const createTestConfigurations = (apiBaseUrl: string): Record<GameId, TestConfiguration> => ({
   // Load a game that has only been created, and forfeit it.
   c000000000000000000000000: {
     getInitialEvents: (gameId: GameId) => [

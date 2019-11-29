@@ -9,7 +9,7 @@ export interface OutputTapes {
   errorTape: Tape;
 }
 
-export interface GameData {
+export interface TestConfiguration {
   getInitialEvents: (gameId: GameId) => GameEvent[];
   inputTape: Tape;
   expectedOutputTape: Tape;

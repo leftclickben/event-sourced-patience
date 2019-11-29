@@ -1,9 +1,9 @@
 import * as yargs from 'yargs';
 import { getStackOutputs } from './services/cloudformation';
-import { createGameData } from './gameplay/gameData';
-import { playGame, prepareGame } from './gameplay';
+import { createTestConfigurations } from './tests/data';
+import { playGame, prepareGame } from './tests';
 import { runNpmScript } from './services/npm';
-import { assertGameResult } from './gameplay/assert';
+import { assertGameResult } from './tests/assert';
 import { pressEnter, writeBanner, writeError, writeHeading, writeMessage, writeNewLine, writeSuccess } from './ui';
 
 export const main = async (
@@ -29,15 +29,15 @@ export const main = async (
     writeMessage(`Table name is "${tableName}"`);
     writeMessage(`API base URL is "${apiBaseUrl}"`);
 
-    const gameDataByGameId = createGameData(apiBaseUrl);
+    const testConfigurations = createTestConfigurations(apiBaseUrl);
 
-    await (gamesToPlay || Object.keys(gameDataByGameId)).reduce(
+    await (gamesToPlay || Object.keys(testConfigurations)).reduce(
       async (promise, gameId) => {
         await promise;
-        const gameData = gameDataByGameId[gameId];
-        await prepareGame(gameId, gameData, tableName, verbose);
-        const tapes = await playGame(gameId, gameData, apiBaseUrl, verbose);
-        await assertGameResult(gameId, gameData, tapes, tableName, verbose);
+        const testConfiguration = testConfigurations[gameId];
+        await prepareGame(gameId, testConfiguration, tableName, verbose);
+        const tapes = await playGame(gameId, testConfiguration, apiBaseUrl, verbose);
+        await assertGameResult(gameId, testConfiguration, tapes, tableName, verbose);
       },
       Promise.resolve());
 
