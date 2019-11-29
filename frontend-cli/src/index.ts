@@ -41,9 +41,6 @@ export const main = async (
     });
 
     readlineInterface.on('close', () => {
-      if (gameOver(game.status)) {
-        console.info(generateGameView(game));
-      }
       console.info('Thanks for playing!');
       process.exit(0);
     });
@@ -55,7 +52,7 @@ export const main = async (
 
 if (require.main === module) {
   // TODO Support multiple views (commented out code below)
-  const argv = yargs
+  const { argv } = yargs
     .alias('g', 'game')
     .describe('g', 'ID of the game to load, even if one is in progress')
     .alias('n', 'new')
@@ -63,11 +60,10 @@ if (require.main === module) {
     .boolean('n')
     // .alias('v', 'view')
     // .describe('v', 'Select the view to use')
+    // .choices({ v: ['default'] })
     .alias('h', 'help')
     .help('help')
-    // .choices({ v: ['default'] })
     .conflicts({ n: ['g'], g: ['n'] })
-    .version(false)
-    .argv;
+    .version(false);
   main(argv.game as string | undefined, argv.new as boolean | undefined).then();
 }
