@@ -1,5 +1,6 @@
-import { StageName } from '../types';
 import { spawn } from 'child_process';
+import * as chalk from 'chalk';
+import { StageName } from '../types';
 
 export const runNpmScript = async (
   script: string,
@@ -26,7 +27,7 @@ export const runNpmScript = async (
     });
 
     if (child.stdout && child.stderr && !verbose) {
-      child.stdout.on('data', () => process.stdout.write('.'));
-      child.stderr.on('data', () => process.stdout.write('X'));
+      child.stdout.on('data', () => process.stdout.write(chalk.grey('.')));
+      child.stderr.on('data', () => process.stdout.write(chalk.red(chalk.bold('X'))));
     }
   });

@@ -1,5 +1,6 @@
-import { GameData, GameId, OutputTapes, Tape } from '../types';
 import { spawn } from 'child_process';
+import * as chalk from 'chalk';
+import { GameData, GameId, OutputTapes, Tape } from '../types';
 
 export const playGame = async (
   gameId: GameId,
@@ -24,9 +25,9 @@ export const playGame = async (
     if (child.stdout) {
       child.stdout.on('data', (data) => {
         if (verbose) {
-          console.info(`*** stdout data ***\n${data}`);
+          console.info(data.toString());
         } else {
-          process.stdout.write('.');
+          process.stdout.write(chalk.gray('.'));
         }
         outputTape.push(data.toString());
       });
@@ -35,9 +36,9 @@ export const playGame = async (
     if (child.stderr) {
       child.stderr.on('data', (data) => {
         if (verbose) {
-          console.info(`*** stderr data ***\n${data}`);
+          console.info(chalk.red(chalk.bold(data.toString())));
         } else {
-          process.stdout.write('X');
+          process.stdout.write(chalk.red(chalk.bold('X')));
         }
         errorTape.push(data.toString());
       });
@@ -59,7 +60,7 @@ export const playGame = async (
     });
 
     child.on('error', (error) => {
-      console.error(`Frontend process failed with error: ${error}`);
+      console.error(chalk.red(chalk.bold('Frontend process failed with error')), error);
       reject(error);
       child.kill();
     });

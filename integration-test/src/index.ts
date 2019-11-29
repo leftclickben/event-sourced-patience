@@ -1,13 +1,14 @@
 import * as yargs from 'yargs';
+import * as chalk from 'chalk';
 import { getStackOutputs } from './services/cloudformation';
 import { createGameData } from './gameplay/gameData';
 import { playGame } from './gameplay';
 import { runNpmScript } from './services/npm';
-import { assertGameEvents, assertGameTapes } from './gameplay/assert';
+import { assertGameResult } from './gameplay/assert';
 
-export const writeHeadline = (message: string) => console.info(`>>>>> ${message}`);
+export const writeHeadline = (message: string) => console.info(chalk.bold(message));
 
-export const writeError = (message: string, error: any) => console.error(message, error);
+export const writeError = (message: string, error: any) => console.error(chalk.red(chalk.bold(message)), error);
 
 export const pressEnter = async (): Promise<void> =>
   new Promise((resolve, reject) => {
@@ -47,11 +48,8 @@ export const main = async (
         writeHeadline(`Playing game "${gameId}" in stage "${stage}" with API base URL "${apiBaseUrl}"`);
         const tapes = await playGame(gameId, gameData, apiBaseUrl, verbose);
 
-        writeHeadline(`Checking tapes for game "${gameId}" in stage "${stage}`);
-        await assertGameTapes(gameId, gameData, tapes);
-
-        writeHeadline(`Checking events for game "${gameId}" in stage "${stage}`);
-        await assertGameEvents(gameId, gameData, tableName);
+        writeHeadline(`Checking result of game "${gameId}" in stage "${stage}`);
+        await assertGameResult(gameId, gameData, tapes, tableName);
       },
       Promise.resolve());
   } catch (error) {
@@ -60,7 +58,7 @@ export const main = async (
     if (!retainStage) {
       try {
         if (!process.env.CI) {
-          writeHeadline('Press enter to continue...');
+          console.info('Press enter to continue...');
           await pressEnter();
         }
         writeHeadline(`Removing CloudFormation stack for stage "${stage}"`);
@@ -87,5 +85,6 @@ if (require.main === module) {
     .help('help')
     .version(false);
 
-  main(!!retain, !!verbose, games as string[]).catch(console.error);
+  main(!!retain, !!verbose, games as string[])
+    .then(() => console.info(chalk.green(chalk.bold('Integration tests completed'))));
 }
