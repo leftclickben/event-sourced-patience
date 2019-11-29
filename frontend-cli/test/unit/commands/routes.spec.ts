@@ -41,7 +41,7 @@ describe('Command routes', () => {
   let pressEnterStub: SinonStub;
   let playGameStub: SinonStub;
   let forfeitGameStub: SinonStub;
-  let removeGameFileStub: SinonStub;
+  let safelyRemoveGameFileStub: SinonStub;
 
   let readlineInterface: Interface;
 
@@ -51,7 +51,7 @@ describe('Command routes', () => {
     pressEnterStub = stub(utilModule, 'pressEnter');
     playGameStub = stub(apiModule, 'playGame').resolves(modifiedGame);
     forfeitGameStub = stub(apiModule, 'forfeitGame');
-    removeGameFileStub = stub(gameModule, 'removeGameFile');
+    safelyRemoveGameFileStub = stub(gameModule, 'safelyRemoveGameFile');
 
     readlineInterface = { close: readlineInterfaceCloseSpy } as unknown as Interface;
   });
@@ -61,7 +61,7 @@ describe('Command routes', () => {
     pressEnterStub.restore();
     playGameStub.restore();
     forfeitGameStub.restore();
-    removeGameFileStub.restore();
+    safelyRemoveGameFileStub.restore();
   });
 
   describe('When invoked with "h"', () => {
@@ -138,7 +138,7 @@ describe('Command routes', () => {
       });
 
       it('Removes the game data file', () => {
-        expect(removeGameFileStub.calledOnce).to.equal(true);
+        expect(safelyRemoveGameFileStub.calledOnce).to.equal(true);
       });
 
       it('Returns a game with an unmodified table state and score and a status of "forfeited"', () => {
@@ -188,7 +188,7 @@ describe('Command routes', () => {
       });
 
       it('Removes the game data file', () => {
-        expect(removeGameFileStub.calledOnce).to.equal(true);
+        expect(safelyRemoveGameFileStub.calledOnce).to.equal(true);
       });
 
       it('Prints a victory message', () => {

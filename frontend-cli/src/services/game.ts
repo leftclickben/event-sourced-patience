@@ -26,6 +26,9 @@ export const loadCurrentGame = async (overrideGameId?: string, newGame: boolean 
   return await loadGame(gameId);
 };
 
-export const removeGameFile = async () => {
-  await promisify(unlink)(getGameIdFile());
+export const safelyRemoveGameFile = async () => {
+  const gameIdFile = getGameIdFile();
+  if (await promisify(exists)(gameIdFile)) {
+    await promisify(unlink)(gameIdFile);
+  }
 };
