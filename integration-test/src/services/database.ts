@@ -8,7 +8,7 @@ export const saveEvents = async (
   tableName: TableName,
   gameId: GameId,
   events: GameEvent[],
-  verbose: boolean
+  verbosity: number
 ) => {
   new DynamoDB.DocumentClient()
     .batchWrite({
@@ -24,10 +24,10 @@ export const saveEvents = async (
     })
     .promise();
 
-  writeProgress('Batch of events saved', verbose);
+  writeProgress('Batch of events saved', verbosity);
 
   if (events.length > 25) {
-    await saveEvents(tableName, gameId, events.slice(25), verbose);
+    await saveEvents(tableName, gameId, events.slice(25), verbosity);
   }
 };
 

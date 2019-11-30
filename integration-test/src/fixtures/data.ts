@@ -6,7 +6,7 @@ import {
   TableauPlayedToFoundationEvent,
   TableauPlayedToTableauEvent
 } from '../../../backend/src/events/types';
-import { createGameNoMovesMade, gameCreatedStock, gameCreatedTableau } from '../fixtures/events';
+import { createGameNoMovesMade, gameCreatedStock, gameCreatedTableau } from './events';
 
 export const createTestConfigurations = (apiBaseUrl: string): Record<GameId, TestConfiguration> => ({
   // BASE CASE: Load a game that has only been created, and forfeit it.
@@ -108,33 +108,33 @@ export const createTestConfigurations = (apiBaseUrl: string): Record<GameId, Tes
         stock: gameCreatedStock
       } as ExpectedEventDetails<GameCreatedEvent>,
       {
-        "eventType": "tableauPlayedToTableau",
-        "toIndex": 2,
-        "count": 1,
-        "fromIndex": 0
+        eventType: 'tableauPlayedToTableau',
+        toIndex: 2,
+        count: 1,
+        fromIndex: 0
       } as ExpectedEventDetails<TableauPlayedToTableauEvent>,
       {
-        "eventType": "tableauPlayedToTableau",
-        "toIndex": 5,
-        "count": 1,
-        "fromIndex": 1
+        eventType: 'tableauPlayedToTableau',
+        toIndex: 5,
+        count: 1,
+        fromIndex: 1
       } as ExpectedEventDetails<TableauPlayedToTableauEvent>,
       {
-        "eventType": "tableauPlayedToFoundation",
-        "tableauIndex": 4,
-        "foundationIndex": 0
+        eventType: 'tableauPlayedToFoundation',
+        tableauIndex: 4,
+        foundationIndex: 0
       } as ExpectedEventDetails<TableauPlayedToFoundationEvent>,
       {
-        "eventType": "tableauPlayedToTableau",
-        "toIndex": 0,
-        "count": 1,
-        "fromIndex": 3,
+        eventType: 'tableauPlayedToTableau',
+        toIndex: 0,
+        count: 1,
+        fromIndex: 3,
       } as ExpectedEventDetails<TableauPlayedToTableauEvent>,
       {
-        "eventType": "stockDealtToWaste",
+        eventType: 'stockDealtToWaste',
       } as ExpectedEventDetails<StockDealtToWasteEvent>,
       {
-        "eventType": "stockDealtToWaste",
+        eventType: 'stockDealtToWaste',
       } as ExpectedEventDetails<StockDealtToWasteEvent>
     ]
   }

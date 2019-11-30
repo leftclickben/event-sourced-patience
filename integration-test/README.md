@@ -14,40 +14,28 @@ You will also need an AWS account to run the tests.
 
 ## Running the tests
 
-The test suite is controlled by a set of node modules executed as a standard `npm` script:
+The `mocha` test suite can be executed using the standard `npm` script:
 
 ```
 npm test
 ```
 
-This accepts a few parameters.  Note that parameters must be preceded by `--` otherwise they will be processed by `npm` itself.  Use `npm test -- -h` to see the help text:
-
-```
-Options:
-  -r, --retain   Retain the CloudFormation stack after running tests   [boolean]
-  -v, --verbose  Display all output and use verbose API calls          [boolean]
-  -g, --games    Specify a subset of game IDs to play                    [array]
-  -h, --help     Show help                                             [boolean]
-```
-
 If you are not using the `default` AWS profile on your machine, have the `AWS_PROFILE` environment variable set correctly.  You must also configure `AWS_REGION` to your preferred region.
 
-As a complete example naming a profile and specifying the Sydney region, to run only the specified games in verbose mode:
+Some additional environment variables are effective:
+
+* `API_VERBOSE`: passed down to the client frontend and will include API output in the tests
+* `TESTS_VERBOSITY`: if set, should be 0, 1 or 2 to displays no output, progress indicator output, or verbose output (respectively) from `npm` scripts and the frontend application while tests are running
+* `TESTS_RETAIN_STACK`: if set, skips the cleanup step where the CloudFormation stack is removed, to inspect results afterward
+* `TESTS_GAME_IDS`: if set, should be a JSON array of strings, each string is a `gameId` specifying the tests to run (if omitted, all tests are run)
+
+As a complete example naming a profile and specifying the Sydney region, to run only the specified games with the API in verbose mode:
 
 ```
-npm test -- -vg newGameToForfeit,newGameToMakeSomeMoves
+AWS_PROFILE=myprofile AWS_REGION=ap-southeast-2 API_VERBOSE=1 TEST_GAME_IDS='["newGameToForfeit","newGameToMakeSomeMoves"]' npm test
 ```
 
-## Overview of the test process
-
-1. Create a timestamp-based (unique enough) stage name, so that the tests have their own isolated environment
-1. Perform a deployment of the backend using the unique stage name
-1. Save some known data to the deployed stage
-1. For each game:
-   1. Run the frontend and use a "tape" approach to controlling and recording I/O
-   1. Assert that the output and error tapes match expectation
-   1. Assert that the database contains the expected events
-1. Clean up the test stage; in a non-CI environment, this is preceded by waiting for user input
+Note the quotes around the value for `TEST_GAME_IDS`.
 
 ## General approach to operating the backend and frontend
 
@@ -57,9 +45,9 @@ The frontend is executed locally.  It was tempting to call the `main()` function
 
 To handle I/O, the frontend is provided with an input tape (an array of strings, each of which is followed by a newline), and also writes its output and error streams to tapes, which are then compared with expectations.
 
-## Writing tests
+## Adding tests
 
-Tests can be easily added and modified in the `tests/data` module, which is an array of `TestConfiguration` objects.
+Tests can be easily added and modified in the `fixtures/data` module, which is an array of `TestConfiguration` objects.
 
 The `getInitialise` function returns the `GameEvent`s passed to the `saveEvents` function for each game, to write events directly to the database.  This provides the starting point for the game.
 

@@ -1,31 +1,25 @@
 import { spawn } from 'child_process';
-import { GameId, OutputTapes, Tape, TestConfiguration } from '../types';
-import { writeError, writeHeading, writeNewLine, writeProgress, writeProgressError } from '../ui';
+import { GameId, GetInitialEventsFunction, OutputTapes, Tape } from '../types';
+import { writeNewLine, writeProgress } from '../ui';
 import { TableName } from 'aws-sdk/clients/dynamodb';
-import { saveEvents } from '../services/database';
+import { saveEvents } from './database';
 
 export const prepareGame = async (
   gameId: GameId,
-  { getInitialEvents }: TestConfiguration,
+  getInitialEvents: GetInitialEventsFunction,
   tableName: TableName,
-  verbose: boolean
+  verbosity: number
 ) => {
-  writeHeading(`Preparing game "${gameId}"`);
-
-  await saveEvents(tableName, gameId, getInitialEvents(gameId), verbose);
-
-  writeNewLine();
+  await saveEvents(tableName, gameId, getInitialEvents(gameId), verbosity);
 };
 
 export const playGame = async (
   gameId: GameId,
-  { inputTape }: TestConfiguration,
+  inputTape: Tape,
   apiBaseUrl: string,
-  verbose: boolean
+  verbosity: number
 ): Promise<OutputTapes> =>
   new Promise((resolve, reject) => {
-    writeHeading(`Playing game "${gameId}"`);
-
     const outputTape: Tape = [];
     const errorTape: Tape = [];
 
@@ -40,23 +34,22 @@ export const playGame = async (
       { env, cwd: '../frontend-cli', stdio: 'pipe' });
 
     child.on('close', () => {
-      writeNewLine();
+      writeNewLine(verbosity);
       resolve({ outputTape, errorTape });
     });
 
     child.on('error', (error) => {
-      writeError('Frontend process failed with error', error);
       reject(error);
       child.kill();
     });
 
     child.stdout.on('data', (data) => {
-      writeProgress(data.toString(), verbose);
+      writeProgress(data.toString(), verbosity);
       outputTape.push(data.toString());
     });
 
     child.stderr.on('data', (data) => {
-      writeProgressError(data.toString(), verbose);
+      writeProgress(data.toString(), verbosity);
       errorTape.push(data.toString());
     });
 
