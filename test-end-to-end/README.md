@@ -37,6 +37,20 @@ AWS_PROFILE=myprofile AWS_REGION=ap-southeast-2 API_VERBOSE=1 TEST_GAME_IDS='["n
 
 Note the quotes around the value for `TEST_GAME_IDS`.
 
+## Cleaning up CloudWatch Logs
+
+Every run of the tests will create a new set of log groups.  These can be cleaned up by running:
+
+```
+npm run cleanup
+```
+
+This also requires the `AWS_PROFILE` and `AWS_REGION` environment variables, for example:
+
+```
+AWS_PROFILE=myprofile AWS_REGION=ap-southeast-2 npm run cleanup
+```
+
 ## General approach to operating the backend and frontend
 
 The backend is deployed to AWS running in a real CloudFormation stack with real Lambda functions and DynamoDB table.  To perform the deployment, the `npm run deploy` script from the `backend/package.json` is used via the `child_process` node package.
