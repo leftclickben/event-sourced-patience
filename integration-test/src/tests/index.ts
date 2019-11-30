@@ -11,7 +11,9 @@ export const prepareGame = async (
   verbose: boolean
 ) => {
   writeHeading(`Preparing game "${gameId}"`);
+
   await saveEvents(tableName, gameId, getInitialEvents(gameId), verbose);
+
   writeNewLine();
 };
 
@@ -37,30 +39,6 @@ export const playGame = async (
       ['run', 'game', '--silent', '--', `--game=${gameId}`],
       { env, cwd: '../frontend-cli', stdio: 'pipe' });
 
-    if (child.stdout) {
-      child.stdout.on('data', (data) => {
-        writeProgress(data.toString(), verbose);
-        outputTape.push(data.toString());
-      });
-    }
-
-    if (child.stderr) {
-      child.stderr.on('data', (data) => {
-        writeProgressError(data.toString(), verbose);
-        errorTape.push(data.toString());
-      });
-    }
-
-    if (child.stdin) {
-      // The additional empty string ensures the final command is actually issued.
-      child.stdin.write([...inputTape, ''].join('\n'), (error) => {
-        if (error) {
-          child.kill();
-          reject(error);
-        }
-      });
-    }
-
     child.on('close', () => {
       writeNewLine();
       resolve({ outputTape, errorTape });
@@ -70,5 +48,23 @@ export const playGame = async (
       writeError('Frontend process failed with error', error);
       reject(error);
       child.kill();
+    });
+
+    child.stdout.on('data', (data) => {
+      writeProgress(data.toString(), verbose);
+      outputTape.push(data.toString());
+    });
+
+    child.stderr.on('data', (data) => {
+      writeProgressError(data.toString(), verbose);
+      errorTape.push(data.toString());
+    });
+
+    // The additional empty string ensures the final command is actually issued.
+    child.stdin.write([...inputTape, ''].join('\n'), (error) => {
+      if (error) {
+        child.kill();
+        reject(error);
+      }
     });
   });
