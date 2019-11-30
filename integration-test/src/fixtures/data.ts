@@ -1,4 +1,4 @@
-import { ExpectedEventDetails, GameEventType, GameId, TestConfiguration } from '../types';
+import { ExpectedEventDetails, GameEventType, GameId, TestConfigurationBuilder } from '../types';
 import {
   GameCreatedEvent,
   GameForfeitedEvent,
@@ -6,12 +6,12 @@ import {
   TableauPlayedToFoundationEvent,
   TableauPlayedToTableauEvent
 } from '../../../backend/src/events/types';
-import { createGameNoMovesMade, gameCreatedStock, gameCreatedTableau } from './events';
+import { createGameNoMovesMade, createGamePlayedToVictory, gameCreatedStock, gameCreatedTableau } from './events';
 
-export const createTestConfigurations = (apiBaseUrl: string): Record<GameId, TestConfiguration> => ({
-  // BASE CASE: Load a game that has only been created, and forfeit it.
-  newGameToForfeit: {
-    getInitialEvents: createGameNoMovesMade,
+export const testConfigurations: Record<GameId, TestConfigurationBuilder> = {
+  // BASE CASE - FORFEIT: Load a game that has only been created, and forfeit it.
+  newGameToForfeit: (gameId: GameId, apiBaseUrl: string) => ({
+    initialEvents: createGameNoMovesMade(gameId),
     inputTape: [
       'forfeit'
     ],
@@ -36,11 +36,66 @@ export const createTestConfigurations = (apiBaseUrl: string): Record<GameId, Tes
         eventType: GameEventType.gameForfeited
       } as ExpectedEventDetails<GameForfeitedEvent>
     ]
-  },
+  }),
+
+  // BASE CASE - VICTORY: Load a game that has all cards on the foundation but not claimed victory, and claim victory.
+  gameReadyToClaimVictory: (gameId: GameId, apiBaseUrl: string) => ({
+    initialEvents: createGamePlayedToVictory(gameId).slice(0, -1), // Remove the victoryClaimed event.
+    inputTape: [
+      'victory'
+    ],
+    expectedOutputTape: [
+      'Continuing explicitly requested game gameReadyToClaimVictory\n',
+      ...process.env.API_VERBOSE ? [`HTTP GET ${apiBaseUrl}/game/gameReadyToClaimVictory\n`] : [],
+      ...process.env.API_VERBOSE ? [''] : [],
+      '',
+      'Enter a command (h for help): ', // forfeit
+      ...process.env.API_VERBOSE ? [`HTTP DELETE ${apiBaseUrl}/game/gameReadyToClaimVictory\n`] : [],
+      '',
+      'Thanks for playing!\n'
+    ],
+    expectedErrorTape: [],
+    expectedEvents: [
+      {
+        eventType: GameEventType.gameCreated,
+        tableau: gameCreatedTableau,
+        stock: gameCreatedStock
+      } as ExpectedEventDetails<GameCreatedEvent>,
+      {
+        eventType: 'tableauPlayedToTableau',
+        toIndex: 2,
+        count: 1,
+        fromIndex: 0
+      } as ExpectedEventDetails<TableauPlayedToTableauEvent>,
+      {
+        eventType: 'tableauPlayedToTableau',
+        toIndex: 5,
+        count: 1,
+        fromIndex: 1
+      } as ExpectedEventDetails<TableauPlayedToTableauEvent>,
+      {
+        eventType: 'tableauPlayedToFoundation',
+        tableauIndex: 4,
+        foundationIndex: 0
+      } as ExpectedEventDetails<TableauPlayedToFoundationEvent>,
+      {
+        eventType: 'tableauPlayedToTableau',
+        toIndex: 0,
+        count: 1,
+        fromIndex: 3,
+      } as ExpectedEventDetails<TableauPlayedToTableauEvent>,
+      {
+        eventType: 'stockDealtToWaste',
+      } as ExpectedEventDetails<StockDealtToWasteEvent>,
+      {
+        eventType: 'stockDealtToWaste',
+      } as ExpectedEventDetails<StockDealtToWasteEvent>
+    ]
+  }),
 
   // SPECIAL COMMANDS: Load a game that has only been created, show the help, attempt to claim victory, then quit.
-  newGameToShowHelpAndAttemptVictory: {
-    getInitialEvents: createGameNoMovesMade,
+  newGameToShowHelpAndAttemptVictory: (gameId: GameId, apiBaseUrl: string) => ({
+    initialEvents: createGameNoMovesMade(gameId),
     inputTape: [
       'help',
       'victory',
@@ -68,11 +123,11 @@ export const createTestConfigurations = (apiBaseUrl: string): Record<GameId, Tes
         stock: gameCreatedStock
       } as ExpectedEventDetails<GameCreatedEvent>
     ]
-  },
+  }),
 
   // PLAY PARTIAL GAME: Load a game that has just been created, play a few moves, then quit.
-  newGameToMakeSomeMoves: {
-    getInitialEvents: createGameNoMovesMade,
+  newGameToMakeSomeMoves: (gameId: GameId, apiBaseUrl: string) => ({
+    initialEvents: createGameNoMovesMade(gameId),
     inputTape: [
       '13',
       '26',
@@ -84,6 +139,7 @@ export const createTestConfigurations = (apiBaseUrl: string): Record<GameId, Tes
     ],
     expectedOutputTape: [
       'Continuing explicitly requested game newGameToMakeSomeMoves\n',
+      ...process.env.API_VERBOSE ? [`HTTP GET ${apiBaseUrl}/game/newGameToShowHelpAndAttemptVictory\n`] : [],
       '\u001b[2J\n ╔══════ ♣ ♦ ♠ ♥ Patience! ♥ ♠ ♦ ♣ ══════╗ \n ║                                       ║ \n ║   Score: 0      Status: In Progress   ║ \n ║                                       ║ \n ║                  ▒▒▒  ▒▒▒  ▒▒▒  ▒▒▒   ║ \n ║                                       ║ \n ║   ♦ 5  ░░░  ░░░  ░░░  ░░░  ░░░  ░░░   ║ \n ║        ♥ 4  ░░░  ░░░  ░░░  ░░░  ░░░   ║ \n ║             ♠ 6  ░░░  ░░░  ░░░  ░░░   ║ \n ║                  ♦ K  ░░░  ░░░  ░░░   ║ \n ║                       ♦ A  ░░░  ░░░   ║ \n ║                            ♠ 5  ░░░   ║ \n ║                                 ♦ 3   ║ \n ║                                       ║ \n ║                            ▒▒▒  ░░░   ║ \n ║                                       ║ \n ╚═══════════════════════════════════════╝ \n',
       'Enter a command (h for help): ', // 13
       '\u001b[2J\n ╔══════ ♣ ♦ ♠ ♥ Patience! ♥ ♠ ♦ ♣ ══════╗ \n ║                                       ║ \n ║   Score: 0      Status: In Progress   ║ \n ║                                       ║ \n ║                  ▒▒▒  ▒▒▒  ▒▒▒  ▒▒▒   ║ \n ║                                       ║ \n ║        ░░░  ░░░  ░░░  ░░░  ░░░  ░░░   ║ \n ║        ♥ 4  ░░░  ░░░  ░░░  ░░░  ░░░   ║ \n ║             ♠ 6  ░░░  ░░░  ░░░  ░░░   ║ \n ║             ♦ 5  ♦ K  ░░░  ░░░  ░░░   ║ \n ║                       ♦ A  ░░░  ░░░   ║ \n ║                            ♠ 5  ░░░   ║ \n ║                                 ♦ 3   ║ \n ║                                       ║ \n ║                            ▒▒▒  ░░░   ║ \n ║                                       ║ \n ╚═══════════════════════════════════════╝ \n',
@@ -137,5 +193,5 @@ export const createTestConfigurations = (apiBaseUrl: string): Record<GameId, Tes
         eventType: 'stockDealtToWaste',
       } as ExpectedEventDetails<StockDealtToWasteEvent>
     ]
-  }
-});
+  })
+};

@@ -9,15 +9,15 @@ export interface OutputTapes {
   errorTape: Tape;
 }
 
-export type GetInitialEventsFunction = (gameId: GameId) => GameEvent[];
-
 export interface TestConfiguration {
-  getInitialEvents: GetInitialEventsFunction;
+  initialEvents: GameEvent[];
   inputTape: Tape;
   expectedOutputTape: Tape;
   expectedErrorTape: Tape;
   expectedEvents: ExpectedEventDetails[];
 }
+
+export type TestConfigurationBuilder = (gameId: GameId, apiBaseUrl: string) => TestConfiguration;
 
 export type GameId = string;
 

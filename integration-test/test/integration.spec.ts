@@ -1,14 +1,18 @@
 import { TableName } from 'aws-sdk/clients/dynamodb';
 import { runNpmScript } from '../src/services/npm';
 import { getStackOutputs } from '../src/services/cloudformation';
-import { GameEvent, GameId, OutputTapes, TestConfiguration } from '../src/types';
-import { createTestConfigurations } from '../src/fixtures/data';
-import { playGame, prepareGame } from '../src/services/game';
+import { GameEvent, OutputTapes } from '../src/types';
+import { testConfigurations } from '../src/fixtures/data';
+import { playGame } from '../src/services/game';
 import { assert } from 'chai';
-import { loadEvents } from '../src/services/database';
-import { writeNewLine } from '../src/ui';
+import { loadEvents, saveEvents } from '../src/services/database';
+import { writeNewLine, writeProgress } from '../src/ui';
 
 const verbosity = Number(process.env.TESTS_VERBOSITY || 0);
+
+const testsToRun: string[] = process.env.TESTS_GAME_IDS
+  ? JSON.parse(process.env.TESTS_GAME_IDS)
+  : Object.keys(testConfigurations);
 
 describe('End-to-end integration tests', () => {
   describe('With a unique stage configured (this may take a minute or two)', () => {
@@ -37,26 +41,23 @@ describe('End-to-end integration tests', () => {
     });
 
     describe('With known test configurations', () => {
-      const testConfigurations: Record<GameId, TestConfiguration> = createTestConfigurations(apiBaseUrl);
-
-      const testsToRun: string[] = process.env.TESTS_GAME_IDS
-        ? JSON.parse(process.env.TESTS_GAME_IDS)
-        : Object.keys(testConfigurations);
-
       before(async () => {
         await testsToRun.reduce(
           async (promise, gameId) => {
-            const { getInitialEvents } = testConfigurations[gameId];
-            await prepareGame(gameId, getInitialEvents, tableName, verbosity)
+            await promise;
+            const { initialEvents } = testConfigurations[gameId](gameId, apiBaseUrl);
+            await saveEvents(tableName, gameId, initialEvents);
+            await writeProgress(`Prepared game "${gameId}"\n`, verbosity);
           },
-          Promise.resolve()
-        );
+          Promise.resolve());
+
         writeNewLine(verbosity);
       });
 
       testsToRun.forEach((gameId) => {
-        describe(`When playing game "${gameId}"`, () => {
-          const { inputTape, expectedOutputTape, expectedErrorTape, expectedEvents } = testConfigurations[gameId];
+        describe(`When playing game ID "${gameId}"`, () => {
+          const { inputTape, expectedOutputTape, expectedErrorTape, expectedEvents } =
+            testConfigurations[gameId](gameId, apiBaseUrl);
 
           let tapes: OutputTapes;
           let events: GameEvent[];

@@ -1,18 +1,6 @@
 import { spawn } from 'child_process';
-import { GameId, GetInitialEventsFunction, OutputTapes, Tape } from '../types';
+import { GameId, OutputTapes, Tape } from '../types';
 import { writeNewLine, writeProgress } from '../ui';
-import { TableName } from 'aws-sdk/clients/dynamodb';
-import { saveEvents } from './database';
-
-export const prepareGame = async (
-  gameId: GameId,
-  getInitialEvents: GetInitialEventsFunction,
-  tableName: TableName,
-  verbosity: number
-) => {
-  await saveEvents(tableName, gameId, getInitialEvents(gameId));
-  writeProgress(`Prepared game "${gameId}"\n`, verbosity);
-};
 
 export const playGame = async (
   gameId: GameId,
