@@ -12,15 +12,18 @@ export const playGame = async (
     const outputTape: Tape = [];
     const errorTape: Tape = [];
 
-    const env = {
-      ...process.env,
-      API_BASE_URL: apiBaseUrl
-    };
-
     const child = spawn(
       'npm',
-      ['run', 'game', '--silent', '--', `--game=${gameId}`],
-      { env, cwd: '../frontend-cli', stdio: 'pipe' });
+      ['run', 'game', '--silent', '--', `--game=${gameId}`, '--no-color'],
+      {
+        cwd: '../frontend-cli',
+        stdio: 'pipe',
+        env: {
+          ...process.env,
+          FORCE_COLOR: '0',
+          API_BASE_URL: apiBaseUrl
+        }
+      });
 
     child.on('close', () => {
       writeNewLine(verbosity);
