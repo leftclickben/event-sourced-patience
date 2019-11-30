@@ -1,11 +1,4 @@
-import { ExpectedEventDetails, GameEventType, GameId, TestConfigurationBuilder } from '../types';
-import {
-  GameCreatedEvent,
-  GameForfeitedEvent,
-  StockDealtToWasteEvent,
-  TableauPlayedToFoundationEvent,
-  TableauPlayedToTableauEvent
-} from '../../../backend/src/events/types';
+import { GameEventType, GameId, TestConfigurationBuilder } from '../types';
 import { createGameNoMovesMade, createGamePlayedToVictory, gameCreatedStock, gameCreatedTableau } from './events';
 
 export const testConfigurations: Record<GameId, TestConfigurationBuilder> = {
@@ -31,10 +24,10 @@ export const testConfigurations: Record<GameId, TestConfigurationBuilder> = {
         eventType: GameEventType.gameCreated,
         tableau: gameCreatedTableau,
         stock: gameCreatedStock
-      } as ExpectedEventDetails<GameCreatedEvent>,
+      },
       {
         eventType: GameEventType.gameForfeited
-      } as ExpectedEventDetails<GameForfeitedEvent>
+      }
     ]
   }),
 
@@ -60,36 +53,36 @@ export const testConfigurations: Record<GameId, TestConfigurationBuilder> = {
         eventType: GameEventType.gameCreated,
         tableau: gameCreatedTableau,
         stock: gameCreatedStock
-      } as ExpectedEventDetails<GameCreatedEvent>,
+      },
       {
-        eventType: 'tableauPlayedToTableau',
+        eventType: GameEventType.tableauPlayedToTableau,
         toIndex: 2,
         count: 1,
         fromIndex: 0
-      } as ExpectedEventDetails<TableauPlayedToTableauEvent>,
+      },
       {
-        eventType: 'tableauPlayedToTableau',
+        eventType: GameEventType.tableauPlayedToTableau,
         toIndex: 5,
         count: 1,
         fromIndex: 1
-      } as ExpectedEventDetails<TableauPlayedToTableauEvent>,
+      },
       {
-        eventType: 'tableauPlayedToFoundation',
+        eventType: GameEventType.tableauPlayedToFoundation,
         tableauIndex: 4,
         foundationIndex: 0
-      } as ExpectedEventDetails<TableauPlayedToFoundationEvent>,
+      },
       {
-        eventType: 'tableauPlayedToTableau',
+        eventType: GameEventType.tableauPlayedToTableau,
         toIndex: 0,
         count: 1,
         fromIndex: 3,
-      } as ExpectedEventDetails<TableauPlayedToTableauEvent>,
+      },
       {
-        eventType: 'stockDealtToWaste',
-      } as ExpectedEventDetails<StockDealtToWasteEvent>,
+        eventType: GameEventType.stockDealtToWaste,
+      },
       {
-        eventType: 'stockDealtToWaste',
-      } as ExpectedEventDetails<StockDealtToWasteEvent>
+        eventType: GameEventType.stockDealtToWaste,
+      }
     ]
   }),
 
@@ -121,7 +114,7 @@ export const testConfigurations: Record<GameId, TestConfigurationBuilder> = {
         eventType: GameEventType.gameCreated,
         tableau: gameCreatedTableau,
         stock: gameCreatedStock
-      } as ExpectedEventDetails<GameCreatedEvent>
+      }
     ]
   }),
 
@@ -162,36 +155,36 @@ export const testConfigurations: Record<GameId, TestConfigurationBuilder> = {
         eventType: GameEventType.gameCreated,
         tableau: gameCreatedTableau,
         stock: gameCreatedStock
-      } as ExpectedEventDetails<GameCreatedEvent>,
+      },
       {
-        eventType: 'tableauPlayedToTableau',
+        eventType: GameEventType.tableauPlayedToTableau,
         toIndex: 2,
         count: 1,
         fromIndex: 0
-      } as ExpectedEventDetails<TableauPlayedToTableauEvent>,
+      },
       {
-        eventType: 'tableauPlayedToTableau',
+        eventType: GameEventType.tableauPlayedToTableau,
         toIndex: 5,
         count: 1,
         fromIndex: 1
-      } as ExpectedEventDetails<TableauPlayedToTableauEvent>,
+      },
       {
-        eventType: 'tableauPlayedToFoundation',
+        eventType: GameEventType.tableauPlayedToFoundation,
         tableauIndex: 4,
         foundationIndex: 0
-      } as ExpectedEventDetails<TableauPlayedToFoundationEvent>,
+      },
       {
-        eventType: 'tableauPlayedToTableau',
+        eventType: GameEventType.tableauPlayedToTableau,
         toIndex: 0,
         count: 1,
         fromIndex: 3,
-      } as ExpectedEventDetails<TableauPlayedToTableauEvent>,
+      },
       {
-        eventType: 'stockDealtToWaste',
-      } as ExpectedEventDetails<StockDealtToWasteEvent>,
+        eventType: GameEventType.stockDealtToWaste,
+      },
       {
-        eventType: 'stockDealtToWaste',
-      } as ExpectedEventDetails<StockDealtToWasteEvent>
+        eventType: GameEventType.stockDealtToWaste,
+      }
     ]
   })
 };

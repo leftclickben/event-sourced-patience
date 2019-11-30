@@ -1,6 +1,5 @@
 import * as cuid from 'cuid';
 import { GameEventBase, GameEventType, GameId, Suit, Value } from '../types';
-import { GameCreatedEvent } from '../../../backend/src/events/types';
 
 export const createGameEventBase = <T extends GameEventType = GameEventType>(
   gameId: GameId,
@@ -89,7 +88,7 @@ export const createGameNoMovesMade = (gameId: GameId) => [
     ...createGameEventBase(gameId, GameEventType.gameCreated),
     tableau: gameCreatedTableau,
     stock: gameCreatedStock
-  } as GameCreatedEvent
+  }
 ];
 
 export const createGamePlayedToVictory = (gameId: GameId) => [
