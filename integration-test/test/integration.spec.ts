@@ -1,7 +1,7 @@
 import { TableName } from 'aws-sdk/clients/dynamodb';
 import { runNpmScript } from '../src/services/npm';
 import { getStackOutputs } from '../src/services/cloudformation';
-import { GameEvent, OutputTapes } from '../src/types';
+import { GameEvent, OutputTapes, TestConfiguration } from '../src/types';
 import { testConfigurations } from '../src/fixtures/data';
 import { playGame } from '../src/services/game';
 import { assert } from 'chai';
@@ -40,7 +40,7 @@ describe('End-to-end integration tests', () => {
       }
     });
 
-    describe('With known test configurations', () => {
+    describe('With known initial event store contents', () => {
       before(async () => {
         await testsToRun.reduce(
           async (promise, gameId) => {
@@ -56,23 +56,22 @@ describe('End-to-end integration tests', () => {
 
       testsToRun.forEach((gameId) => {
         describe(`When playing game ID "${gameId}"`, () => {
-          const { inputTape, expectedOutputTape, expectedErrorTape, expectedEvents } =
-            testConfigurations[gameId](gameId, apiBaseUrl);
-
-          let tapes: OutputTapes;
-          let events: GameEvent[];
+          let testConfiguration: TestConfiguration;
+          let actualTapes: OutputTapes;
+          let actualEvents: GameEvent[];
 
           before(async () => {
-            tapes = await playGame(gameId, inputTape, apiBaseUrl, verbosity);
-            events = await loadEvents(tableName, gameId);
+            testConfiguration = testConfigurations[gameId](gameId, apiBaseUrl);
+            actualTapes = await playGame(gameId, testConfiguration.inputTape, apiBaseUrl, verbosity);
+            actualEvents = await loadEvents(tableName, gameId);
           });
 
           it('Matches the output tape', async () => {
             // Without the `.join('')` here, the tests intermittently fail because the text is broken up differently.
             // TODO Investigate why sometimes the tape elements come through joined together as one string
             assert.deepEqual(
-              tapes.outputTape.join(''),
-              expectedOutputTape.join(''),
+              actualTapes.outputTape.join(''),
+              testConfiguration.expectedOutputTape.join(''),
               `Tape from output stream does not match for game "${gameId}`);
           });
 
@@ -80,15 +79,15 @@ describe('End-to-end integration tests', () => {
             // Without the `.join('')` here, the tests intermittently fail because the text is broken up differently.
             // TODO Investigate why sometimes the tape elements come through joined together as one string
             assert.deepEqual(
-              tapes.errorTape.join(''),
-              expectedErrorTape.join(''),
+              actualTapes.errorTape.join(''),
+              testConfiguration.expectedErrorTape.join(''),
               `Tape from error stream does not match for game "${gameId}`);
           });
 
           it('Matches the events in the database', async () => {
             assert.deepEqual(
-              events.map(({ eventId, eventTimestamp, ...event }) => event),
-              expectedEvents.map((event) => ({ gameId, ...event })),
+              actualEvents.map(({ eventId, eventTimestamp, ...event }) => event),
+              testConfiguration.expectedEvents.map((event) => ({ gameId, ...event })),
               `Incorrect events found for game "${gameId}"`);
           });
         });
