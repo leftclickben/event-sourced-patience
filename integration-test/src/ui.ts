@@ -1,8 +1,27 @@
 import * as chalk from 'chalk';
 import { GameId } from './types';
+import { gameTitle } from '../../frontend-cli/src/strings';
+import { repeat } from '../../frontend-cli/src/util';
+
+const [club, diamond, spade, heart] = [
+  chalk.black('\u2663'),
+  chalk.red('\u2666'),
+  chalk.black('\u2660'),
+  chalk.red('\u2665')
+];
+
+export const generateBannerBorder = (viewWidth: number) => [
+  [
+    ' \u2554',
+    chalk.bgWhite(` ${club} ${diamond} ${spade} ${heart} ${chalk.green(chalk.bold(gameTitle))} ${heart} ${spade} ${diamond} ${club} `),
+    '\u2557 '
+  ].join(repeat(Math.ceil((viewWidth - gameTitle.length) / 2) - 6, '\u2550'))
+];
+
+
 
 export const writeBanner = (stage: string) => {
-  console.info(chalk.yellowBright('::::: Integration Tests :::::'));
+  console.info(`${chalk.black('\u2663')} ${chalk.red('\u2666')} ${chalk.black('\u2660')} ${chalk.red('\u2665')} ${chalk.yellowBright('Integration Tests')} ${chalk.red('\u2665')} ${chalk.black('\u2660')} ${chalk.red('\u2666')} ${chalk.black('\u2663')}`);
   console.info('');
   console.info(`Stage name: ${chalk.bold(stage)}`);
   console.info('');
@@ -22,7 +41,7 @@ export const writeProgress = (message?: string, verbose: boolean = false) => {
   if (verbose) {
     console.info(message);
   } else {
-    process.stdout.write(chalk.gray('.'));
+    process.stdout.write(chalk.gray('\u00b7'));
   }
 };
 
@@ -30,7 +49,7 @@ export const writeProgressError = (message?: string, verbose: boolean = false) =
   if (verbose) {
     console.error(chalk.red(message));
   } else {
-    process.stdout.write(chalk.red('\u2717'));
+    process.stdout.write(chalk.red('\u00b7'));
   }
 };
 

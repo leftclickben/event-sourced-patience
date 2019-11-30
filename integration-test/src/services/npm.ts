@@ -27,7 +27,7 @@ export const runNpmScript = async (
     });
 
     if (child.stdout && child.stderr && !verbose) {
-      child.stdout.on('data', writeProgress);
-      child.stderr.on('data', writeProgressError);
+      child.stdout.on('data', (data) => writeProgress(data, verbose));
+      child.stderr.on('data', (data) => writeProgressError(data, verbose));
     }
   });

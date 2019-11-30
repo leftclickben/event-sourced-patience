@@ -2,7 +2,7 @@ import { GameId, OutputTapes, TestConfiguration } from '../types';
 import { TableName } from 'aws-sdk/clients/dynamodb';
 import { loadEvents } from '../services/database';
 import { assert } from 'chai';
-import { writeHeading, writeNewLine, writeProgress, writeSuccess } from '../ui';
+import { writeHeading, writeNewLine, writeProgress } from '../ui';
 
 export const assertGameResult = async (
   gameId: GameId,
@@ -40,5 +40,4 @@ export const assertGameResult = async (
 
   writeProgress('Event store valid', verbose);
   writeNewLine();
-  writeSuccess(`Game "${gameId}" validated`);
 };
