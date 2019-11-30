@@ -1,5 +1,5 @@
-import { GameEventType, GameId } from '../types';
-import { createGamePlayedToVictory, gameCreatedStock, gameCreatedTableau } from '../services/events';
+import { GameEventType, GameId } from '../../src/types';
+import { createGamePlayedToVictory, gameCreatedStock, gameCreatedTableau } from '../../src/events';
 
 // BASE CASE - VICTORY: Load a game that has all cards on the foundation but not claimed victory, and claim victory.
 export const gameReadyToClaimVictory = (gameId: GameId, apiBaseUrl: string) => ({

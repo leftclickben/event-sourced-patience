@@ -1,5 +1,5 @@
 import * as cuid from 'cuid';
-import { GameEventBase, GameEventType, GameId, Suit, Value } from '../types';
+import { GameEventBase, GameEventType, GameId, Suit, Value } from './types';
 
 // The `eventTimestamp` is the range (sort) key, so creating multiple events in the same millisecond will cause
 // conflicts.  Use a synthetic timestamp to generate unique timestamp values for initial events.  Start from a minute

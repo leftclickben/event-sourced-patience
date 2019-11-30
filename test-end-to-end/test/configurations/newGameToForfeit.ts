@@ -1,5 +1,5 @@
-import { GameEventType, GameId } from '../types';
-import { createGameNoMovesMade, gameCreatedStock, gameCreatedTableau } from '../services/events';
+import { GameEventType, GameId } from '../../src/types';
+import { createGameNoMovesMade, gameCreatedStock, gameCreatedTableau } from '../../src/events';
 
 // BASE CASE - FORFEIT: Load a game that has only been created, and forfeit it.
 export const newGameToForfeit = (gameId: GameId, apiBaseUrl: string) => ({

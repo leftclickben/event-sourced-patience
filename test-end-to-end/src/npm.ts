@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
-import { StageName } from '../types';
-import { writeNewLine, writeProgress } from '../ui';
+import { StageName } from './types';
+import { writeNewLine, writeProgress } from './ui';
 
 export const runNpmScript = async (
   script: string,

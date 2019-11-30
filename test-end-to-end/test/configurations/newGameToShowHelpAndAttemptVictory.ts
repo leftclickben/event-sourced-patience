@@ -1,5 +1,5 @@
-import { GameEventType, GameId } from '../types';
-import { createGameNoMovesMade, gameCreatedStock, gameCreatedTableau } from '../services/events';
+import { GameEventType, GameId } from '../../src/types';
+import { createGameNoMovesMade, gameCreatedStock, gameCreatedTableau } from '../../src/events';
 
 // SPECIAL COMMANDS: Load a game that has only been created, show the help, attempt to claim victory, then quit.
 export const newGameToShowHelpAndAttemptVictory = (gameId: GameId, apiBaseUrl: string) => ({

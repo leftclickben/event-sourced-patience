@@ -1,5 +1,5 @@
 import { CloudFormation } from 'aws-sdk';
-import { StageName } from '../types';
+import { StageName } from './types';
 
 // NOTE This is coupled to string logic in `package.json` scripts, equivalent changes must be made in both places.
 const getStackName = (stage: StageName) => {

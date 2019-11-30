@@ -1,5 +1,5 @@
-import { GameEventType, GameId } from '../types';
-import { createGameNoMovesMade, gameCreatedStock, gameCreatedTableau } from '../services/events';
+import { GameEventType, GameId } from '../../src/types';
+import { createGameNoMovesMade, gameCreatedStock, gameCreatedTableau } from '../../src/events';
 
 // PLAY PARTIAL GAME: Load a game that has just been created, play a few moves, then quit.
 export const newGameToMakeSomeMoves = (gameId: GameId, apiBaseUrl: string) => ({

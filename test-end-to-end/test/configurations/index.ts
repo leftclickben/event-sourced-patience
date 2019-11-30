@@ -1,4 +1,4 @@
-import { GameId, TestConfigurationBuilder } from '../types';
+import { GameId, TestConfigurationBuilder } from '../../src/types';
 import { newGameToForfeit } from './newGameToForfeit';
 import { gameReadyToClaimVictory } from './gameReadyToClaimVictory';
 import { newGameToShowHelpAndAttemptVictory } from './newGameToShowHelpAndAttemptVictory';

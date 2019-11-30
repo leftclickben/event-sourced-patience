@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk';
-import { GameEvent, GameId } from '../types';
+import { GameEvent, GameId } from './types';
 import { TableName } from 'aws-sdk/clients/dynamodb';
 
 export const saveEvents = async (

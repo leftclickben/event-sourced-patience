@@ -1,11 +1,11 @@
 import { TableName } from 'aws-sdk/clients/dynamodb';
-import { runNpmScript } from '../src/services/npm';
-import { getStackOutputs } from '../src/services/cloudformation';
+import { runNpmScript } from '../src/npm';
+import { getStackOutputs } from '../src/cloudformation';
 import { GameEvent, OutputTapes, TestConfiguration } from '../src/types';
-import { testConfigurations } from '../src/testConfigurations';
-import { playGame } from '../src/services/game';
+import { testConfigurations } from './configurations';
+import { playGame } from '../src/game';
 import { assert } from 'chai';
-import { loadEvents, saveEvents } from '../src/services/database';
+import { loadEvents, saveEvents } from '../src/database';
 import { writeNewLine, writeProgress } from '../src/ui';
 
 const verbosity = Number(process.env.TESTS_VERBOSITY || 0);

@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
-import { GameId, OutputTapes, Tape } from '../types';
-import { writeNewLine, writeProgress } from '../ui';
+import { GameId, OutputTapes, Tape } from './types';
+import { writeNewLine, writeProgress } from './ui';
 
 export const playGame = async (
   gameId: GameId,
