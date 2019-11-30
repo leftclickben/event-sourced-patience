@@ -10,7 +10,8 @@ export const prepareGame = async (
   tableName: TableName,
   verbosity: number
 ) => {
-  await saveEvents(tableName, gameId, getInitialEvents(gameId), verbosity);
+  await saveEvents(tableName, gameId, getInitialEvents(gameId));
+  writeProgress(`Prepared game "${gameId}"`, verbosity);
 };
 
 export const playGame = async (

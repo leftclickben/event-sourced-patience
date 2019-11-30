@@ -6,6 +6,7 @@ import { createTestConfigurations } from '../src/fixtures/data';
 import { playGame, prepareGame } from '../src/services/game';
 import { assert } from 'chai';
 import { loadEvents } from '../src/services/database';
+import { writeNewLine } from '../src/ui';
 
 const verbosity = Number(process.env.TESTS_VERBOSITY || 0);
 
@@ -36,20 +37,27 @@ describe('End-to-end integration tests', () => {
     });
 
     describe('With known test configurations', () => {
-      const config: Record<GameId, TestConfiguration> = createTestConfigurations(apiBaseUrl);
+      const testConfigurations: Record<GameId, TestConfiguration> = createTestConfigurations(apiBaseUrl);
 
       const testsToRun: string[] = process.env.TESTS_GAME_IDS
         ? JSON.parse(process.env.TESTS_GAME_IDS)
-        : Object.keys(config);
+        : Object.keys(testConfigurations);
+
+      before(async () => {
+        await testsToRun.reduce(
+          async (promise, gameId) => {
+            const { getInitialEvents } = testConfigurations[gameId];
+            await prepareGame(gameId, getInitialEvents, tableName, verbosity)
+          },
+          Promise.resolve()
+        );
+        writeNewLine(verbosity);
+      });
 
       testsToRun.forEach((gameId) => {
-        const { getInitialEvents, inputTape, expectedOutputTape, expectedErrorTape, expectedEvents } = config[gameId];
-
-        before(async () => {
-          await prepareGame(gameId, getInitialEvents, tableName, verbosity);
-        });
-
         describe(`When playing game "${gameId}"`, () => {
+          const { inputTape, expectedOutputTape, expectedErrorTape, expectedEvents } = testConfigurations[gameId];
+
           let tapes: OutputTapes;
           let events: GameEvent[];
 
