@@ -2,7 +2,7 @@ import { TableName } from 'aws-sdk/clients/dynamodb';
 import { runNpmScript } from '../src/services/npm';
 import { getStackOutputs } from '../src/services/cloudformation';
 import { GameEvent, OutputTapes, TestConfiguration } from '../src/types';
-import { testConfigurations } from '../src/fixtures/data';
+import { testConfigurations } from '../src/testConfigurations';
 import { playGame } from '../src/services/game';
 import { assert } from 'chai';
 import { loadEvents, saveEvents } from '../src/services/database';
