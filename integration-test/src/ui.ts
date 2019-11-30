@@ -1,10 +1,8 @@
 import * as chalk from 'chalk';
 
 export const writeProgress = (message: string, verbosity: number) => {
-  if (verbosity >= 2) {
-    console.info(message);
-  } else if (verbosity >= 1) {
-    process.stdout.write(chalk.gray('\u00b7'));
+  if (verbosity > 0) {
+    process.stdout.write(verbosity >= 2 ? message : chalk.gray('\u00b7'));
   }
 };
 

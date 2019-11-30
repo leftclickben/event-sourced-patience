@@ -25,6 +25,6 @@ export const runNpmScript = async (
       child.kill();
     });
 
-    child.stdout.on('data', (data) => writeProgress(data, verbosity));
-    child.stderr.on('data', (data) => writeProgress(data, verbosity));
+    child.stdout.on('data', (data) => writeProgress(data.toString(), verbosity));
+    child.stderr.on('data', (data) => writeProgress(data.toString(), verbosity));
   });

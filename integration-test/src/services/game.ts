@@ -11,7 +11,7 @@ export const prepareGame = async (
   verbosity: number
 ) => {
   await saveEvents(tableName, gameId, getInitialEvents(gameId));
-  writeProgress(`Prepared game "${gameId}"`, verbosity);
+  writeProgress(`Prepared game "${gameId}"\n`, verbosity);
 };
 
 export const playGame = async (
