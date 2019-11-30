@@ -1,24 +1,16 @@
+import * as cuid from 'cuid';
 import { GameEventBase, GameEventType, GameId, Suit, Value } from '../types';
-
-const idMap: Record<string, number> = {};
+import { GameCreatedEvent } from '../../../backend/src/events/types';
 
 export const createGameEventBase = <T extends GameEventType = GameEventType>(
   gameId: GameId,
   eventType: T
-): GameEventBase<T> => {
-  const root = gameId.slice(0, -4);
-  if (!idMap.hasOwnProperty(gameId)) {
-    idMap[gameId] = 0;
-  }
-  const sequence = idMap[gameId]++;
-  const padding = Array.from({ length: 4 - String(sequence).length }, () => '0').join('');
-  return {
-    gameId,
-    eventType,
-    eventId: `${root}${padding}${sequence}`,
-    eventTimestamp: 1574691152612 + sequence
-  };
-};
+): GameEventBase<T> => ({
+  gameId,
+  eventType,
+  eventId: cuid(),
+  eventTimestamp: Date.now()
+});
 
 export const gameCreatedTableau = [
   [
@@ -92,7 +84,15 @@ export const gameCreatedStock = [
   { value: Value.six, suit: Suit.clubs, faceUp: false }
 ];
 
-export const createGameEvents = (gameId: GameId) => [
+export const createGameNoMovesMade = (gameId: GameId) => [
+  {
+    ...createGameEventBase(gameId, GameEventType.gameCreated),
+    tableau: gameCreatedTableau,
+    stock: gameCreatedStock
+  } as GameCreatedEvent
+];
+
+export const createGamePlayedToVictory = (gameId: GameId) => [
   {
     ...createGameEventBase(gameId, GameEventType.gameCreated),
     tableau: gameCreatedTableau,
