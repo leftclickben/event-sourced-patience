@@ -120,7 +120,7 @@ export const createGamePlayedToVictory = (gameId: GameId) => [
     foundationIndex: 0
   },
   {
-    ...createGameEventBase(gameId, GameEventType.tableauPlayedToFoundation),
+    ...createGameEventBase(gameId, GameEventType.tableauPlayedToTableau),
     toIndex: 0,
     count: 1,
     fromIndex: 3
