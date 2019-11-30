@@ -8,10 +8,6 @@ export const saveEvents = async (
   gameId: GameId,
   events: GameEvent[]
 ) => {
-  const eventIds = events.map(({ eventId }) => eventId);
-  console.log(JSON.stringify(eventIds.length, null, 2));
-  console.log(JSON.stringify(eventIds.reduce((result, eventId) => result.add(eventId), new Set()).size, null, 2));
-
   await new DynamoDB.DocumentClient()
     .batchWrite({
       RequestItems: {
