@@ -13,16 +13,20 @@ export const assertGameResult = async (
 ): Promise<void> => {
   writeHeading(`Checking result of game "${gameId}"`);
 
+  // Without the `.join('')` here, the tests intermittently fail because the text is broken up differently.
+  // TODO Investigate why sometimes the tape elements come through joined together as one string
   assert.deepEqual(
-    outputTape,
-    expectedOutputTape,
+    outputTape.join(''),
+    expectedOutputTape.join(''),
     `Tape from output stream does not match for game "${gameId}`);
 
   writeProgress('Output tape valid', verbose);
 
+  // Without the `.join('')` here, the tests intermittently fail because the text is broken up differently.
+  // TODO Investigate why sometimes the tape elements come through joined together as one string
   assert.deepEqual(
-    errorTape,
-    expectedErrorTape,
+    errorTape.join(''),
+    expectedErrorTape.join(''),
     `Tape from error stream does not match for game "${gameId}`);
 
   writeProgress('Error tape valid', verbose);
