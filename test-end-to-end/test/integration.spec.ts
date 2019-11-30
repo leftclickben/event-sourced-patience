@@ -21,7 +21,7 @@ describe('End-to-end integration tests', () => {
     let apiBaseUrl: string;
 
     before(async () => {
-      stage = `integrationtests${Date.now()}`;
+      stage = `end2end${Date.now()}`;
 
       await runNpmScript('push', stage, '../backend', verbosity);
 

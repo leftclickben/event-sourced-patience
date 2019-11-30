@@ -1,5 +1,5 @@
 {
-  "name": "event-sourced-patience-integration-test",
+  "name": "event-sourced-patience-test-end-to-end",
   "version": "1.0.0",
   "description": "End-to-end integration tests for event-sourced Patience demonstration",
   "author": "Ben New <ben@leftclick.com.au>",
