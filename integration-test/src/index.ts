@@ -4,13 +4,26 @@ import { createTestConfigurations } from './tests/data';
 import { playGame, prepareGame } from './tests';
 import { runNpmScript } from './services/npm';
 import { assertGameResult } from './tests/assert';
-import { pressEnter, writeBanner, writeError, writeHeading, writeMessage, writeNewLine, writeSuccess } from './ui';
+import {
+  pressEnter,
+  writeBanner,
+  writeError,
+  writeErrorDetails,
+  writeHeading,
+  writeMessage,
+  writeSuccess,
+  writeTestFailed,
+  writeTestPassed
+} from './ui';
+import { GameId } from './types';
 
 export const main = async (
   retainStage: boolean = false,
   verbose: boolean = true,
   gamesToPlay?: string[] | undefined
 ): Promise<void> => {
+  let successful: boolean = false;
+
   const stage = `integrationtests${Date.now()}`;
 
   writeBanner(stage);
@@ -31,31 +44,54 @@ export const main = async (
 
     const testConfigurations = createTestConfigurations(apiBaseUrl);
 
-    await (gamesToPlay || Object.keys(testConfigurations)).reduce(
+    const resultsByGameId = await (gamesToPlay || Object.keys(testConfigurations)).reduce(
       async (promise, gameId) => {
-        await promise;
-        const testConfiguration = testConfigurations[gameId];
-        await prepareGame(gameId, testConfiguration, tableName, verbose);
-        const tapes = await playGame(gameId, testConfiguration, apiBaseUrl, verbose);
-        await assertGameResult(gameId, testConfiguration, tapes, tableName, verbose);
-      },
-      Promise.resolve());
+        const results = await promise;
 
-    writeSuccess('All tests completed successfully');
+        try {
+          const testConfiguration = testConfigurations[gameId];
+          await prepareGame(gameId, testConfiguration, tableName, verbose);
+          const tapes = await playGame(gameId, testConfiguration, apiBaseUrl, verbose);
+          await assertGameResult(gameId, testConfiguration, tapes, tableName, verbose);
+          writeTestPassed(gameId);
+        } catch (error) {
+          results[gameId] = { error };
+          writeTestFailed(gameId);
+        }
+
+        return results;
+      },
+      Promise.resolve({} as Partial<Record<GameId, { error: any }>>));
+
+    const failedTests = Object.keys(resultsByGameId);
+    if (failedTests.length > 0) {
+      writeError(`Test failures occurred for the following games: ${JSON.stringify(failedTests)}`);
+      writeErrorDetails(JSON.stringify(resultsByGameId, null, 2));
+      successful = false;
+    } else {
+      writeSuccess('All tests completed successfully');
+      successful = true;
+    }
   } catch (error) {
     writeError('Error running E2E integration tests', error);
+    successful = false;
   } finally {
     if (!retainStage) {
       try {
         if (!process.env.CI) {
           await pressEnter();
         }
+
         writeHeading('Removing CloudFormation stack');
         await runNpmScript('pull', stage, '../backend', verbose);
+
+        if (successful) {
+          writeSuccess('Stack cleaned up successfully');
+        } else {
+          writeError('Stack cleaned up but test run failed; see preceding messages for details');
+        }
       } catch (error) {
         writeError('Error cleaning up E2E integration tests', error);
-      } finally {
-        writeSuccess('Stack cleaned up successfully');
       }
     }
   }
@@ -77,13 +113,6 @@ if (require.main === module) {
     .version(false);
 
   main(!!retain, !!verbose, games as string[])
-    .then(() => {
-      writeSuccess('Integration tests completed');
-      writeNewLine();
-      process.exit(0);
-    })
-    .catch((error) => {
-      writeError('Unexpected fatal error occurred', error);
-      process.exit(1);
-    });
+    .then(() => process.exit(0))
+    .catch(() => process.exit(1));
 }
