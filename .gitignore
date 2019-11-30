@@ -2,6 +2,7 @@
 node_modules
 **/dist
 **/build
+**/*.tape
 
 # local env files
 .env
