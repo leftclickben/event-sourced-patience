@@ -10,7 +10,7 @@ You just need node installed and then install the dependencies:
 npm install
 ```
 
-You will also need an AWS account to run the tests, and if you are not using the default profile, have the `AWS_PROFILE` environment variable set correctly.  You must also configure `AWS_REGION`.
+You will also need an AWS account to run the tests.
 
 ## Running the tests
 
@@ -18,6 +18,24 @@ The test suite is controlled by a set of node modules executed as a standard `np
 
 ```
 npm test
+```
+
+This accepts a few parameters.  Note that parameters must be preceded by `--` otherwise they will be processed by `npm` itself.  Use `npm test -- -h` to see the help text:
+
+```
+Options:
+  -r, --retain   Retain the CloudFormation stack after running tests   [boolean]
+  -v, --verbose  Display all output and use verbose API calls          [boolean]
+  -g, --games    Specify a subset of game IDs to play                    [array]
+  -h, --help     Show help                                             [boolean]
+```
+
+If you are not using the `default` AWS profile on your machine, have the `AWS_PROFILE` environment variable set correctly.  You must also configure `AWS_REGION` to your preferred region.
+
+As a complete example naming a profile and specifying the Sydney region, to run only the specified games in verbose mode:
+
+```
+npm test -- -vg newGameToForfeit,newGameToMakeSomeMoves
 ```
 
 ## Overview of the test process
