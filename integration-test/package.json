@@ -5,7 +5,9 @@
   "author": "Ben New <ben@leftclick.com.au>",
   "license": "MIT",
   "scripts": {
-    "test": "ts-node src"
+    "ts-node": "ts-node",
+    "lint": "tslint --project tsconfig.json",
+    "test": "mocha -t 180000 -r ts-node/register test/integration.spec.ts"
   },
   "devDependencies": {
     "@types/aws-sdk": "^2.7.0",
