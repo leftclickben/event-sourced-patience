@@ -2,7 +2,6 @@ import { CommandRouteMapEntry, CommandRouteParameterParser } from './types';
 import { forfeitGame, playGame } from '../services/api';
 import { clearScreen, helpText } from '../strings';
 import { safelyRemoveGameFile } from '../services/game';
-import { pressEnter } from '../util';
 import { GameStatus } from '../types';
 
 const parseTableauIndex: CommandRouteParameterParser<number> =
@@ -20,11 +19,9 @@ const commandRouteMap: CommandRouteMapEntry[] = [
   {
     type: 'special',
     match: /^h(?:elp)?$/,
-    handler: async (readlineInterface, game) => {
+    handler: async () => {
       console.info(clearScreen);
       console.info(helpText);
-      await pressEnter(readlineInterface);
-      return game;
     }
   },
   {
@@ -50,9 +47,8 @@ const commandRouteMap: CommandRouteMapEntry[] = [
   {
     type: 'special',
     match: /^q(?:uit)?$/,
-    handler: async (readlineInterface, game) => {
+    handler: async (readlineInterface) => {
       readlineInterface.close();
-      return game;
     }
   },
   {

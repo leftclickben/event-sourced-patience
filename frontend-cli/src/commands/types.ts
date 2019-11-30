@@ -25,7 +25,7 @@ export interface GameplayCommandRouteMapEntry extends BaseCommandRouteMapEntry {
 
 export interface SpecialCommandRouteMapEntry extends BaseCommandRouteMapEntry {
   type: 'special';
-  handler: (readlineInterface: Interface, game: Game) => Promise<Game>;
+  handler: (readlineInterface: Interface, game: Game) => Promise<Game | void>;
 }
 
 export type CommandRouteMapEntry = GameplayCommandRouteMapEntry | SpecialCommandRouteMapEntry;
