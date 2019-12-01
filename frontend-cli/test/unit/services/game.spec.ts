@@ -593,7 +593,7 @@ describe('The game file service', () => {
           expect(existsStub.calledOnce).to.equal(true);
           expect(existsStub.firstCall.args.slice(0, -1)).to.deep.equal([
             '/home/test/.patience-cli'
-          ])
+          ]);
         });
 
         it('Does not delete the game data file', () => {
@@ -621,7 +621,7 @@ describe('The game file service', () => {
             expect(existsStub.calledOnce).to.equal(true);
             expect(existsStub.firstCall.args.slice(0, -1)).to.deep.equal([
               '/home/test/.patience-cli'
-            ])
+            ]);
           });
 
           it('Deletes the game data file', () => {
