@@ -1,6 +1,8 @@
 import { GameEventType, GameId } from '../../src/types';
 import { createGameNoMovesMade, gameCreatedStock, gameCreatedTableau } from '../../src/events';
 
+// tslint:disable:max-line-length
+
 // SPECIAL COMMANDS: Load a game that has only been created, show the help, attempt to claim victory, then quit.
 export const newGameForInvalidCommandsAndHelp = (gameId: GameId, apiBaseUrl: string) => ({
   initialEvents: createGameNoMovesMade(gameId),

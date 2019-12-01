@@ -1,6 +1,8 @@
 import { GameEventType, GameId } from '../../src/types';
 import { createGamePlayedToVictory, gameCreatedStock, gameCreatedTableau } from '../../src/events';
 
+// tslint:disable:max-line-length
+
 // BASE CASE - VICTORY: Load a game that has all cards on the foundation but not claimed victory, and claim victory.
 export const gameReadyToClaimVictory = (gameId: GameId, apiBaseUrl: string) => ({
   initialEvents: createGamePlayedToVictory(gameId).slice(0, -1), // Remove the victoryClaimed event.

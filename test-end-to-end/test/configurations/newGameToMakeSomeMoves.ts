@@ -1,6 +1,8 @@
 import { GameEventType, GameId } from '../../src/types';
 import { createGameNoMovesMade, gameCreatedStock, gameCreatedTableau } from '../../src/events';
 
+// tslint:disable:max-line-length
+
 // PLAY PARTIAL GAME: Load a game that has just been created, play a few moves, then quit.
 export const newGameToMakeSomeMoves = (gameId: GameId, apiBaseUrl: string) => ({
   initialEvents: createGameNoMovesMade(gameId),

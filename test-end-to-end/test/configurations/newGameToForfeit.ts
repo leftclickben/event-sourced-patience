@@ -1,6 +1,8 @@
 import { GameEventType, GameId } from '../../src/types';
 import { createGameNoMovesMade, gameCreatedStock, gameCreatedTableau } from '../../src/events';
 
+// tslint:disable:max-line-length
+
 // BASE CASE - FORFEIT: Load a game that has only been created, and forfeit it.
 export const newGameToForfeit = (gameId: GameId, apiBaseUrl: string) => ({
   initialEvents: createGameNoMovesMade(gameId),
