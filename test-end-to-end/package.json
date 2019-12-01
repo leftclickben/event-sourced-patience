@@ -7,7 +7,7 @@
   "scripts": {
     "ts-node": "ts-node",
     "lint": "tslint --project tsconfig.json",
-    "test": "mocha -t 180000 -r ts-node/register test/integration.spec.ts",
+    "test": "mocha -t 180000 -r ts-node/register test/**/*.spec.ts",
     "cleanup": "ts-node src/cloudwatch"
   },
   "devDependencies": {
