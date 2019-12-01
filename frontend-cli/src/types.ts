@@ -53,7 +53,7 @@ export type GameplayCommandName =
   'claimVictory';
 
 export interface Game {
-  gameId: string;
+  gameId: GameId;
   status: GameStatus;
   score: number;
   table: TableState;

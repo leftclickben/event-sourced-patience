@@ -33,4 +33,6 @@ You can also do:
 * v = claim victory and quit the CLI; restart the CLI to begin a new game
 * f = forfeit the game and quit the CLI; restart the CLI to begin a new game
 * h = help, to display this help text
+
+Press enter to display the table.
 `;

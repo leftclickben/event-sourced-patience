@@ -1,8 +1,6 @@
 import { expect } from 'chai';
-import { gameOver, maxChildLength, pressEnter, repeat, top } from '../../src/util';
+import { gameOver, maxChildLength, repeat, top } from '../../src/util';
 import { GameStatus } from '../../src/types';
-import { SinonStub, stub } from 'sinon';
-import { Interface } from 'readline';
 
 describe('General utility functions', () => {
   describe('Retrieving the top item from a list', () => {
@@ -94,20 +92,6 @@ describe('General utility functions', () => {
       it('Returns a string of that many copies of that character', () => {
         expect(repeat(5, '*')).to.equal('*****');
       });
-    });
-  });
-
-  describe('Waiting for the user to press enter', () => {
-    let question: SinonStub;
-
-    beforeEach(async () => {
-      question = stub().callsArg(1);
-      await pressEnter({ question } as unknown as Interface);
-    });
-
-    it('Asks the user to press enter', () => {
-      expect(question.calledOnce).to.equal(true);
-      expect(question.firstCall.args[0]).to.equal('Press enter to continue...');
     });
   });
 });

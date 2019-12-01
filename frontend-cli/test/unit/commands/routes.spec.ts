@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import { SinonSpy, SinonStub, spy, stub } from 'sinon';
 import { Interface } from 'readline';
 import { Game, GameStatus, TableState } from '../../../src/types';
-import * as utilModule from '../../../src/util';
 import * as apiModule from '../../../src/services/api';
 import * as gameModule from '../../../src/services/game';
 import { clearScreen, helpText } from '../../../src/strings';
@@ -38,30 +37,27 @@ describe('Command routes', () => {
 
   let readlineInterfaceCloseSpy: SinonSpy;
   let consoleInfoStub: SinonStub;
-  let pressEnterStub: SinonStub;
   let playGameStub: SinonStub;
   let forfeitGameStub: SinonStub;
-  let removeGameFileStub: SinonStub;
+  let safelyRemoveGameFileStub: SinonStub;
 
   let readlineInterface: Interface;
 
   beforeEach(() => {
     readlineInterfaceCloseSpy = spy();
     consoleInfoStub = stub(console, 'info');
-    pressEnterStub = stub(utilModule, 'pressEnter');
     playGameStub = stub(apiModule, 'playGame').resolves(modifiedGame);
     forfeitGameStub = stub(apiModule, 'forfeitGame');
-    removeGameFileStub = stub(gameModule, 'removeGameFile');
+    safelyRemoveGameFileStub = stub(gameModule, 'safelyRemoveGameFile');
 
     readlineInterface = { close: readlineInterfaceCloseSpy } as unknown as Interface;
   });
 
   afterEach(() => {
     consoleInfoStub.restore();
-    pressEnterStub.restore();
     playGameStub.restore();
     forfeitGameStub.restore();
-    removeGameFileStub.restore();
+    safelyRemoveGameFileStub.restore();
   });
 
   describe('When invoked with "h"', () => {
@@ -77,7 +73,7 @@ describe('Command routes', () => {
     });
 
     describe('When the handler is invoked', () => {
-      let handlerResult: Game;
+      let handlerResult: Game | void;
 
       beforeEach(async () => {
         handlerResult = await result.handler(readlineInterface as unknown as Interface, game);
@@ -89,13 +85,8 @@ describe('Command routes', () => {
         expect(consoleInfoStub.secondCall.args).to.deep.equal([helpText]);
       });
 
-      it('Waits for the user to press enter', () => {
-        expect(pressEnterStub.calledOnce).to.equal(true);
-      });
-
-      it('Returns the game unmodified', () => {
-        expect(handlerResult).to.equal(game);
-        expect(handlerResult).to.deep.equal(initialGame);
+      it('Returns undefined', () => {
+        expect(handlerResult).to.equal(undefined);
       });
     });
   });
@@ -129,7 +120,7 @@ describe('Command routes', () => {
       let handlerResult: Game;
 
       beforeEach(async () => {
-        handlerResult = await result.handler(readlineInterface as unknown as Interface, game);
+        handlerResult = await result.handler(readlineInterface as unknown as Interface, game) as Game;
       });
 
       it('Calls the forfeit game API', () => {
@@ -138,7 +129,7 @@ describe('Command routes', () => {
       });
 
       it('Removes the game data file', () => {
-        expect(removeGameFileStub.calledOnce).to.equal(true);
+        expect(safelyRemoveGameFileStub.calledOnce).to.equal(true);
       });
 
       it('Returns a game with an unmodified table state and score and a status of "forfeited"', () => {
@@ -179,7 +170,7 @@ describe('Command routes', () => {
       let handlerResult: Game;
 
       beforeEach(async () => {
-        handlerResult = await result.handler(readlineInterface as unknown as Interface, game);
+        handlerResult = await result.handler(readlineInterface as unknown as Interface, game) as Game;
       });
 
       it('Calls the play game API with a "claim victory" command', () => {
@@ -188,7 +179,7 @@ describe('Command routes', () => {
       });
 
       it('Removes the game data file', () => {
-        expect(removeGameFileStub.calledOnce).to.equal(true);
+        expect(safelyRemoveGameFileStub.calledOnce).to.equal(true);
       });
 
       it('Prints a victory message', () => {
@@ -228,7 +219,7 @@ describe('Command routes', () => {
     });
 
     describe('When the handler is invoked', () => {
-      let handlerResult: Game;
+      let handlerResult: Game | void;
 
       beforeEach(async () => {
         handlerResult = await result.handler(readlineInterface as unknown as Interface, game);
@@ -238,9 +229,8 @@ describe('Command routes', () => {
         expect(readlineInterfaceCloseSpy.calledOnce).to.equal(true);
       });
 
-      it('Returns the game unmodified', () => {
-        expect(handlerResult).to.equal(game);
-        expect(handlerResult).to.deep.equal(initialGame);
+      it('Returns undefined', () => {
+        expect(handlerResult).to.equal(undefined);
       });
     });
   });

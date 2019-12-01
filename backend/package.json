@@ -25,7 +25,7 @@
     "delete": "aws cloudformation delete-stack --region ap-southeast-2 --stack-name ${npm_package_config_service}-${npm_config_stage:-${npm_package_config_default_stage}}",
     "teardown": "aws s3 rb --force s3://${npm_package_config_service}-deployment",
     "clean": "rm -rf build",
-    "pull": "npm run delete && npm run teardown && npm run clean",
+    "pull": "npm run delete && npm run clean",
     "seed": "ts-node src/tools/seed.ts",
     "pave": "ts-node src/tools/pave.ts"
   },

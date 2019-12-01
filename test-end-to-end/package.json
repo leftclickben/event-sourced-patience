@@ -1,0 +1,29 @@
+{
+  "name": "event-sourced-patience-test-end-to-end",
+  "version": "1.0.0",
+  "description": "End-to-end integration tests for event-sourced Patience demonstration",
+  "author": "Ben New <ben@leftclick.com.au>",
+  "license": "MIT",
+  "scripts": {
+    "ts-node": "ts-node",
+    "lint": "tslint --project tsconfig.json",
+    "test": "mocha -t 180000 -r ts-node/register test/**/*.spec.ts",
+    "cleanup": "ts-node src/cloudwatch"
+  },
+  "devDependencies": {
+    "@types/aws-sdk": "^2.7.0",
+    "@types/chai": "^4.2.5",
+    "@types/chalk": "^2.2.0",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.12.12",
+    "@types/yargs": "^13.0.3",
+    "aws-sdk": "^2.578.0",
+    "chai": "^4.2.0",
+    "chalk": "^3.0.0",
+    "cuid": "^2.1.6",
+    "mocha": "^6.2.2",
+    "ts-node": "^8.5.2",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.2"
+  }
+}

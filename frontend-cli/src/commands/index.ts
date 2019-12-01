@@ -2,31 +2,25 @@ import { Interface } from 'readline';
 import { playGame } from '../services/api';
 import { getCommandRoute } from './routes';
 import { GameplayCommandRouteMapEntry } from './types';
-import { pressEnter } from '../util';
 import { Game } from '../types';
 
+// If nothing is returned, the game view will not be displayed.
 export const handleCommand = async (
   readlineInterface: Interface,
   game: Game,
   command: string
-): Promise<Game> => {
+): Promise<Game | void> => {
   const route = getCommandRoute(command);
   if (!route) {
     if (command) {
-      console.error(`Unknown command "${command}"`);
-      await pressEnter(readlineInterface);
+      throw Error(`Unknown command "${command}"`);
     }
     return game;
   }
-  try {
-    return (route.type === 'gameplay')
-      ? await handleGameplayCommand(game, route, command)
-      : await route.handler(readlineInterface, game);
-  } catch (error) {
-    console.error(`API error occurred: ${error}`);
-    await pressEnter(readlineInterface);
-    return game;
-  }
+
+  return (route.type === 'gameplay')
+    ? await handleGameplayCommand(game, route, command)
+    : await route.handler(readlineInterface, game);
 };
 
 const handleGameplayCommand = async (

@@ -2,7 +2,7 @@ import { SinonStub, stub } from 'sinon';
 import * as osModule from 'os';
 import * as fsModule from 'fs';
 import * as apiModule from '../../../src/services/api';
-import { loadCurrentGame, removeGameFile } from '../../../src/services/game';
+import { loadCurrentGame, safelyRemoveGameFile } from '../../../src/services/game';
 import { Game } from '../../../src/types';
 import { expect } from 'chai';
 
@@ -566,48 +566,118 @@ describe('The game file service', () => {
   });
 
   describe('Removing the game file', () => {
+    let existsStub: SinonStub;
     let unlinkStub: SinonStub;
 
     beforeEach(() => {
+      existsStub = stub(fsModule, 'exists');
       unlinkStub = stub(fsModule, 'unlink');
     });
 
     afterEach(() => {
+      existsStub.restore();
       unlinkStub.restore();
     });
 
-    describe('Given the game data file can be deleted', () => {
+    describe('Given the file does not exist', () => {
       beforeEach(() => {
-        unlinkStub.callsFake((path, callback) => callback());
+        existsStub.callsFake((path, callback) => callback(undefined, false));
       });
 
       describe('When invoked', () => {
         beforeEach(async () => {
-          await removeGameFile();
+          await safelyRemoveGameFile();
         });
 
-        it('Deletes the game data file', () => {
-          expect(unlinkStub.calledOnce).to.equal(true);
-          expect(unlinkStub.firstCall.args.slice(0, -1)).to.deep.equal([
+        it('Checks if the game data file exists', () => {
+          expect(existsStub.calledOnce).to.equal(true);
+          expect(existsStub.firstCall.args.slice(0, -1)).to.deep.equal([
             '/home/test/.patience-cli'
-          ]);
+          ])
+        });
+
+        it('Does not delete the game data file', () => {
+          expect(unlinkStub.called).to.equal(false);
         });
       });
     });
 
-    describe('Given the file system is throwing errors', () => {
-      const fsError = Error('Could not delete file');
-
+    describe('Given the file exists', () => {
       beforeEach(() => {
-        unlinkStub.callsFake((path, callback) => callback(fsError));
+        existsStub.callsFake((path, callback) => callback(undefined, true));
       });
 
-      it('Attempts to deletes the game data file and throws the error', async () => {
-        await expect(removeGameFile()).to.be.eventually.rejectedWith(fsError);
-        expect(unlinkStub.calledOnce).to.equal(true);
-        expect(unlinkStub.firstCall.args.slice(0, -1)).to.deep.equal([
-          '/home/test/.patience-cli'
-        ]);
+      describe('Given the game data file can be deleted without errors', () => {
+        beforeEach(() => {
+          unlinkStub.callsFake((path, callback) => callback());
+        });
+
+        describe('When invoked', () => {
+          beforeEach(async () => {
+            await safelyRemoveGameFile();
+          });
+
+          it('Checks if the game data file exists', () => {
+            expect(existsStub.calledOnce).to.equal(true);
+            expect(existsStub.firstCall.args.slice(0, -1)).to.deep.equal([
+              '/home/test/.patience-cli'
+            ])
+          });
+
+          it('Deletes the game data file', () => {
+            expect(unlinkStub.calledOnce).to.equal(true);
+            expect(unlinkStub.firstCall.args.slice(0, -1)).to.deep.equal([
+              '/home/test/.patience-cli'
+            ]);
+          });
+        });
+      });
+
+      describe('Given the file system is throwing errors when deleting', () => {
+        const fsError = Error('Could not delete file');
+
+        beforeEach(() => {
+          unlinkStub.callsFake((path, callback) => callback(fsError));
+        });
+
+        describe('When invoked', () => {
+          it('Throws the error from the file system', async () => {
+            await expect(safelyRemoveGameFile()).to.be.eventually.rejectedWith(fsError);
+            expect(existsStub.calledOnce).to.equal(true);
+            expect(existsStub.firstCall.args.slice(0, -1)).to.deep.equal([
+              '/home/test/.patience-cli'
+            ]);
+            expect(unlinkStub.calledOnce).to.equal(true);
+            expect(unlinkStub.firstCall.args.slice(0, -1)).to.deep.equal([
+              '/home/test/.patience-cli'
+            ]);
+          });
+        });
+      });
+    });
+
+    describe('Given checking if the file exists is throwing errors', () => {
+      const fsError = Error('Could not access file system');
+
+      beforeEach(() => {
+        existsStub.callsFake((path, callback) => callback(fsError));
+      });
+
+      describe('Given the game data file can be deleted without errors', () => {
+        beforeEach(() => {
+          unlinkStub.callsFake((path, callback) => callback());
+        });
+
+        describe('When invoked', () => {
+          it('Throws the error from the file system', async () => {
+            await expect(safelyRemoveGameFile()).to.be.eventually.rejectedWith(fsError);
+            expect(existsStub.calledOnce).to.equal(true);
+            expect(existsStub.firstCall.args.slice(0, -1)).to.deep.equal([
+              '/home/test/.patience-cli'
+            ]);
+            expect(unlinkStub.called).to.equal(false);
+          });
+        });
       });
     });
   });

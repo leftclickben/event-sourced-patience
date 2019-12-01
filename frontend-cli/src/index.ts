@@ -5,46 +5,47 @@ import { createInterface } from 'readline';
 import { handleCommand } from './commands';
 import { prompt } from './strings';
 import { loadCurrentGame } from './services/game';
-import { gameOver, pressEnter } from './util';
+import { gameOver } from './util';
+import { Readable, Writable } from 'stream';
 
-export const main = async (gameId?: string, newGame: boolean = false) => {
+export const main = async (
+  gameId?: string,
+  newGame: boolean = false,
+  input: Readable = process.stdin,
+  output: Writable = process.stdout
+) => {
   try {
     config();
 
     let game = await loadCurrentGame(gameId, newGame);
+    console.info(generateGameView(game));
 
-    const readlineInterface = createInterface({
-      input: process.stdin,
-      output: process.stdout,
-      prompt
+    const readlineInterface = createInterface({ input, output, prompt, crlfDelay: Infinity });
+    readlineInterface.prompt(true);
+
+    readlineInterface.on('close', () => {
+      console.info('Thanks for playing!');
+      process.exit(0);
     });
 
-    console.info(generateGameView(game));
-    readlineInterface.prompt();
-
-    readlineInterface.on('line', async (command) => {
+    for await (const command of readlineInterface) {
+      readlineInterface.pause();
       try {
-        game = await handleCommand(readlineInterface, game, command);
+        const result = await handleCommand(readlineInterface, game, command);
+        game = result || game;
+        if (result) {
+          console.info(generateGameView(game));
+        }
       } catch (e) {
         console.error(e.message || String(e));
-        await pressEnter(readlineInterface);
       } finally {
-        console.info(generateGameView(game));
         if (gameOver(game.status)) {
           readlineInterface.close();
         } else {
           readlineInterface.prompt();
         }
       }
-    });
-
-    readlineInterface.on('close', () => {
-      if (gameOver(game.status)) {
-        console.info(generateGameView(game));
-      }
-      console.info('Thanks for playing!');
-      process.exit(0);
-    });
+    }
   } catch (e) {
     console.error(`Game initialisation error: ${e}`);
     process.exit(1);
@@ -53,7 +54,7 @@ export const main = async (gameId?: string, newGame: boolean = false) => {
 
 if (require.main === module) {
   // TODO Support multiple views (commented out code below)
-  const argv = yargs
+  const { argv } = yargs
     .alias('g', 'game')
     .describe('g', 'ID of the game to load, even if one is in progress')
     .alias('n', 'new')
@@ -61,11 +62,11 @@ if (require.main === module) {
     .boolean('n')
     // .alias('v', 'view')
     // .describe('v', 'Select the view to use')
+    // .choices({ v: ['default'] })
     .alias('h', 'help')
     .help('help')
-    // .choices({ v: ['default'] })
     .conflicts({ n: ['g'], g: ['n'] })
-    .version(false)
-    .argv;
+    .version(false);
+
   main(argv.game as string | undefined, argv.new as boolean | undefined).then();
 }

@@ -1,8 +1,7 @@
 import { CommandRouteMapEntry, CommandRouteParameterParser } from './types';
 import { forfeitGame, playGame } from '../services/api';
 import { clearScreen, helpText } from '../strings';
-import { removeGameFile } from '../services/game';
-import { pressEnter } from '../util';
+import { safelyRemoveGameFile } from '../services/game';
 import { GameStatus } from '../types';
 
 const parseTableauIndex: CommandRouteParameterParser<number> =
@@ -20,11 +19,9 @@ const commandRouteMap: CommandRouteMapEntry[] = [
   {
     type: 'special',
     match: /^h(?:elp)?$/,
-    handler: async (readlineInterface, game) => {
+    handler: async () => {
       console.info(clearScreen);
       console.info(helpText);
-      await pressEnter(readlineInterface);
-      return game;
     }
   },
   {
@@ -32,7 +29,7 @@ const commandRouteMap: CommandRouteMapEntry[] = [
     match: /^f(?:orfeit)?$/,
     handler: async (readlineInterface, game) => {
       await forfeitGame(game.gameId);
-      await removeGameFile();
+      await safelyRemoveGameFile();
       // The DELETE doesn't return a response, so we just update the status client-side for display purposes.
       return { ...game, status: GameStatus.forfeited };
     }
@@ -42,7 +39,7 @@ const commandRouteMap: CommandRouteMapEntry[] = [
     match: /^v(?:ictory)?$/,
     handler: async (readlineInterface, game) => {
       game = await playGame(game.gameId, 'claimVictory');
-      await removeGameFile();
+      await safelyRemoveGameFile();
       console.info('You won!!!');
       return game;
     }
@@ -50,9 +47,8 @@ const commandRouteMap: CommandRouteMapEntry[] = [
   {
     type: 'special',
     match: /^q(?:uit)?$/,
-    handler: async (readlineInterface, game) => {
+    handler: async (readlineInterface) => {
       readlineInterface.close();
-      return game;
     }
   },
   {

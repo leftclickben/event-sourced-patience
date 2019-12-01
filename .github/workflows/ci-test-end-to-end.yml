@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     paths:
-      - frontend-cli/**
+      - test-end-to-end/**
 
 jobs:
   build:
@@ -16,11 +16,8 @@ jobs:
         with:
           node-version: 12
       - name: Install dependencies
-        working-directory: frontend-cli
+        working-directory: test-end-to-end
         run: npm install
-      - name: Run frontend linter
-        working-directory: frontend-cli
+      - name: Run end-to-end integration test linter
+        working-directory: test-end-to-end
         run: npm run lint
-      - name: Run frontend tests
-        working-directory: frontend-cli
-        run: npm run test

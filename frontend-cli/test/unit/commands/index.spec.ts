@@ -3,7 +3,6 @@ import { SinonStub, stub } from 'sinon';
 import { Interface } from 'readline';
 import { handleCommand } from '../../../src/commands';
 import { Game } from '../../../src/types';
-import * as utilModule from '../../../src/util';
 import * as routesModule from '../../../src/commands/routes';
 import * as apiModule from '../../../src/services/api';
 
@@ -19,20 +18,17 @@ describe('Handling a command entered by the user', () => {
   } as unknown as Game;
 
   let getCommandRouteStub: SinonStub;
-  let pressEnterStub: SinonStub;
   let consoleErrorStub: SinonStub;
   let playGameStub: SinonStub;
 
   beforeEach(() => {
     getCommandRouteStub = stub(routesModule, 'getCommandRoute');
-    pressEnterStub = stub(utilModule, 'pressEnter').resolves();
     consoleErrorStub = stub(console, 'error');
     playGameStub = stub(apiModule, 'playGame');
   });
 
   afterEach(() => {
     getCommandRouteStub.restore();
-    pressEnterStub.restore();
     consoleErrorStub.restore();
     playGameStub.restore();
   });
@@ -51,7 +47,7 @@ describe('Handling a command entered by the user', () => {
         });
 
         describe('When invoked', () => {
-          let result: Game;
+          let result: Game | void;
 
           beforeEach(async () => {
             result = await handleCommand(readlineInterface, game, '');
@@ -59,10 +55,6 @@ describe('Handling a command entered by the user', () => {
 
           it('Does not print an error message', () => {
             expect(consoleErrorStub.called).to.equal(false);
-          });
-
-          it('Does not wait until the user presses enter', () => {
-            expect(pressEnterStub.called).to.equal(false);
           });
 
           it('Does not call the "playGame" API', () => {
@@ -81,30 +73,10 @@ describe('Handling a command entered by the user', () => {
         });
 
         describe('When invoked', () => {
-          let result: Game;
-
-          beforeEach(async () => {
-            result = await handleCommand(readlineInterface, game, 'not-a-valid-command');
-          });
-
-          it('Prints an error message', () => {
-            expect(consoleErrorStub.calledOnce).to.equal(true);
-            expect(consoleErrorStub.firstCall.args).to.deep.equal([
-              'Unknown command "not-a-valid-command"'
-            ]);
-          });
-
-          it('Waits until the user presses enter', () => {
-            expect(pressEnterStub.calledOnce).to.equal(true);
-            expect(pressEnterStub.firstCall.args).to.deep.equal([readlineInterface]);
-          });
-
-          it('Does not call the "playGame" API', () => {
+          it('Throws an error', async () => {
+            await expect(handleCommand(readlineInterface, game, 'not-a-valid-command'))
+              .to.be.eventually.rejectedWith('Unknown command "not-a-valid-command');
             expect(playGameStub.called).to.equal(false);
-          });
-
-          it('Returns the game unmodified', () => {
-            expect(result).to.equal(game);
           });
         });
       });
@@ -122,7 +94,7 @@ describe('Handling a command entered by the user', () => {
         });
 
         describe('When invoked', () => {
-          let result: Game;
+          let result: Game | void;
 
           beforeEach(async () => {
             result = await handleCommand(readlineInterface, game, 'test');
@@ -130,10 +102,6 @@ describe('Handling a command entered by the user', () => {
 
           it('Does not print an error message', () => {
             expect(consoleErrorStub.called).to.equal(false);
-          });
-
-          it('Does not wait until the user presses enter', () => {
-            expect(pressEnterStub.called).to.equal(false);
           });
 
           it('Does not call the "playGame" API', () => {
@@ -162,7 +130,7 @@ describe('Handling a command entered by the user', () => {
           });
 
           describe('When invoked', () => {
-            let result: Game;
+            let result: Game | void;
 
             beforeEach(async () => {
               result = await handleCommand(readlineInterface, game, 'move');
@@ -170,10 +138,6 @@ describe('Handling a command entered by the user', () => {
 
             it('Does not print an error message', () => {
               expect(consoleErrorStub.called).to.equal(false);
-            });
-
-            it('Does not wait until the user presses enter', () => {
-              expect(pressEnterStub.called).to.equal(false);
             });
 
             it('Calls the "playGame" API', () => {
@@ -199,34 +163,15 @@ describe('Handling a command entered by the user', () => {
           });
 
           describe('When invoked', () => {
-            let result: Game;
-
-            beforeEach(async () => {
-              result = await handleCommand(readlineInterface, game, 'move');
-            });
-
-            it('Prints the error message from the API call', () => {
-              expect(consoleErrorStub.calledOnce).to.equal(true);
-              expect(consoleErrorStub.firstCall.args).to.deep.equal([
-                'API error occurred: Error: API call failed'
-              ]);
-            });
-
-            it('Waits until the user presses enter', () => {
-              expect(pressEnterStub.calledOnce).to.equal(true);
-            });
-
-            it('Calls the "playGame" API', () => {
+            it('Throws the API error', async () => {
+              await expect(handleCommand(readlineInterface, game, 'move'))
+                .to.be.eventually.rejectedWith(playGameError);
               expect(playGameStub.calledOnce).to.equal(true);
               expect(playGameStub.firstCall.args).to.deep.equal([
                 'game-42',
                 'moveCardFromAtoB',
                 {}
               ]);
-            });
-
-            it('Returns the game unmodified', () => {
-              expect(result).to.equal(game);
             });
           });
         });
@@ -257,7 +202,7 @@ describe('Handling a command entered by the user', () => {
           });
 
           describe('When invoked', () => {
-            let result: Game;
+            let result: Game | void;
 
             beforeEach(async () => {
               result = await handleCommand(readlineInterface, game, 'move x y');
@@ -265,10 +210,6 @@ describe('Handling a command entered by the user', () => {
 
             it('Does not print an error message', () => {
               expect(consoleErrorStub.called).to.equal(false);
-            });
-
-            it('Does not wait until the user presses enter', () => {
-              expect(pressEnterStub.called).to.equal(false);
             });
 
             it('Calls the "playGame" API', () => {
@@ -297,24 +238,10 @@ describe('Handling a command entered by the user', () => {
           });
 
           describe('When invoked', () => {
-            let result: Game;
-
-            beforeEach(async () => {
-              result = await handleCommand(readlineInterface, game, 'move x y');
-            });
-
-            it('Prints the error message from the API call', () => {
-              expect(consoleErrorStub.calledOnce).to.equal(true);
-              expect(consoleErrorStub.firstCall.args).to.deep.equal([
-                'API error occurred: Error: API call failed'
-              ]);
-            });
-
-            it('Waits until the user presses enter', () => {
-              expect(pressEnterStub.calledOnce).to.equal(true);
-            });
-
-            it('Calls the "playGame" API', () => {
+            it('Throws the API error', async () => {
+              await expect(handleCommand(readlineInterface, game, 'move x y'))
+                .to.be.eventually.rejectedWith(playGameError);
+              expect(playGameStub.calledOnce).to.equal(true);
               expect(playGameStub.calledOnce).to.equal(true);
               expect(playGameStub.firstCall.args).to.deep.equal([
                 'game-42',
@@ -324,10 +251,6 @@ describe('Handling a command entered by the user', () => {
                   to: 'y'
                 }
               ]);
-            });
-
-            it('Returns the game unmodified', () => {
-              expect(result).to.equal(game);
             });
           });
         });
