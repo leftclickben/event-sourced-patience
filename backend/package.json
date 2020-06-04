@@ -5,7 +5,7 @@
   "author": "Ben New <ben@leftclick.com.au>",
   "license": "MIT",
   "config": {
-    "service": "event-sourced-patience",
+    "service": "patience",
     "default_stage": "dev"
   },
   "scripts": {

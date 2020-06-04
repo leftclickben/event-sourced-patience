@@ -1,9 +1,10 @@
 import { CloudFormation } from 'aws-sdk';
 import { StageName } from './types';
 
-// NOTE This is coupled to string logic in `package.json` scripts, equivalent changes must be made in both places.
+// NOTE This prefix is coupled to string logic in `package.json` scripts and in `cloudwatch.ts` in this directory.
+// Changes must be replicated in all three places.
 const getStackName = (stage: StageName) => {
-  return `event-sourced-patience-${stage}`;
+  return `patience-${stage}`;
 };
 
 export const getStackOutputs = async <T extends string>(
