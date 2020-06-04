@@ -1,6 +1,6 @@
 export type StageName = string;
 
-export type ExpectedEventDetails<T extends GameEvent = GameEvent> = Omit<T, 'eventId' | 'eventTimestamp' | 'gameId'>;
+export type ExpectedEventDetails<T extends GameEvent = GameEvent> = Omit<T, 'eventTimestamp' | 'gameId'>;
 
 export type Tape = string[];
 
@@ -33,17 +33,14 @@ export enum GameEventType {
   tableauPlayedToTableau = 'tableauPlayedToTableau'
 }
 
-export type EventId = string;
-
 export interface GameEvent<T extends GameEventType = GameEventType> {
-  eventId: EventId;
   gameId: GameId;
   eventType: T;
   eventTimestamp: number;
 }
 
 export type GameEventBase<T extends GameEventType> =
-  Pick<GameEvent<T>, 'gameId' | 'eventType' | 'eventId' | 'eventTimestamp'>;
+  Pick<GameEvent<T>, 'gameId' | 'eventType' | 'eventTimestamp'>;
 
 export enum Suit {
   clubs = 'clubs',

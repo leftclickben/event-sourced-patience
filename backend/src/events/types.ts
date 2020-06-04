@@ -12,16 +12,13 @@ export enum GameEventType {
   tableauPlayedToTableau = 'tableauPlayedToTableau'
 }
 
-export type EventId = string;
-
 export interface GameEvent<T extends GameEventType = GameEventType> {
-  eventId: EventId;
   gameId: GameId;
   eventType: T;
   eventTimestamp: number;
 }
 
-export type GeneratedEventProperties = 'eventId' | 'eventType' | 'eventTimestamp';
+export type GeneratedEventProperties = 'eventType' | 'eventTimestamp';
 
 export interface GameCreatedEvent extends GameEvent<GameEventType.gameCreated> {
   tableau: Card[][];

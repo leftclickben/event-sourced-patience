@@ -1,12 +1,8 @@
-import { EventId, GameCreatedEvent, GameEvent, GameEventType, GameForfeitedEvent } from '../../src/events/types';
+import { GameCreatedEvent, GameEvent, GameEventType, GameForfeitedEvent } from '../../src/events/types';
 import { GameId, Suit, Value } from '../../src/game/types';
 
-export const createSampleCreateGameEvent = (
-  gameId: GameId = 'game-42',
-  eventId: EventId = 'event-1'
-) => ({
+export const createSampleCreateGameEvent = (gameId: GameId = 'game-42') => ({
   gameId,
-  eventId,
   eventTimestamp: 1571753807473,
   eventType: GameEventType.gameCreated,
   tableau: [
@@ -46,12 +42,8 @@ export const createSampleCreateGameEvent = (
   ]
 } as GameCreatedEvent);
 
-export const createSampleForfeitGameEvent = (
-  gameId: GameId = 'game-42',
-  eventId: EventId = 'event-666'
-) => ({
+export const createSampleForfeitGameEvent = (gameId: GameId = 'game-42') => ({
   gameId,
-  eventId,
   eventTimestamp: 1571753807473,
   eventType: GameEventType.gameForfeited
 } as GameForfeitedEvent);
@@ -59,11 +51,9 @@ export const createSampleForfeitGameEvent = (
 export const createSampleGameplayEvent = <TEventType extends GameEventType, TEvent extends GameEvent<TEventType>>(
   eventType: TEventType,
   gameId: GameId = 'game-42',
-  eventId: EventId = 'event-666',
   args: Record<Exclude<keyof TEvent, keyof GameEvent>, any> = {} as any // args must be supplied where applicable
 ) => ({
   gameId,
-  eventId,
   eventTimestamp: 1571753807474,
   eventType,
   ...args

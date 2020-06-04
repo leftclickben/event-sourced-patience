@@ -58,7 +58,6 @@ describe('The score state builder', () => {
       state = buildScoreState([
         createSampleCreateGameEvent(),
         {
-          eventId: '2',
           eventTimestamp: 1571753807474,
           eventType: GameEventType.tableauPlayedToFoundation,
           gameId: 'game-42',
@@ -66,7 +65,6 @@ describe('The score state builder', () => {
           foundationIndex: 0
         } as TableauPlayedToFoundationEvent, // 10 points for card played to foundation
         {
-          eventId: '3',
           eventTimestamp: 1571753807476,
           eventType: GameEventType.tableauPlayedToTableau,
           gameId: 'game-42',
@@ -75,7 +73,6 @@ describe('The score state builder', () => {
           toIndex: 0
         } as TableauPlayedToTableauEvent, // 5 points for uncovered card
         {
-          eventId: '4',
           eventTimestamp: 1571753807475,
           eventType: GameEventType.tableauPlayedToTableau,
           gameId: 'game-42',
@@ -84,7 +81,6 @@ describe('The score state builder', () => {
           toIndex: 2
         } as TableauPlayedToTableauEvent, // 5 points for uncovered card
         {
-          eventId: '5',
           eventTimestamp: 1571753807474,
           eventType: GameEventType.tableauPlayedToFoundation,
           gameId: 'game-42',
@@ -92,7 +88,6 @@ describe('The score state builder', () => {
           foundationIndex: 1
         } as TableauPlayedToFoundationEvent, // 10 points for card played to foundation, 5 points for uncovered card
         {
-          eventId: '6',
           eventTimestamp: 1571753807477,
           eventType: GameEventType.stockDealtToWaste,
           gameId: 'game-42'
@@ -121,7 +116,6 @@ describe('The score state builder', () => {
       state = buildScoreState([
         createSampleCreateGameEvent(),
         {
-          eventId: '2',
           eventTimestamp: 1571753807474,
           eventType: GameEventType.tableauPlayedToFoundation,
           gameId: 'game-42',
@@ -129,7 +123,6 @@ describe('The score state builder', () => {
           foundationIndex: 0
         } as TableauPlayedToFoundationEvent, // 10 points for card played to foundation
         {
-          eventId: '3',
           eventTimestamp: 1571753807476,
           eventType: GameEventType.tableauPlayedToTableau,
           gameId: 'game-42',
@@ -138,7 +131,6 @@ describe('The score state builder', () => {
           toIndex: 0
         } as TableauPlayedToTableauEvent, // 5 points for uncovered card
         {
-          eventId: '4',
           eventTimestamp: 1571753807475,
           eventType: GameEventType.tableauPlayedToTableau,
           gameId: 'game-42',
@@ -147,7 +139,6 @@ describe('The score state builder', () => {
           toIndex: 2
         } as TableauPlayedToTableauEvent, // 5 points for uncovered card
         {
-          eventId: '5',
           eventTimestamp: 1571753807474,
           eventType: GameEventType.tableauPlayedToFoundation,
           gameId: 'game-42',
@@ -155,13 +146,11 @@ describe('The score state builder', () => {
           foundationIndex: 1
         } as TableauPlayedToFoundationEvent, // 10 points for card played to foundation, 5 points for uncovered card
         {
-          eventId: '6',
           eventTimestamp: 1571753807477,
           eventType: GameEventType.stockDealtToWaste,
           gameId: 'game-42'
         } as StockDealtToWasteEvent, // no point change,
         {
-          eventId: '999',
           eventTimestamp: 1571753807478,
           eventType: GameEventType.gameForfeited,
           gameId: 'game-42'

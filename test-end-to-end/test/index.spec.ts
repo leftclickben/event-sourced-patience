@@ -86,7 +86,7 @@ describe('End-to-end integration tests', () => {
 
           it('Matches the events in the database', async () => {
             assert.deepEqual(
-              actualEvents.map(({ eventId, eventTimestamp, ...event }) => event),
+              actualEvents.map(({ eventTimestamp, ...event }) => event),
               testConfiguration.expectedEvents.map((event) => ({ gameId, ...event })),
               `Incorrect events found for game "${gameId}"`);
           });

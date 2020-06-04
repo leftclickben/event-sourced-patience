@@ -4,20 +4,16 @@ import mockedEnv from 'mocked-env';
 import { DynamoDB } from 'aws-sdk';
 import { saveEvent } from '../../../src/events/save';
 import { GameEvent, GameEventType } from '../../../src/events/types';
-import * as idModule from '../../../src/id';
 
 describe('Saving an event to the event store', () => {
   let dateNowStub: SinonStub;
-  let generateIdStub: SinonStub;
 
   beforeEach(() => {
     dateNowStub = stub(Date, 'now').returns(1573726643625);
-    generateIdStub = stub(idModule, 'generateId').returns('generated-cuid');
   });
 
   afterEach(() => {
     dateNowStub.restore();
-    generateIdStub.restore();
   });
 
   describe('Given the environment is correctly configured', () => {
@@ -62,7 +58,6 @@ describe('Saving an event to the event store', () => {
             {
               TableName: 'events_unit_test',
               Item: {
-                eventId: 'generated-cuid',
                 eventTimestamp: 1573726643625,
                 eventType: 'stockDealtToWaste',
                 gameId: 'game-42'
@@ -73,7 +68,6 @@ describe('Saving an event to the event store', () => {
 
         it('Returns the created event', () => {
           expect(event).to.deep.equal({
-            eventId: 'generated-cuid',
             eventTimestamp: 1573726643625,
             eventType: 'stockDealtToWaste',
             gameId: 'game-42'
@@ -109,7 +103,6 @@ describe('Saving an event to the event store', () => {
             {
               TableName: 'events_unit_test',
               Item: {
-                eventId: 'generated-cuid',
                 eventTimestamp: 1573726643625,
                 eventType: 'stockDealtToWaste',
                 gameId: 'game-42'

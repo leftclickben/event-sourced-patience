@@ -50,7 +50,6 @@ describe('The HTTP PATCH /game handler', () => {
           createSampleGameplayEvent<GameEventType.stockDealtToWaste, StockDealtToWasteEvent>(
             GameEventType.stockDealtToWaste,
             'game-42',
-            'event-999',
             {})
         ];
         loadEventsStub = stub(loadEventsModule, 'loadEvents').resolves(initialEvents);
@@ -98,7 +97,6 @@ describe('The HTTP PATCH /game handler', () => {
             >(
               GameEventType.stockDealtToWaste,
               'game-42',
-              'event-1000',
               {});
 
             wasteResetToStockEvent = createSampleGameplayEvent<
@@ -107,7 +105,6 @@ describe('The HTTP PATCH /game handler', () => {
             >(
               GameEventType.wasteResetToStock,
               'game-42',
-              'event-1001',
               {});
 
             wastePlayedToTableauEvent = createSampleGameplayEvent<
@@ -116,7 +113,6 @@ describe('The HTTP PATCH /game handler', () => {
             >(
               GameEventType.wastePlayedToTableau,
               'game-42',
-              'event-1002',
               {
                 tableauIndex: 1
               });
@@ -127,7 +123,6 @@ describe('The HTTP PATCH /game handler', () => {
             >(
               GameEventType.wastePlayedToFoundation,
               'game-42',
-              'event-1003',
               {
                 foundationIndex: 2
               });
@@ -138,7 +133,6 @@ describe('The HTTP PATCH /game handler', () => {
             >(
               GameEventType.tableauPlayedToTableau,
               'game-42',
-              'event-1004',
               {
                 fromIndex: 7,
                 count: 3,
@@ -151,7 +145,6 @@ describe('The HTTP PATCH /game handler', () => {
             >(
               GameEventType.tableauPlayedToFoundation,
               'game-42',
-              'event-1005',
               {
                 tableauIndex: 5,
                 foundationIndex: 1
@@ -163,7 +156,6 @@ describe('The HTTP PATCH /game handler', () => {
             >(
               GameEventType.victoryClaimed,
               'game-42',
-              'event-1006',
               {});
 
             dealStockToWasteStub = stub(dealStockToWasteModule, 'dealStockToWaste')
