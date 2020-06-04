@@ -1,4 +1,3 @@
-import * as cuid from 'cuid';
 import { GameEventBase, GameEventType, GameId, Suit, Value } from './types';
 
 // The `eventTimestamp` is the range (sort) key, so creating multiple events in the same millisecond will cause
@@ -12,7 +11,6 @@ export const createGameEventBase = <T extends GameEventType = GameEventType>(
 ): GameEventBase<T> => ({
   gameId,
   eventType,
-  eventId: cuid(),
   eventTimestamp: ++syntheticTimestamp
 });
 

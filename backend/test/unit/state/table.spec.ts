@@ -87,7 +87,6 @@ describe('The table state builder', () => {
       state = buildTableState([
         createSampleCreateGameEvent(),
         {
-          eventId: '2',
           eventTimestamp: 1571753807474,
           eventType: GameEventType.tableauPlayedToFoundation,
           gameId: 'game-42',
@@ -95,7 +94,6 @@ describe('The table state builder', () => {
           foundationIndex: 0
         } as TableauPlayedToFoundationEvent,
         {
-          eventId: '3',
           eventTimestamp: 1571753807476,
           eventType: GameEventType.tableauPlayedToTableau,
           gameId: 'game-42',
@@ -104,7 +102,6 @@ describe('The table state builder', () => {
           toIndex: 0
         } as TableauPlayedToTableauEvent,
         {
-          eventId: '4',
           eventTimestamp: 1571753807475,
           eventType: GameEventType.tableauPlayedToTableau,
           gameId: 'game-42',
@@ -113,7 +110,6 @@ describe('The table state builder', () => {
           toIndex: 2
         } as TableauPlayedToTableauEvent,
         {
-          eventId: '5',
           eventTimestamp: 1571753807474,
           eventType: GameEventType.tableauPlayedToFoundation,
           gameId: 'game-42',
@@ -121,7 +117,6 @@ describe('The table state builder', () => {
           foundationIndex: 1
         } as TableauPlayedToFoundationEvent,
         {
-          eventId: '6',
           eventTimestamp: 1571753807477,
           eventType: GameEventType.stockDealtToWaste,
           gameId: 'game-42'
