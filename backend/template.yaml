@@ -10,7 +10,7 @@ Parameters:
 
 Globals:
   Function:
-    Runtime: nodejs10.x
+    Runtime: nodejs12.x
     Tracing: Active
   Api:
     Cors:
