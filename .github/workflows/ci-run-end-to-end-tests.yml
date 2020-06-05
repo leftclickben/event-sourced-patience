@@ -1,8 +1,10 @@
-name: CI - QA End-to-End Integration Tests
+name: CI - Run End-to-End Integration Tests
 
 on:
   push:
     paths:
+      - backend/**
+      - fontend-cli/**
       - test-end-to-end/**
 
 jobs:
@@ -18,6 +20,9 @@ jobs:
       - name: Install dependencies
         working-directory: test-end-to-end
         run: npm install
-      - name: Run end-to-end integration test linter
+      - name: Run end-to-end integration tests (uses AWS)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         working-directory: test-end-to-end
-        run: npm run lint
+        run: npm run test
