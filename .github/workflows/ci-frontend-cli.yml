@@ -1,4 +1,4 @@
-name: CI - Frontend CLI
+name: CI - QA Frontend CLI
 
 on:
   push:

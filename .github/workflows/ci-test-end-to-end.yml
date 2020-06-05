@@ -1,4 +1,4 @@
-name: CI - End-to-End Integration Tests
+name: CI - QA End-to-End Integration Tests
 
 on:
   push:

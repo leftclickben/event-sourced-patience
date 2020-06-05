@@ -1,0 +1,38 @@
+name: CI - Run End-to-End Integration Tests
+
+on:
+  push:
+    paths:
+      - backend/**
+      - fontend-cli/**
+      - test-end-to-end/**
+      - .github/**
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Install dependencies for backend
+        working-directory: backend
+        run: npm install
+      - name: Install dependencies for frontend-cli
+        working-directory: frontend-cli
+        run: npm install
+      - name: Install dependencies for test-end-to-end
+        working-directory: test-end-to-end
+        run: npm install
+      - name: Run end-to-end integration tests (uses AWS)
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TESTS_VERBOSITY: 2
+        working-directory: test-end-to-end
+        run: npm run test
