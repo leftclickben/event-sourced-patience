@@ -56,11 +56,13 @@ export const newGameToForfeit = (gameId: GameId, apiBaseUrl: string) => ({
   expectedErrorTape: [],
   expectedEvents: [
     {
+      gameId,
       eventType: GameEventType.gameCreated,
       tableau: gameCreatedTableau,
       stock: gameCreatedStock
     },
     {
+      gameId,
       eventType: GameEventType.gameForfeited
     }
   ]

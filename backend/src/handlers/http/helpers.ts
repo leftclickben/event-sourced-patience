@@ -4,6 +4,7 @@ import { BadRequest, InternalServerError, NotFound } from 'http-errors';
 
 export interface APIGatewayProxyEventWithData extends Partial<APIGatewayProxyEvent> {
   data?: object;
+  pathParameters: { [name: string]: string };
 }
 
 export interface APIGatewayProxyResultWithData extends Partial<APIGatewayProxyResult> {
@@ -15,11 +16,12 @@ export type APIGatewayProxyHandlerWithData =
 
 export const wrapHttpHandler =
   (handler: APIGatewayProxyHandlerWithData): APIGatewayProxyHandler =>
-    async (event, context) => {
+    async ({ pathParameters, body, ...event }, context) => {
       try {
         const wrappedEvent = {
           ...event,
-          data: event.body ? JSON.parse(event.body) : undefined
+          pathParameters: pathParameters || {},
+          data: body ? JSON.parse(body) : undefined
         };
 
         const { data, ...result } = await handler(wrappedEvent, context, () => undefined) || {};

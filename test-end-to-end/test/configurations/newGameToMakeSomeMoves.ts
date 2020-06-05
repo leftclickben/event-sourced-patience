@@ -170,37 +170,44 @@ export const newGameToMakeSomeMoves = (gameId: GameId, apiBaseUrl: string) => ({
   expectedErrorTape: [],
   expectedEvents: [
     {
+      gameId,
       eventType: GameEventType.gameCreated,
       tableau: gameCreatedTableau,
       stock: gameCreatedStock
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       toIndex: 2,
       count: 1,
       fromIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       toIndex: 5,
       count: 1,
       fromIndex: 1
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       tableauIndex: 4,
       foundationIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       toIndex: 0,
       count: 1,
       fromIndex: 3,
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste,
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste,
     }
   ]
