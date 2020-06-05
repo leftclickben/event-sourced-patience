@@ -31,7 +31,7 @@ describe('Helper functions', () => {
         outerHandler = wrapHttpHandler(innerHandler);
       });
 
-      describe('When the resulting function is invoked', () => {
+      describe('When the resulting function is invoked with a body', () => {
         let event: APIGatewayProxyEvent;
         let context: Context;
         let result: APIGatewayProxyResultWithData | void;
@@ -42,10 +42,59 @@ describe('Helper functions', () => {
           result = await outerHandler(event, context, undefined as any);
         });
 
-        it('Calls the inner handler with data', () => {
+        it('Calls the inner handler with data and an empty set of path parameters', () => {
           expect(innerHandler.callCount).to.equal(1);
           expect(innerHandler.firstCall.args[0]).to.deep.equal({
-            ...event,
+            pathParameters: {},
+            data: {
+              parameter: 'value'
+            }
+          });
+          expect(innerHandler.firstCall.args[1]).to.equal(context);
+        });
+
+        it('Does not log any errors', () => {
+          expect(consoleErrorStub.callCount).to.equal(0);
+        });
+
+        it('Returns the correct HTTP response', () => {
+          expect(result).to.deep.equal({
+            statusCode: 204,
+            body: ''
+          });
+        });
+      });
+
+      describe('When the resulting function is invoked with a body and other properties', () => {
+        let event: APIGatewayProxyEvent;
+        let context: Context;
+        let result: APIGatewayProxyResultWithData | void;
+
+        beforeEach(async () => {
+          event = {
+            body: '{"parameter":"value"}',
+            pathParameters: {
+              key: 'value'
+            },
+            httpMethod: 'patch',
+            headers: {
+              authorization: 'Bearer tokenGoesHere'
+            }
+          } as unknown as APIGatewayProxyEvent;
+          context = {} as Context;
+          result = await outerHandler(event, context, undefined as any);
+        });
+
+        it('Calls the inner handler with data and other properties except body', () => {
+          expect(innerHandler.callCount).to.equal(1);
+          expect(innerHandler.firstCall.args[0]).to.deep.equal({
+            pathParameters: {
+              key: 'value'
+            },
+            httpMethod: 'patch',
+            headers: {
+              authorization: 'Bearer tokenGoesHere'
+            },
             data: {
               parameter: 'value'
             }
@@ -88,10 +137,10 @@ describe('Helper functions', () => {
           result = await outerHandler(event, context, undefined as any);
         });
 
-        it('Calls the inner handler with data', () => {
+        it('Calls the inner handler with data and an empty set of path parameters', () => {
           expect(innerHandler.callCount).to.equal(1);
           expect(innerHandler.firstCall.args[0]).to.deep.equal({
-            ...event,
+            pathParameters: {},
             data: {
               parameter: 'value'
             }
@@ -135,10 +184,10 @@ describe('Helper functions', () => {
           result = await outerHandler(event, context, undefined as any);
         });
 
-        it('Calls the inner handler with data', () => {
+        it('Calls the inner handler with data and an empty set of path parameters', () => {
           expect(innerHandler.callCount).to.equal(1);
           expect(innerHandler.firstCall.args[0]).to.deep.equal({
-            ...event,
+            pathParameters: {},
             data: {
               parameter: 'value'
             }
@@ -182,10 +231,10 @@ describe('Helper functions', () => {
           result = await outerHandler(event, context, undefined as any);
         });
 
-        it('Calls the inner handler with data', () => {
+        it('Calls the inner handler with data and an empty set of path parameters', () => {
           expect(innerHandler.callCount).to.equal(1);
           expect(innerHandler.firstCall.args[0]).to.deep.equal({
-            ...event,
+            pathParameters: {},
             data: {
               parameter: 'value'
             }
@@ -221,13 +270,13 @@ describe('Helper functions', () => {
       });
 
       describe('When the resulting function is invoked', () => {
-        it('Throws the error from the inner handler with data', async () => {
+        it('Throws the error from the inner handler with data and empty set of path parameters', async () => {
           const event = { body: '{"parameter":"value"}' } as APIGatewayProxyEvent;
           const context = {} as Context;
           await expect(outerHandler(event, context, undefined as any)).to.be.eventually.rejectedWith(thrownError);
           expect(innerHandler.callCount).to.equal(1);
           expect(innerHandler.firstCall.args[0]).to.deep.equal({
-            ...event,
+            pathParameters: {},
             data: {
               parameter: 'value'
             }

@@ -12,7 +12,7 @@ import {
 export const getGameHandler: APIGatewayProxyHandlerWithData = async ({ pathParameters }) => {
   checkEnvironment(['DB_TABLE_EVENTS']);
 
-  const { gameId } = pathParameters || {};
+  const { gameId } = pathParameters;
 
   checkArguments({ gameId });
 

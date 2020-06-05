@@ -95,6 +95,7 @@ export const newGameForInvalidCommandsAndHelp = (gameId: GameId, apiBaseUrl: str
   ],
   expectedEvents: [
     {
+      gameId,
       eventType: GameEventType.gameCreated,
       tableau: gameCreatedTableau,
       stock: gameCreatedStock

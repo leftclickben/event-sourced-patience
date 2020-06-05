@@ -84,10 +84,10 @@ describe('End-to-end integration tests', () => {
               `Tape from error stream does not match for game "${gameId}`);
           });
 
-          it('Matches the events in the database', async () => {
+          it('Matches the events in the database (ignoring timestamps)', async () => {
             assert.deepEqual(
               actualEvents.map(({ eventTimestamp, ...event }) => event),
-              testConfiguration.expectedEvents.map((event) => ({ gameId, ...event })),
+              testConfiguration.expectedEvents,
               `Incorrect events found for game "${gameId}"`);
           });
         });

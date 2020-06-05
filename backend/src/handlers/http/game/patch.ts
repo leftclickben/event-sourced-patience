@@ -24,7 +24,7 @@ const getDelegation = (key: GameplayCommandName) => ({
 export const patchGameHandler: APIGatewayProxyHandlerWithData = async ({ data, pathParameters }) => {
   checkEnvironment(['DB_TABLE_EVENTS']);
 
-  const { gameId, moveType } = pathParameters || {};
+  const { gameId, moveType } = pathParameters;
 
   checkArguments({ gameId, moveType });
 

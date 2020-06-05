@@ -44,571 +44,700 @@ export const gameReadyToClaimVictory = (gameId: GameId, apiBaseUrl: string) => (
   expectedErrorTape: [],
   expectedEvents: [
     {
+      gameId,
       eventType: GameEventType.gameCreated,
       tableau: gameCreatedTableau,
       stock: gameCreatedStock
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       toIndex: 2,
       count: 1,
       fromIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       toIndex: 5,
       count: 1,
       fromIndex: 1
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       tableauIndex: 4,
       foundationIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       toIndex: 0,
       count: 1,
       fromIndex: 3,
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste,
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste,
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 3
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 5
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 3,
       fromIndex: 5,
       toIndex: 1
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 1,
       fromIndex: 5,
       toIndex: 2
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 1,
       fromIndex: 6,
       toIndex: 2
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 1,
       fromIndex: 5,
       toIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 5
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 6
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 2,
       fromIndex: 3,
       toIndex: 6
     },
     {
+      gameId,
       eventType: GameEventType.wasteResetToStock
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 6
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToFoundation,
       foundationIndex: 1
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 4,
       fromIndex: 1,
       toIndex: 6,
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 2
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 6
     },
     {
+      gameId,
       eventType: GameEventType.wasteResetToStock
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 0,
       tableauIndex: 6
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 1,
       tableauIndex: 2
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 1,
       tableauIndex: 5
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 0,
       tableauIndex: 2
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 0,
       tableauIndex: 5
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 1,
       fromIndex: 5,
       toIndex: 3
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToFoundation,
       foundationIndex: 1
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 5
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 9,
       fromIndex: 6,
       toIndex: 5
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 2,
       tableauIndex: 6
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 3,
       tableauIndex: 6
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 3,
       tableauIndex: 6
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 1,
       fromIndex: 6,
       toIndex: 1
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 2,
       tableauIndex: 6
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.wasteResetToStock
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 1
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.wasteResetToStock
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 3,
       tableauIndex: 5
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 3,
       tableauIndex: 2
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 0,
       tableauIndex: 2
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 2
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 1,
       fromIndex: 4,
       toIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 1
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 2,
       fromIndex: 3,
       toIndex: 1
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 1,
       fromIndex: 3,
       toIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 2,
       fromIndex: 2,
       toIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 2,
       tableauIndex: 2
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 2,
       tableauIndex: 5
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 2,
       tableauIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 3,
       tableauIndex: 5
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 5
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 1,
       tableauIndex: 5
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 3,
       tableauIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 2,
       tableauIndex: 5
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 3,
       tableauIndex: 4
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 1,
       fromIndex: 2,
       toIndex: 4
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 5
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 0,
       tableauIndex: 5
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 4
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 0,
       tableauIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.wasteResetToStock
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 4
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 1
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToFoundation,
       foundationIndex: 1
     },
     {
+      gameId,
       eventType: GameEventType.stockDealtToWaste
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 4
     },
     {
+      gameId,
       eventType: GameEventType.wastePlayedToTableau,
       tableauIndex: 2
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 7,
       fromIndex: 5,
       toIndex: 3
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToTableau,
       count: 5,
       fromIndex: 4,
       toIndex: 2
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 2,
       tableauIndex: 4
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 1,
       tableauIndex: 3
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 1,
       tableauIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 2,
       tableauIndex: 1
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 3,
       tableauIndex: 2
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 0,
       tableauIndex: 3
     },
     {
-      eventType: GameEventType.tableauPlayedToFoundation,
-      foundationIndex: 0,
-      tableauIndex: 0
-    },
-    {
-      eventType: GameEventType.tableauPlayedToFoundation,
-      foundationIndex: 1,
-      tableauIndex: 1
-    },
-    {
-      eventType: GameEventType.tableauPlayedToFoundation,
-      foundationIndex: 2,
-      tableauIndex: 2
-    },
-    {
-      eventType: GameEventType.tableauPlayedToFoundation,
-      foundationIndex: 3,
-      tableauIndex: 3
-    },
-    {
-      eventType: GameEventType.tableauPlayedToFoundation,
-      foundationIndex: 3,
-      tableauIndex: 0
-    },
-    {
-      eventType: GameEventType.tableauPlayedToFoundation,
-      foundationIndex: 0,
-      tableauIndex: 1
-    },
-    {
-      eventType: GameEventType.tableauPlayedToFoundation,
-      foundationIndex: 1,
-      tableauIndex: 2
-    },
-    {
-      eventType: GameEventType.tableauPlayedToFoundation,
-      foundationIndex: 2,
-      tableauIndex: 3
-    },
-    {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 0,
       tableauIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
-      foundationIndex: 3,
+      foundationIndex: 1,
       tableauIndex: 1
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 2,
       tableauIndex: 2
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
-      foundationIndex: 1,
+      foundationIndex: 3,
       tableauIndex: 3
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 3,
       tableauIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
-      foundationIndex: 2,
+      foundationIndex: 0,
       tableauIndex: 1
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 1,
       tableauIndex: 2
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
-      foundationIndex: 0,
+      foundationIndex: 2,
       tableauIndex: 3
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 0,
       tableauIndex: 0
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 3,
       tableauIndex: 1
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 2,
       tableauIndex: 2
     },
     {
+      gameId,
       eventType: GameEventType.tableauPlayedToFoundation,
       foundationIndex: 1,
       tableauIndex: 3
     },
     {
+      gameId,
+      eventType: GameEventType.tableauPlayedToFoundation,
+      foundationIndex: 3,
+      tableauIndex: 0
+    },
+    {
+      gameId,
+      eventType: GameEventType.tableauPlayedToFoundation,
+      foundationIndex: 2,
+      tableauIndex: 1
+    },
+    {
+      gameId,
+      eventType: GameEventType.tableauPlayedToFoundation,
+      foundationIndex: 1,
+      tableauIndex: 2
+    },
+    {
+      gameId,
+      eventType: GameEventType.tableauPlayedToFoundation,
+      foundationIndex: 0,
+      tableauIndex: 3
+    },
+    {
+      gameId,
+      eventType: GameEventType.tableauPlayedToFoundation,
+      foundationIndex: 0,
+      tableauIndex: 0
+    },
+    {
+      gameId,
+      eventType: GameEventType.tableauPlayedToFoundation,
+      foundationIndex: 3,
+      tableauIndex: 1
+    },
+    {
+      gameId,
+      eventType: GameEventType.tableauPlayedToFoundation,
+      foundationIndex: 2,
+      tableauIndex: 2
+    },
+    {
+      gameId,
+      eventType: GameEventType.tableauPlayedToFoundation,
+      foundationIndex: 1,
+      tableauIndex: 3
+    },
+    {
+      gameId,
       eventType: GameEventType.victoryClaimed
     }
   ]
