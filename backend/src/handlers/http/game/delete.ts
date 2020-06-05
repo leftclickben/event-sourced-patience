@@ -1,6 +1,5 @@
-import { checkArguments, checkEnvironment } from '../util';
 import { forfeitGame } from '../../../commands/processors/forfeitGame';
-import { APIGatewayProxyHandlerWithData, wrapHttpHandler } from '../wrap';
+import { APIGatewayProxyHandlerWithData, checkArguments, checkEnvironment, wrapHttpHandler } from '../helpers';
 
 // This function is named after the HTTP verb being used; the game is actually forfeited, not deleted as such
 export const deleteGameHandler: APIGatewayProxyHandlerWithData = async ({ pathParameters }) => {

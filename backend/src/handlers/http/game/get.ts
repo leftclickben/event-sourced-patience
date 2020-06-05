@@ -1,8 +1,13 @@
 import { loadEvents } from '../../../events/load';
 import { buildTableState } from '../../../state/table';
-import { checkArguments, checkEnvironment, checkResultArray } from '../util';
 import { buildScoreState } from '../../../state/score';
-import { APIGatewayProxyHandlerWithData, wrapHttpHandler } from '../wrap';
+import {
+  APIGatewayProxyHandlerWithData,
+  checkArguments,
+  checkEnvironment,
+  checkResultArray,
+  wrapHttpHandler
+} from '../helpers';
 
 export const getGameHandler: APIGatewayProxyHandlerWithData = async ({ pathParameters }) => {
   checkEnvironment(['DB_TABLE_EVENTS']);
@@ -16,14 +21,10 @@ export const getGameHandler: APIGatewayProxyHandlerWithData = async ({ pathParam
   checkResultArray(events, `Game ${gameId} not found`);
 
   const { score, status } = buildScoreState(events);
+  const table = buildTableState(events);
 
   return {
-    data: {
-      gameId,
-      score,
-      status,
-      table: buildTableState(events)
-    }
+    data: { gameId, score, status, table }
   };
 };
 
