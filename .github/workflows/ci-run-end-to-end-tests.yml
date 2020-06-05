@@ -6,6 +6,7 @@ on:
       - backend/**
       - fontend-cli/**
       - test-end-to-end/**
+      - .github/**
 
 jobs:
   build:
