@@ -266,15 +266,19 @@ describe('Helper functions', () => {
 
         describe('When a required variable is missing', () => {
           it('Throws an error mentioning the missing variable', () => {
-            expect(() => checkEnvironment(['CHARLIE'])).to.throw('Required environment variable "CHARLIE" missing, check your configuration');
-            expect(() => checkEnvironment(['ALPHA', 'CHARLIE'])).to.throw('Required environment variable "CHARLIE" missing, check your configuration');
+            expect(() => checkEnvironment(['CHARLIE']))
+              .to.throw('Required environment variable "CHARLIE" missing, check your configuration');
+            expect(() => checkEnvironment(['ALPHA', 'CHARLIE']))
+              .to.throw('Required environment variable "CHARLIE" missing, check your configuration');
           });
         });
 
         describe('When multiple required variables are missing', () => {
           it('Throws an error mentioning the first missing variable', () => {
-            expect(() => checkEnvironment(['CHARLIE', 'ZULU'])).to.throw('Required environment variable "CHARLIE" missing, check your configuration');
-            expect(() => checkEnvironment(['ZULU', 'CHARLIE'])).to.throw('Required environment variable "ZULU" missing, check your configuration');
+            expect(() => checkEnvironment(['CHARLIE', 'ZULU'])).to.throw(
+              'Required environment variable "CHARLIE" missing, check your configuration');
+            expect(() => checkEnvironment(['ZULU', 'CHARLIE'])).to.throw(
+              'Required environment variable "ZULU" missing, check your configuration');
           });
         });
       });
@@ -282,23 +286,30 @@ describe('Helper functions', () => {
       describe('With a custom message', () => {
         describe('When all required variables are present', () => {
           it('Passes', () => {
-            expect(() => checkEnvironment(['ALPHA'], 'Custom error message')).not.to.throw();
-            expect(() => checkEnvironment(['BRAVO'], 'Custom error message')).not.to.throw();
-            expect(() => checkEnvironment(['ALPHA', 'BRAVO'], 'Custom error message')).not.to.throw();
+            expect(() => checkEnvironment(['ALPHA'], 'Custom error message'))
+              .not.to.throw();
+            expect(() => checkEnvironment(['BRAVO'], 'Custom error message'))
+              .not.to.throw();
+            expect(() => checkEnvironment(['ALPHA', 'BRAVO'], 'Custom error message'))
+              .not.to.throw();
           });
         });
 
         describe('When a required variable is missing', () => {
           it('Throws an error with the custom message', () => {
-            expect(() => checkEnvironment(['CHARLIE'], 'Custom error message')).to.throw('Custom error message');
-            expect(() => checkEnvironment(['ALPHA', 'CHARLIE'], 'Custom error message')).to.throw('Custom error message');
+            expect(() => checkEnvironment(['CHARLIE'], 'Custom error message'))
+              .to.throw('Custom error message');
+            expect(() => checkEnvironment(['ALPHA', 'CHARLIE'], 'Custom error message'))
+              .to.throw('Custom error message');
           });
         });
 
         describe('When multiple required variables are missing', () => {
           it('Throws an error with the custom message', () => {
-            expect(() => checkEnvironment(['CHARLIE', 'ZULU'], 'Custom error message')).to.throw('Custom error message');
-            expect(() => checkEnvironment(['ZULU', 'CHARLIE'], 'Custom error message')).to.throw('Custom error message');
+            expect(() => checkEnvironment(['CHARLIE', 'ZULU'], 'Custom error message'))
+              .to.throw('Custom error message');
+            expect(() => checkEnvironment(['ZULU', 'CHARLIE'], 'Custom error message'))
+              .to.throw('Custom error message');
           });
         });
       });
@@ -317,16 +328,21 @@ describe('Helper functions', () => {
 
       describe('When one argument has a falsy value', () => {
         it('Throws an exception mentioning the missing argument', () => {
-          expect(() => checkArguments({ foo: 'bar', xyzzy: undefined })).to.throw('Required parameter "xyzzy" missing');
-          expect(() => checkArguments({ foo: 'bar', xyzzy: '' })).to.throw('Required parameter "xyzzy" missing');
-          expect(() => checkArguments({ foo: null, xyzzy: 42 })).to.throw('Required parameter "foo" missing');
+          expect(() => checkArguments({ foo: 'bar', xyzzy: undefined }))
+            .to.throw('Required parameter "xyzzy" missing');
+          expect(() => checkArguments({ foo: 'bar', xyzzy: '' }))
+            .to.throw('Required parameter "xyzzy" missing');
+          expect(() => checkArguments({ foo: null, xyzzy: 42 }))
+            .to.throw('Required parameter "foo" missing');
         });
       });
 
       describe('When multiple arguments have a falsy value', () => {
         it('Throws an exception mentioning the first missing argument', () => {
-          expect(() => checkArguments({ foo: undefined, xyzzy: undefined })).to.throw('Required parameter "foo" missing');
-          expect(() => checkArguments({ foo: null, xyzzy: '' })).to.throw('Required parameter "foo" missing');
+          expect(() => checkArguments({ foo: undefined, xyzzy: undefined }))
+            .to.throw('Required parameter "foo" missing');
+          expect(() => checkArguments({ foo: null, xyzzy: '' }))
+            .to.throw('Required parameter "foo" missing');
         });
       });
     });
@@ -334,24 +350,32 @@ describe('Helper functions', () => {
     describe('With a custom message', () => {
       describe('When all arguments have a truthy value', () => {
         it('Passes', () => {
-          expect(() => checkArguments({}, 'Custom error message')).not.to.throw();
-          expect(() => checkArguments({ foo: 'bar' }, 'Custom error message')).not.to.throw();
-          expect(() => checkArguments({ foo: 'bar', xyzzy: 42 }, 'Custom error message')).not.to.throw();
+          expect(() => checkArguments({}, 'Custom error message'))
+            .not.to.throw();
+          expect(() => checkArguments({ foo: 'bar' }, 'Custom error message'))
+            .not.to.throw();
+          expect(() => checkArguments({ foo: 'bar', xyzzy: 42 }, 'Custom error message'))
+            .not.to.throw();
         });
       });
 
       describe('When one argument has a falsy value', () => {
         it('Throws an exception mentioning the missing argument', () => {
-          expect(() => checkArguments({ foo: 'bar', xyzzy: undefined }, 'Custom error message')).to.throw('Custom error message');
-          expect(() => checkArguments({ foo: 'bar', xyzzy: '' }, 'Custom error message')).to.throw('Custom error message');
-          expect(() => checkArguments({ foo: null, xyzzy: 42 }, 'Custom error message')).to.throw('Custom error message');
+          expect(() => checkArguments({ foo: 'bar', xyzzy: undefined }, 'Custom error message'))
+            .to.throw('Custom error message');
+          expect(() => checkArguments({ foo: 'bar', xyzzy: '' }, 'Custom error message'))
+            .to.throw('Custom error message');
+          expect(() => checkArguments({ foo: null, xyzzy: 42 }, 'Custom error message'))
+            .to.throw('Custom error message');
         });
       });
 
       describe('When multiple arguments have a falsy value', () => {
         it('Throws an exception mentioning the first missing argument', () => {
-          expect(() => checkArguments({ foo: undefined, xyzzy: undefined }, 'Custom error message')).to.throw('Custom error message');
-          expect(() => checkArguments({ foo: null, xyzzy: '' }, 'Custom error message')).to.throw('Custom error message');
+          expect(() => checkArguments({ foo: undefined, xyzzy: undefined }, 'Custom error message'))
+            .to.throw('Custom error message');
+          expect(() => checkArguments({ foo: null, xyzzy: '' }, 'Custom error message'))
+            .to.throw('Custom error message');
         });
       });
     });
@@ -383,7 +407,8 @@ describe('Helper functions', () => {
 
       describe('With an empty array', () => {
         it('Throws an error', () => {
-          expect(() => checkResultArray([], 'Custom error message')).to.throw('Custom error message');
+          expect(() => checkResultArray([], 'Custom error message'))
+            .to.throw('Custom error message');
         });
       });
     });
