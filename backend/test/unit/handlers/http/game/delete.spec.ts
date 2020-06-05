@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { deleteGameHandler } from '../../../../../src/handlers/http/game/delete';
 import { createSampleForfeitGameEvent } from '../../../../fixtures/events';
 import * as forfeitGameModule from '../../../../../src/commands/processors/forfeitGame';
-import { APIGatewayProxyResultWithData } from '../../../../../src/handlers/http/wrap';
+import { APIGatewayProxyResultWithData } from '../../../../../src/handlers/http/helpers';
 
 describe('The HTTP DELETE /game handler', () => {
   describe('Given the environment is correctly configured', () => {

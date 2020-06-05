@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { postGameHandler } from '../../../../../src/handlers/http/game/post';
 import * as createGameModule from '../../../../../src/commands/processors/createGame';
 import { createSampleCreateGameEvent } from '../../../../fixtures/events';
-import { APIGatewayProxyResultWithData } from '../../../../../src/handlers/http/wrap';
+import { APIGatewayProxyResultWithData } from '../../../../../src/handlers/http/helpers';
 
 describe('The HTTP POST /game handler', () => {
   describe('Given the environment is correctly configured', () => {

@@ -1,4 +1,3 @@
-import { checkArguments, checkEnvironment } from '../util';
 import { loadEvents } from '../../../events/load';
 import { buildTableState } from '../../../state/table';
 import { buildScoreState } from '../../../state/score';
@@ -10,7 +9,7 @@ import { playWasteToFoundation } from '../../../commands/processors/playWasteToF
 import { dealStockToWaste } from '../../../commands/processors/dealStockToWaste';
 import { resetWasteToStock } from '../../../commands/processors/resetWasteToStock';
 import { claimVictory } from '../../../commands/processors/claimVictory';
-import { APIGatewayProxyHandlerWithData, wrapHttpHandler } from '../wrap';
+import { APIGatewayProxyHandlerWithData, checkArguments, checkEnvironment, wrapHttpHandler } from '../helpers';
 
 const getDelegation = (key: GameplayCommandName) => ({
   dealStockToWaste,
@@ -35,15 +34,13 @@ export const patchGameHandler: APIGatewayProxyHandlerWithData = async ({ data, p
 
   const addedEvent = await delegation({ gameId, ...data as any });
 
-  const { score, status } = buildScoreState([...events, addedEvent]);
+  const newEvents = [...events, addedEvent];
+
+  const { score, status } = buildScoreState(newEvents);
+  const table = buildTableState(newEvents);
 
   return {
-    data: {
-      gameId,
-      score,
-      status,
-      table: buildTableState([...events, addedEvent])
-    }
+    data: { gameId, score, status, table }
   };
 };
 

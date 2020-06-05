@@ -6,7 +6,7 @@ import * as loadEventsModule from '../../../../../src/events/load';
 import * as tableStateModule from '../../../../../src/state/table';
 import * as scoreStateModule from '../../../../../src/state/score';
 import { createSampleCreateGameEvent } from '../../../../fixtures/events';
-import { APIGatewayProxyResultWithData } from '../../../../../src/handlers/http/wrap';
+import { APIGatewayProxyResultWithData } from '../../../../../src/handlers/http/helpers';
 import { GameStatus } from '../../../../../src/game/types';
 
 describe('The HTTP GET /game handler', () => {

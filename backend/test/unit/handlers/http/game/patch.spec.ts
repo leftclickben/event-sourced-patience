@@ -24,7 +24,7 @@ import {
 } from '../../../../../src/events/types';
 import { patchGameHandler } from '../../../../../src/handlers/http/game/patch';
 import { expect } from 'chai';
-import { APIGatewayProxyResultWithData } from '../../../../../src/handlers/http/wrap';
+import { APIGatewayProxyResultWithData } from '../../../../../src/handlers/http/helpers';
 
 describe('The HTTP PATCH /game handler', () => {
   describe('Given the environment is correctly configured', () => {
