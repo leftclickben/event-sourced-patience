@@ -6,7 +6,6 @@ export const deleteGameHandler: APIGatewayProxyHandlerWithData = async ({ pathPa
   checkEnvironment(['DB_TABLE_EVENTS']);
 
   const { gameId } = pathParameters;
-
   checkArguments({ gameId });
 
   await forfeitGame({ gameId });

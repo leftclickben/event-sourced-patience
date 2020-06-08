@@ -8,7 +8,6 @@ export const postGameHandler: APIGatewayProxyHandlerWithData = async () => {
   checkEnvironment(['DB_TABLE_EVENTS']);
 
   const createGameEvent = await createGame();
-
   const gameId = createGameEvent.gameId;
   const { score, status } = buildScoreState([createGameEvent]);
   const table = buildTableState([createGameEvent]);

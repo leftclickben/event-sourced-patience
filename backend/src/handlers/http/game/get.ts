@@ -13,11 +13,9 @@ export const getGameHandler: APIGatewayProxyHandlerWithData = async ({ pathParam
   checkEnvironment(['DB_TABLE_EVENTS']);
 
   const { gameId } = pathParameters;
-
   checkArguments({ gameId });
 
   const events = await loadEvents(gameId);
-
   checkResultArray(events, `Game ${gameId} not found`);
 
   const { score, status } = buildScoreState(events);
