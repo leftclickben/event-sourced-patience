@@ -13,9 +13,6 @@ Globals:
     Runtime: nodejs12.x
     Tracing: Active
   Api:
-    Cors:
-      AllowOrigin: "'*'"
-      AllowHeaders: "'Accept,Content-Type'"
     TracingEnabled: true
     MethodSettings:
       - LoggingLevel: INFO
