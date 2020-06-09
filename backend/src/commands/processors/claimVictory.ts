@@ -1,6 +1,12 @@
 import { ClaimVictoryCommand, CommandProcessor } from '../types';
 import { GameEventType, VictoryClaimedEvent } from '../../events/types';
-import { validateGameExists, validateGameNotFinished, validateLength, validateParameters } from '../validation';
+import {
+  validateAllFaceUp,
+  validateEmpty,
+  validateGameExists,
+  validateGameNotFinished,
+  validateParameters
+} from '../validation';
 import { saveEvent } from '../../events/save';
 import { loadEvents } from '../../events/load';
 import { buildTableState } from '../../state/table';
@@ -13,8 +19,10 @@ export const claimVictory: CommandProcessor<ClaimVictoryCommand, VictoryClaimedE
     validateGameExists(events);
     validateGameNotFinished(events);
 
-    const { foundation } = buildTableState(events);
-    foundation.forEach((pile, index) => validateLength(pile, 13, `Foundation ${index + 1}`));
+    const { stock, tableau, waste } = buildTableState(events);
+    validateEmpty(stock, 'Stock');
+    validateEmpty(waste, 'Waste');
+    tableau.forEach((column, index) => validateAllFaceUp(column, `Tableau ${index + 1}`));
 
     return await saveEvent<GameEventType.victoryClaimed, VictoryClaimedEvent>(
       GameEventType.victoryClaimed,

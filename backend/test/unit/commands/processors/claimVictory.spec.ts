@@ -11,7 +11,7 @@ import { fail } from 'assert';
 
 describe('The "claim victory" command', () => {
   const savedEvent: GameEvent = createSampleGameplayEvent(GameEventType.victoryClaimed);
-  const foundationValidationError = Error('Foundation not complete');
+  const tableauNotAllFaceUpError = Error('Tableau not all face up');
   const gameExistsValidationError = Error('Game does not exist');
   const gameNotFinishedValidationError = Error('Game is already finished');
   const loadEventsError = Error('Database error: Failed to load events');
@@ -23,7 +23,8 @@ describe('The "claim victory" command', () => {
   let validateGameExistsStub: SinonStub;
   let validateGameNotFinishedStub: SinonStub;
   let buildTableStateStub: SinonStub;
-  let validateLengthStub: SinonStub;
+  let validateEmptyStub: SinonStub;
+  let validateAllFaceUpStub: SinonStub;
 
   beforeEach(() => {
     loadEventsStub = stub(loadEventsModule, 'loadEvents');
@@ -32,7 +33,8 @@ describe('The "claim victory" command', () => {
     validateGameExistsStub = stub(validationModule, 'validateGameExists');
     validateGameNotFinishedStub = stub(validationModule, 'validateGameNotFinished');
     buildTableStateStub = stub(tableStateModule, 'buildTableState');
-    validateLengthStub = stub(validationModule, 'validateLength');
+    validateEmptyStub = stub(validationModule, 'validateEmpty');
+    validateAllFaceUpStub = stub(validationModule, 'validateAllFaceUp');
   });
 
   afterEach(() => {
@@ -42,7 +44,8 @@ describe('The "claim victory" command', () => {
     validateGameExistsStub.restore();
     validateGameNotFinishedStub.restore();
     buildTableStateStub.restore();
-    validateLengthStub.restore();
+    validateEmptyStub.restore();
+    validateAllFaceUpStub.restore();
   });
 
   describe('Given the event store is loading and saving events correctly', () => {
@@ -55,7 +58,9 @@ describe('The "claim victory" command', () => {
       describe('Given the foundations each contains 13 cards', () => {
         beforeEach(() => {
           buildTableStateStub.returns({
-            foundation: [[], [], [], []]
+            tableau: [[], [], [], [], [], [], []],
+            stock: [],
+            waste: []
           });
         });
 
@@ -87,16 +92,21 @@ describe('The "claim victory" command', () => {
             expect(buildTableStateStub.calledOnce).to.equal(true);
           });
 
-          it('Validates the foundations', () => {
-            expect(validateLengthStub.callCount).to.equal(4);
-            expect(validateLengthStub.getCall(0).args[1]).to.equal(13);
-            expect(validateLengthStub.getCall(0).args[2]).to.equal('Foundation 1');
-            expect(validateLengthStub.getCall(1).args[1]).to.equal(13);
-            expect(validateLengthStub.getCall(1).args[2]).to.equal('Foundation 2');
-            expect(validateLengthStub.getCall(2).args[1]).to.equal(13);
-            expect(validateLengthStub.getCall(2).args[2]).to.equal('Foundation 3');
-            expect(validateLengthStub.getCall(3).args[1]).to.equal(13);
-            expect(validateLengthStub.getCall(3).args[2]).to.equal('Foundation 4');
+          it('Validates stock and waste are empty', () => {
+            expect(validateEmptyStub.callCount).to.equal(2);
+            expect(validateEmptyStub.getCall(0).args[1]).to.equal('Stock');
+            expect(validateEmptyStub.getCall(1).args[1]).to.equal('Waste');
+          });
+
+          it('Validates every tableau consists only of face up cards', () => {
+            expect(validateAllFaceUpStub.callCount).to.equal(7);
+            expect(validateAllFaceUpStub.getCall(0).args[1]).to.equal('Tableau 1');
+            expect(validateAllFaceUpStub.getCall(1).args[1]).to.equal('Tableau 2');
+            expect(validateAllFaceUpStub.getCall(2).args[1]).to.equal('Tableau 3');
+            expect(validateAllFaceUpStub.getCall(3).args[1]).to.equal('Tableau 4');
+            expect(validateAllFaceUpStub.getCall(4).args[1]).to.equal('Tableau 5');
+            expect(validateAllFaceUpStub.getCall(5).args[1]).to.equal('Tableau 6');
+            expect(validateAllFaceUpStub.getCall(6).args[1]).to.equal('Tableau 7');
           });
 
           it('Saves the new event', () => {
@@ -113,12 +123,14 @@ describe('The "claim victory" command', () => {
         });
       });
 
-      describe('Given the foundations are empty', () => {
+      describe('Given some cards in the tableau are face down', () => {
         beforeEach(() => {
           buildTableStateStub.returns({
-            foundation: [[], [], [], []]
+            tableau: [[], [], [], [], [], [], []],
+            stock: [],
+            waste: []
           });
-          validateLengthStub.throws(foundationValidationError);
+          validateAllFaceUpStub.throws(tableauNotAllFaceUpError);
         });
 
         describe('When invoked', () => {
@@ -154,10 +166,15 @@ describe('The "claim victory" command', () => {
             expect(buildTableStateStub.calledOnce).to.equal(true);
           });
 
-          it('Validates the foundations', () => {
-            expect(validateLengthStub.callCount).to.equal(1); // Fails after the first one
-            expect(validateLengthStub.getCall(0).args[1]).to.equal(13);
-            expect(validateLengthStub.getCall(0).args[2]).to.equal('Foundation 1');
+          it('Validates the stock and waste are empty', () => {
+            expect(validateEmptyStub.callCount).to.equal(2); // Fails after the first one
+            expect(validateEmptyStub.getCall(0).args[1]).to.equal('Stock');
+            expect(validateEmptyStub.getCall(1).args[1]).to.equal('Waste');
+          });
+
+          it('Validates the first tableau column and then fails', () => {
+            expect(validateAllFaceUpStub.callCount).to.equal(1); // Fails after the first one
+            expect(validateAllFaceUpStub.getCall(0).args[1]).to.equal('Tableau 1');
           });
 
           it('Does not save an event', () => {
@@ -165,7 +182,7 @@ describe('The "claim victory" command', () => {
           });
 
           it('Throws the validation error', () => {
-            expect(caughtError).to.equal(foundationValidationError);
+            expect(caughtError).to.equal(tableauNotAllFaceUpError);
           });
         });
       });
@@ -209,8 +226,12 @@ describe('The "claim victory" command', () => {
           expect(buildTableStateStub.called).to.equal(false);
         });
 
-        it('Does not validate the foundations', () => {
-          expect(validateLengthStub.called).to.equal(false);
+        it('Does not validate the stock and waste', () => {
+          expect(validateEmptyStub.called).to.equal(false);
+        });
+
+        it('Does not validate the tableau is all face up', () => {
+          expect(validateAllFaceUpStub.called).to.equal(false);
         });
 
         it('Does not save an event', () => {
@@ -261,8 +282,12 @@ describe('The "claim victory" command', () => {
           expect(buildTableStateStub.called).to.equal(false);
         });
 
-        it('Does not validate the foundations', () => {
-          expect(validateLengthStub.called).to.equal(false);
+        it('Does not validate the stock and waste', () => {
+          expect(validateEmptyStub.called).to.equal(false);
+        });
+
+        it('Does not validate the tableau is all face up', () => {
+          expect(validateAllFaceUpStub.called).to.equal(false);
         });
 
         it('Does not save an event', () => {
@@ -314,8 +339,12 @@ describe('The "claim victory" command', () => {
         expect(buildTableStateStub.called).to.equal(false);
       });
 
-      it('Does not validate the foundations', () => {
-        expect(validateLengthStub.called).to.equal(false);
+      it('Does not validate the stock and waste', () => {
+        expect(validateEmptyStub.called).to.equal(false);
+      });
+
+      it('Does not validate the tableau is all face up', () => {
+        expect(validateAllFaceUpStub.called).to.equal(false);
       });
 
       it('Does not save an event', () => {
@@ -333,7 +362,9 @@ describe('The "claim victory" command', () => {
       loadEventsStub.resolves();
       saveEventStub.rejects(saveEventError);
       buildTableStateStub.returns({
-        foundation: [[], [], [], []]
+        tableau: [[], [], [], [], [], [], []],
+        stock: [],
+        waste: []
       });
     });
 
@@ -370,16 +401,21 @@ describe('The "claim victory" command', () => {
         expect(buildTableStateStub.calledOnce).to.equal(true);
       });
 
+      it('Validates the stock and waste are empty', () => {
+        expect(validateEmptyStub.callCount).to.equal(2);
+        expect(validateEmptyStub.getCall(0).args[1]).to.equal('Stock');
+        expect(validateEmptyStub.getCall(1).args[1]).to.equal('Waste');
+      });
+
       it('Validates the foundations', () => {
-        expect(validateLengthStub.callCount).to.equal(4);
-        expect(validateLengthStub.getCall(0).args[1]).to.equal(13);
-        expect(validateLengthStub.getCall(0).args[2]).to.equal('Foundation 1');
-        expect(validateLengthStub.getCall(1).args[1]).to.equal(13);
-        expect(validateLengthStub.getCall(1).args[2]).to.equal('Foundation 2');
-        expect(validateLengthStub.getCall(2).args[1]).to.equal(13);
-        expect(validateLengthStub.getCall(2).args[2]).to.equal('Foundation 3');
-        expect(validateLengthStub.getCall(3).args[1]).to.equal(13);
-        expect(validateLengthStub.getCall(3).args[2]).to.equal('Foundation 4');
+        expect(validateAllFaceUpStub.callCount).to.equal(7);
+        expect(validateAllFaceUpStub.getCall(0).args[1]).to.equal('Tableau 1');
+        expect(validateAllFaceUpStub.getCall(1).args[1]).to.equal('Tableau 2');
+        expect(validateAllFaceUpStub.getCall(2).args[1]).to.equal('Tableau 3');
+        expect(validateAllFaceUpStub.getCall(3).args[1]).to.equal('Tableau 4');
+        expect(validateAllFaceUpStub.getCall(4).args[1]).to.equal('Tableau 5');
+        expect(validateAllFaceUpStub.getCall(5).args[1]).to.equal('Tableau 6');
+        expect(validateAllFaceUpStub.getCall(6).args[1]).to.equal('Tableau 7');
       });
 
       it('Saves an event', () => {

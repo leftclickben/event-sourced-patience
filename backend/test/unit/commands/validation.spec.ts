@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import {
+  validateAllFaceUp,
   validateCompatibleWithFoundation,
   validateCompatibleWithTableau,
   validateGameExists,
@@ -211,25 +212,75 @@ describe('Command validation utilities', () => {
     });
 
     describe('When called with an array the same length as the required number', () => {
-      expect(() => validateLength(
-        [
-          { suit: Suit.clubs, value: Value.jack, faceUp: true },
-          { suit: Suit.hearts, value: Value.three, faceUp: true}
-        ],
-        2,
-        'Test'
-      )).not.to.throw();
+      it('Does not throw', () => {
+        expect(() => validateLength(
+          [
+            { suit: Suit.clubs, value: Value.jack, faceUp: true },
+            { suit: Suit.hearts, value: Value.three, faceUp: true }
+          ],
+          2,
+          'Test'
+        )).not.to.throw();
+      });
     });
 
     describe('When called with an array shorter than the required number', () => {
-      expect(() => validateLength(
-        [
+      it('Throws', () => {
+        expect(() => validateLength(
+          [
+            { suit: Suit.clubs, value: Value.jack, faceUp: true },
+            { suit: Suit.hearts, value: Value.three, faceUp: true}
+          ],
+          3,
+          'Test'
+        )).to.throw('Command validation failed: Insufficient cards in Test');
+      });
+    });
+  });
+
+  describe('Validating all cards are face up', () => {
+    describe('When given an empty array', () => {
+      it('Does not throw', () => {
+        expect(() => validateAllFaceUp([], 'Test')).not.to.throw();
+      });
+    });
+    describe('When given a single face up card', () => {
+      it('Does not throw', () => {
+        const cards: Card[] = [
+          { suit: Suit.clubs, value: Value.jack, faceUp: true }
+        ];
+        expect(() => validateAllFaceUp(cards, 'Test')).not.to.throw();
+      });
+    });
+    describe('When given multiple face up cards', () => {
+      it('Does not throw', () => {
+        const cards: Card[] = [
           { suit: Suit.clubs, value: Value.jack, faceUp: true },
-          { suit: Suit.hearts, value: Value.three, faceUp: true}
-        ],
-        3,
-        'Test'
-      )).to.throw('Command validation failed: Insufficient cards in Test');
+          { suit: Suit.hearts, value: Value.queen, faceUp: true },
+          { suit: Suit.spades, value: Value.ace, faceUp: true }
+        ];
+        expect(() => validateAllFaceUp(cards, 'Test')).not.to.throw();
+      });
+    });
+    describe('When given a single face down card', () => {
+      it('Throws', () => {
+        const cards: Card[] = [
+          { suit: Suit.clubs, value: Value.jack, faceUp: false }
+        ];
+        expect(() => validateAllFaceUp(cards, 'Test'))
+          .to.throw('Command validation failed: All cards in Test must be face up');
+      });
+    });
+    describe('When given multiple cards including face down cards', () => {
+      it('Throws', () => {
+        const cards: Card[] = [
+          { suit: Suit.clubs, value: Value.jack, faceUp: false },
+          { suit: Suit.hearts, value: Value.queen, faceUp: true },
+          { suit: Suit.spades, value: Value.ace, faceUp: true }
+        ];
+        expect(() => validateAllFaceUp(cards, 'Test'))
+          .to.throw('Command validation failed: All cards in Test must be face up');
+      });
     });
   });
 });

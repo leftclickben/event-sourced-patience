@@ -68,3 +68,8 @@ export const validateLength = (column: Card[], count: number, label: string) => 
   }
 };
 
+export const validateAllFaceUp = (cards: Card[], label: string) => {
+  if (cards.some(({ faceUp }) => !faceUp)) {
+    throw new BadRequest(`Command validation failed: All cards in ${label} must be face up`);
+  }
+}
