@@ -91,7 +91,7 @@ export const newGameForInvalidCommandsAndHelp = (gameId: GameId, apiBaseUrl: str
     '400 - {"message":"Command validation failed: Card colour must alternate when building tableau columns"}\n',
     '400 - {"message":"Command validation failed: Only Aces can be played to an empty foundation"}\n',
     '400 - {"message":"Command validation failed: \\"Waste\\" is empty"}\n',
-    '400 - {"message":"Command validation failed: Insufficient cards in Foundation 1"}\n'
+    '400 - {"message":"Command validation failed: \\"Stock\\" is not empty"}\n'
   ],
   expectedEvents: [
     {
