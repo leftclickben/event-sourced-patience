@@ -46,6 +46,7 @@ Resources:
     Properties:
       CodeUri: ./build/handlers/http/game
       Handler: get.handler
+      ReservedConcurrentExecutions: 5
       Environment:
         Variables:
           DB_TABLE_EVENTS: !Ref EventsTable
@@ -64,6 +65,7 @@ Resources:
     Properties:
       CodeUri: ./build/handlers/http/game
       Handler: post.handler
+      ReservedConcurrentExecutions: 5
       Environment:
         Variables:
           DB_TABLE_EVENTS: !Ref EventsTable
@@ -82,6 +84,7 @@ Resources:
     Properties:
       CodeUri: ./build/handlers/http/game
       Handler: patch.handler
+      ReservedConcurrentExecutions: 5
       Environment:
         Variables:
           DB_TABLE_EVENTS: !Ref EventsTable
@@ -100,6 +103,7 @@ Resources:
     Properties:
       CodeUri: ./build/handlers/http/game
       Handler: delete.handler
+      ReservedConcurrentExecutions: 5
       Environment:
         Variables:
           DB_TABLE_EVENTS: !Ref EventsTable
