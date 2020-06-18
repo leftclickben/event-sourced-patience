@@ -1,14 +1,14 @@
 import { expect } from 'chai';
-import { buildTableState } from '../../../src/state/table';
-import { Suit, Value } from '../../../src/game/types';
+import { buildTableState } from '../../../../src/state/table';
+import { Suit, Value } from '../../../../src/game/types';
 import {
   GameEventType,
   StockDealtToWasteEvent,
   TableauPlayedToFoundationEvent,
   TableauPlayedToTableauEvent
-} from '../../../src/events/types';
-import { createSampleCreateGameEvent } from '../../fixtures/events';
-import { TableState } from '../../../src/state/table/types';
+} from '../../../../src/events/types';
+import { createSampleCreateGameEvent } from '../../../fixtures/events';
+import { TableState } from '../../../../src/state/table/types';
 
 describe('The table state builder', () => {
   describe('When provided an empty list of events', () => {

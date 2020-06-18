@@ -73,7 +73,7 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref EventsTable
       Events:
-        GetGame:
+        PostGame:
           Type: Api
           Properties:
             Path: /game
@@ -92,7 +92,7 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref EventsTable
       Events:
-        GetGame:
+        PatchGame:
           Type: Api
           Properties:
             Path: /game/{gameId}/{moveType}
@@ -111,11 +111,77 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref EventsTable
       Events:
-        GetGame:
+        DeleteGame:
           Type: Api
           Properties:
             Path: /game/{gameId}
             Method: delete
+
+  GetAggregatesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./build/handlers/http/aggregates
+      Handler: get.handler
+      ReservedConcurrentExecutions: 5
+      Timeout: 60
+      Environment:
+        Variables:
+          BUCKET_AGGREGATES: !Ref AggregatesBucket
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref AggregatesBucket
+      Events:
+        GetAggregates:
+          Type: Api
+          Properties:
+            Path: /aggregates
+            Method: get
+
+  RegenerateAggregatesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./build/handlers/http/aggregates
+      Handler: regenerate.handler
+      ReservedConcurrentExecutions: 5
+      Timeout: 60
+      Environment:
+        Variables:
+          DB_TABLE_EVENTS: !Ref EventsTable
+          BUCKET_AGGREGATES: !Ref AggregatesBucket
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref EventsTable
+        - S3WritePolicy:
+            BucketName: !Ref AggregatesBucket
+      Events:
+        RegenerateAggregates:
+          Type: Api
+          Properties:
+            Path: /aggregates/regenerate
+            Method: get
+
+  StreamUpdateAggregatesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./build/handlers/dynamodb/events
+      Handler: stream.handler
+      ReservedConcurrentExecutions: 5
+      Environment:
+        Variables:
+          DB_TABLE_EVENTS: !Ref EventsTable
+          BUCKET_AGGREGATES: !Ref AggregatesBucket
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref EventsTable
+        - S3CrudPolicy:
+            BucketName: !Ref AggregatesBucket
+      Events:
+        EventReceived:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt EventsTable.StreamArn
+            Enabled: True
+            StartingPosition: LATEST
 
   EventsTable:
     Type: AWS::DynamoDB::Table
@@ -132,6 +198,15 @@ Resources:
           AttributeType: S
         - AttributeName: eventTimestamp
           AttributeType: N
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+
+  AggregatesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "patience-aggregates-${Stage}"
+      VersioningConfiguration:
+        Status: Enabled
 
 Outputs:
   ApiBaseUrl:
