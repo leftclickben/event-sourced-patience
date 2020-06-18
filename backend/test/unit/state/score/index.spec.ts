@@ -5,11 +5,11 @@ import {
   StockDealtToWasteEvent,
   TableauPlayedToFoundationEvent,
   TableauPlayedToTableauEvent
-} from '../../../src/events/types';
-import { createSampleCreateGameEvent } from '../../fixtures/events';
-import { ScoreState } from '../../../src/state/score/types';
-import { buildScoreState } from '../../../src/state/score';
-import { GameStatus } from '../../../src/game/types';
+} from '../../../../src/events/types';
+import { createSampleCreateGameEvent } from '../../../fixtures/events';
+import { ScoreState } from '../../../../src/state/score/types';
+import { buildScoreState } from '../../../../src/state/score';
+import { GameStatus } from '../../../../src/game/types';
 
 describe('The score state builder', () => {
   describe('When provided an empty list of events', () => {
