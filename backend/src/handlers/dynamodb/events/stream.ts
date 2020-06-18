@@ -3,7 +3,8 @@ import { GameEvent } from '../../../events/types';
 import { loadAggregates, saveAggregates } from '../../../state/aggregates/persistence';
 import { buildAggregates } from '../../../state/aggregates';
 
-const stripTypes = (input: Record<string, any>) => Object.keys(input).reduce((result, key) => ({ ...result, [key]: input[key][Object.keys(input[key])[0]] }), {});
+const stripTypes = (input: Record<string, any>) =>
+  Object.keys(input).reduce((result, key) => ({ ...result, [key]: input[key][Object.keys(input[key])[0]] }), {});
 
 export const handler: DynamoDBStreamHandler = async ({ Records: records }) => {
   const aggregates = await loadAggregates() || {};

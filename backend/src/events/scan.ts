@@ -1,7 +1,11 @@
 import { DynamoDB } from 'aws-sdk';
 import { GameEvent } from './types';
 
-export const scanEvents = async (filterField: string, filterValues: string[], startKey?: DynamoDB.DocumentClient.Key): Promise<GameEvent[]> => {
+export const scanEvents = async (
+  filterField: string,
+  filterValues: string[],
+  startKey?: DynamoDB.DocumentClient.Key
+): Promise<GameEvent[]> => {
   const { Items: items, LastEvaluatedKey: lastKey } = await new DynamoDB.DocumentClient()
     .scan({
       TableName: process.env.DB_TABLE_EVENTS as string,

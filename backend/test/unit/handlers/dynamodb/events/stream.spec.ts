@@ -56,7 +56,7 @@ describe('The DynamoDB events table stream handler', () => {
         it('Saves the aggregates', () => {
           expect(saveAggregatesStub.callCount).to.equal(1);
           expect(saveAggregatesStub.firstCall.args).to.deep.equal(['new aggregates']);
-        })
+        });
       });
     });
 

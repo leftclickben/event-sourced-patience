@@ -10,7 +10,7 @@ const createBlankAggregates = () => ({
   [GameStatus.inProgress]: { games: 0 },
   [GameStatus.forfeited]: { games: 0, score: 0, events: 0 },
   [GameStatus.completed]: { games: 0, score: 0, events: 0 }
-})
+});
 
 const recordGameResult = async (gameId: string, aggregates: Aggregates): Promise<Aggregates> => {
   const gameEvents = await loadEvents(gameId);
@@ -21,7 +21,7 @@ const recordGameResult = async (gameId: string, aggregates: Aggregates): Promise
   aggregates[status].score += scoreState.score;
   aggregates[status].events += gameEvents.length;
   return aggregates;
-}
+};
 
 export const buildAggregates = (events: GameEvent[], initialAggregates?: Aggregates) =>
   buildStateFromEvents<Promise<Aggregates>>(

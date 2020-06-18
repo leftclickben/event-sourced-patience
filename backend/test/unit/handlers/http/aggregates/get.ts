@@ -36,10 +36,10 @@ describe('The HTTP GET /aggregates handler', () => {
 
         beforeEach(async () => {
           result = await getAggregatesHandler({} as any, {} as Context, undefined as any);
-        })
+        });
 
         it('Returns the aggregates', () => {
-          expect(result).to.deep.equal({ data: 'aggregates data' })
+          expect(result).to.deep.equal({ data: 'aggregates data' });
         });
       });
     });

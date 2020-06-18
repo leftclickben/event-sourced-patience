@@ -10,8 +10,7 @@ export const loadAggregates = async (): Promise<Aggregates> => {
       Key: GAME_AGGREGATES_OBJECT_KEY
     })
     .promise();
-  if (!body) throw 'Could not load aggregates';
-  return JSON.parse(body.toString());
+  return body ? JSON.parse(body.toString()) : undefined;
 };
 
 export const saveAggregates = async (aggregates: Aggregates): Promise<void> => {
