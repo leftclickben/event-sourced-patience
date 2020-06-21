@@ -7,7 +7,8 @@ const stripTypes = (input: Record<string, any>) =>
   Object.keys(input).reduce((result, key) => ({ ...result, [key]: input[key][Object.keys(input[key])[0]] }), {});
 
 export const handler: DynamoDBStreamHandler = async ({ Records: records }) => {
-  const aggregates = await loadAggregates() || {};
+  const aggregates = await loadAggregates();
+  const initialAggregatesJson = JSON.stringify(aggregates);
 
   const events = records
     .map(({ dynamodb }) => (dynamodb ? stripTypes(dynamodb.NewImage as Record<string, any>) : undefined))
@@ -15,5 +16,7 @@ export const handler: DynamoDBStreamHandler = async ({ Records: records }) => {
 
   const newAggregates = await buildAggregates(events, aggregates);
 
-  await saveAggregates(newAggregates);
+  if (JSON.stringify(newAggregates) !== initialAggregatesJson) {
+    await saveAggregates(newAggregates);
+  }
 };

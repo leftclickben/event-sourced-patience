@@ -22,7 +22,7 @@ describe('The DynamoDB events table stream handler', () => {
       saveAggregatesStub.restore();
     });
 
-    describe('Given aggregates can be built', () => {
+    describe('Given aggregates can be built and returns a different value', () => {
       let buildAggregatesStub: SinonStub;
 
       beforeEach(() => {
@@ -56,6 +56,43 @@ describe('The DynamoDB events table stream handler', () => {
         it('Saves the aggregates', () => {
           expect(saveAggregatesStub.callCount).to.equal(1);
           expect(saveAggregatesStub.firstCall.args).to.deep.equal(['new aggregates']);
+        });
+      });
+    });
+
+    describe('Given aggregates can be built and returns the initial value unmodified', () => {
+      let buildAggregatesStub: SinonStub;
+
+      beforeEach(() => {
+        buildAggregatesStub = stub(aggregatesModule, 'buildAggregates').resolvesArg(1);
+      });
+
+      afterEach(() => {
+        buildAggregatesStub.restore();
+      });
+
+      describe('When invoked', () => {
+        beforeEach(async () => {
+          await handler(
+            event,
+            {} as Context,
+            undefined as any);
+        });
+
+        it('Loads current aggregates', () => {
+          expect(loadAggregatesStub.callCount).to.equal(1);
+        });
+
+        it('Builds the new aggregates', () => {
+          expect(buildAggregatesStub.callCount).to.equal(1);
+          expect(buildAggregatesStub.firstCall.args).to.deep.equal([
+            [{ id: 'first record' }],
+            'original aggregates'
+          ]);
+        });
+
+        it('Does not save the aggregates because it is the same value', () => {
+          expect(saveAggregatesStub.called).to.equal(false);
         });
       });
     });
