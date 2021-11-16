@@ -30,7 +30,7 @@
     "pave": "ts-node src/tools/pave.ts"
   },
   "dependencies": {
-    "aws-sdk": "^2.553.0",
+    "aws-sdk": "^2.814.0",
     "cuid": "^2.1.6",
     "http-errors": "^1.7.3"
   },
